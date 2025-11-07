@@ -30,11 +30,8 @@
 
 #### 后端配置 (.env)
 ```env
-# 修复前
-PADDLE_CLIENT_TOKEN=test_7435d425f721a5bf267a3382145
-
-# 修复后
-PADDLE_CLIENT_TOKEN=pdl_test_7435d425f721a5bf267a3382145
+# 示例占位符（避免展示真实或类真实格式）
+PADDLE_CLIENT_TOKEN=<YOUR_PADDLE_SANDBOX_CLIENT_TOKEN>
 ```
 
 #### 前端测试页面
@@ -44,9 +41,9 @@ let config = {
     clientToken: 'test_7435d425f721a5bf267a3382145'
 };
 
-// 修复后
+// 修复后（使用占位符）
 let config = {
-    clientToken: 'pdl_test_7435d425f721a5bf267a3382145'
+    clientToken: '<YOUR_PADDLE_SANDBOX_CLIENT_TOKEN>'
 };
 ```
 
@@ -196,11 +193,11 @@ Paddle API连接和配置正常
 
 ### 1. 客户端令牌格式问题
 - **症状**：初始化Paddle失败，控制台显示认证错误
-- **解决**：确保沙盒环境使用`pdl_test_`前缀，生产环境使用`pdl_live_`前缀
+- **解决**：确保沙盒与生产环境分别使用正确的官方格式，但文档中仅以占位符展示，例如 `<YOUR_PADDLE_SANDBOX_CLIENT_TOKEN>` 与 `<YOUR_PADDLE_PRODUCTION_CLIENT_TOKEN>`
 
 ### 2. API密钥格式问题
 - **症状**：后端API调用失败，返回401或403错误
-- **解决**：确保沙盒环境使用`pdl_sdbx_apikey_`前缀，生产环境使用`pdl_live_apikey_`前缀
+- **解决**：按照官方要求区分沙盒与生产环境的API Key，但文档中只以占位符说明，例如 `<YOUR_PADDLE_SANDBOX_API_KEY>` 和 `<YOUR_PADDLE_LIVE_API_KEY>`
 
 ### 3. 价格ID不匹配
 - **症状**：支付页面显示"产品不可用"或类似错误
@@ -217,11 +214,11 @@ Paddle API连接和配置正常
 ## 部署注意事项
 
 ### 1. 环境变量配置
-确保在生产环境中使用正确的Paddle凭据：
+确保在生产环境中使用正确的Paddle凭据（使用占位符示例）：
 ```env
 PADDLE_ENVIRONMENT=production
-PADDLE_API_KEY=pdl_live_apikey_...
-PADDLE_CLIENT_TOKEN=pdl_live_...
+PADDLE_API_KEY=<YOUR_PADDLE_LIVE_API_KEY>
+PADDLE_CLIENT_TOKEN=<YOUR_PADDLE_PRODUCTION_CLIENT_TOKEN>
 ```
 
 ### 2. Webhook配置
