@@ -1,0 +1,204 @@
+{
+  "timestamp": "2025-10-17T10:55:46.167Z",
+  "testScenarios": [
+    {
+      "name": "完整数据测试",
+      "data": {
+        "formData": {
+          "invoiceNumber": "FR-2024-001",
+          "issueDate": "2024-01-15",
+          "dueDate": "2024-02-15",
+          "items": [
+            {
+              "description": "测试服务1",
+              "quantity": 2,
+              "unitPrice": 400,
+              "taxRate": 20
+            },
+            {
+              "description": "测试服务2",
+              "quantity": 1,
+              "unitPrice": 200,
+              "taxRate": 20
+            }
+          ],
+          "notes": "测试发票备注"
+        },
+        "client": {
+          "name": "测试客户公司",
+          "address": "客户地址123号",
+          "city": "巴黎",
+          "postalCode": "75001",
+          "country": "法国",
+          "vatNumber": "FR987654321"
+        },
+        "user": {
+          "companyName": "测试用户公司",
+          "address": "用户地址456号",
+          "vatNumber": "FR123456789",
+          "siren": "123456789",
+          "siretNumber": "12345678900010",
+          "phone": "+33 1 23 45 67 89",
+          "legalForm": "SARL",
+          "registeredCapital": "10000 €",
+          "rcsNumber": "RCS PARIS 123456",
+          "nafCode": "6201Z"
+        },
+        "companySettings": {
+          "name": "统一设置公司",
+          "address": "统一地址789号",
+          "city": "里昂",
+          "postalCode": "69000",
+          "vatNumber": "FR111222333",
+          "siren": "111222333",
+          "siret": "11122233300010",
+          "phone": "+33 4 56 78 90 12",
+          "legalForm": "SA",
+          "registeredCapital": "50000 €",
+          "rcsNumber": "RCS LYON 789012",
+          "nafCode": "7010Z"
+        }
+      }
+    },
+    {
+      "name": "降级方案测试",
+      "data": {
+        "formData": {
+          "invoiceNumber": "FR-2024-001",
+          "issueDate": "2024-01-15",
+          "dueDate": "2024-02-15",
+          "items": [
+            {
+              "description": "测试服务1",
+              "quantity": 2,
+              "unitPrice": 400,
+              "taxRate": 20
+            },
+            {
+              "description": "测试服务2",
+              "quantity": 1,
+              "unitPrice": 200,
+              "taxRate": 20
+            }
+          ],
+          "notes": "测试发票备注"
+        },
+        "client": {
+          "name": "测试客户公司",
+          "address": "客户地址123号",
+          "city": "巴黎",
+          "postalCode": "75001",
+          "country": "法国",
+          "vatNumber": "FR987654321"
+        },
+        "user": {
+          "companyName": "测试用户公司",
+          "address": "用户地址456号",
+          "vatNumber": "FR123456789",
+          "siren": "123456789",
+          "siretNumber": "12345678900010",
+          "phone": "+33 1 23 45 67 89",
+          "legalForm": "SARL",
+          "registeredCapital": "10000 €",
+          "rcsNumber": "RCS PARIS 123456",
+          "nafCode": "6201Z"
+        },
+        "companySettings": null
+      }
+    },
+    {
+      "name": "缺失信息测试",
+      "data": {
+        "formData": {
+          "invoiceNumber": "FR-2024-001",
+          "issueDate": "2024-01-15",
+          "dueDate": "2024-02-15",
+          "items": [
+            {
+              "description": "测试服务1",
+              "quantity": 2,
+              "unitPrice": 400,
+              "taxRate": 20
+            },
+            {
+              "description": "测试服务2",
+              "quantity": 1,
+              "unitPrice": 200,
+              "taxRate": 20
+            }
+          ],
+          "notes": "测试发票备注"
+        },
+        "client": null,
+        "user": {
+          "companyName": "测试用户公司",
+          "address": "用户地址456号",
+          "vatNumber": "FR123456789",
+          "siren": "123456789",
+          "siretNumber": "12345678900010",
+          "phone": "+33 1 23 45 67 89",
+          "legalForm": "SARL",
+          "registeredCapital": "10000 €",
+          "rcsNumber": "RCS PARIS 123456",
+          "nafCode": "6201Z"
+        },
+        "companySettings": {
+          "name": "统一设置公司",
+          "address": "统一地址789号",
+          "city": "里昂",
+          "postalCode": "69000",
+          "vatNumber": "FR111222333",
+          "siren": "111222333",
+          "siret": "11122233300010",
+          "phone": "+33 4 56 78 90 12",
+          "legalForm": "SA",
+          "registeredCapital": "50000 €",
+          "rcsNumber": "RCS LYON 789012",
+          "nafCode": "7010Z"
+        }
+      }
+    }
+  ],
+  "validationResults": [
+    {
+      "id": 1,
+      "name": "卖方信息显示",
+      "description": "验证卖方信息从统一设置正确显示",
+      "status": "passed"
+    },
+    {
+      "id": 2,
+      "name": "买方信息显示",
+      "description": "验证买方信息从client对象正确显示",
+      "status": "pending"
+    },
+    {
+      "id": 3,
+      "name": "降级方案测试",
+      "description": "验证当统一设置不可用时回退到user对象",
+      "status": "failed"
+    },
+    {
+      "id": 4,
+      "name": "缺失信息显示",
+      "description": "验证当信息缺失时显示友好提示",
+      "status": "info"
+    },
+    {
+      "id": 5,
+      "name": "法国合规信息",
+      "description": "验证法国合规信息正确显示",
+      "status": "passed"
+    }
+  ],
+  "calculations": {
+    "subtotal": 1000,
+    "totalTax": 200,
+    "grandTotal": 1200
+  },
+  "summary": {
+    "passed": 2,
+    "total": 5,
+    "status": "PARTIAL_SUCCESS"
+  }
+}

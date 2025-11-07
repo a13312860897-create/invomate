@@ -1,0 +1,14 @@
+{
+  "appearance": "Appearance",
+  "lightMode": "Light",
+  "darkMode": "Dark",
+  "autoMode": "Auto",
+  "autoModeDescription": "Automatically switch theme based on system settings",
+  "themeSettings": "Theme Settings",
+  "chooseTheme": "Choose your preferred theme mode",
+  "language": "Language",
+  "selectLanguage": "Select Language",
+  "languageDescription": "Choose your preferred language for the application interface.",
+  "comingSoon": "Coming Soon",
+  "moreLanguagesComingSoon": "More languages will be available in future updates."
+}

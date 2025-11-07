@@ -1,0 +1,122 @@
+/* 订阅徽章基础样式 */
+.subscription-badge {
+  transition: all 0.2s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.subscription-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.subscription-badge:hover::before {
+  left: 100%;
+}
+
+.subscription-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 专业版徽章 */
+.subscription-badge-professional {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.subscription-badge-professional:hover {
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+}
+
+/* 基础版徽章 */
+.subscription-badge-basic {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.subscription-badge-basic:hover {
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+}
+
+/* 试用版徽章 */
+.subscription-badge-trial {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  animation: trial-pulse 2s infinite;
+}
+
+.subscription-badge-trial:hover {
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+  animation: none;
+}
+
+@keyframes trial-pulse {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 12px rgba(16, 185, 129, 0.5);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .subscription-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .subscription-badge svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+}
+
+/* 暗色主题适配 */
+[data-theme="dark"] .subscription-badge {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .subscription-badge-professional {
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+}
+
+[data-theme="dark"] .subscription-badge-basic {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+[data-theme="dark"] .subscription-badge-trial {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+/* 加载状态 */
+.subscription-badge-loading {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "timestamp": "2025-10-17T10:55:46.133Z",
+  "testData": {
+    "clientId": 1,
+    "issueDate": "2024-01-15",
+    "dueDate": "2024-02-15",
+    "status": "draft",
+    "subtotal": 1000,
+    "taxAmount": 200,
+    "total": 1200,
+    "notes": "测试新格式发票创建",
+    "items": [
+      {
+        "description": "测试服务1",
+        "quantity": 2,
+        "unitPrice": 400,
+        "taxRate": 20,
+        "taxAmount": 160,
+        "total": 960
+      },
+      {
+        "description": "测试服务2",
+        "quantity": 1,
+        "unitPrice": 200,
+        "taxRate": 20,
+        "taxAmount": 40,
+        "total": 240
+      }
+    ],
+    "settings": {
+      "invoiceMode": "fr",
+      "modeConfig": {
+        "fr": {
+          "companyName": "测试公司",
+          "companyAddress": "测试地址",
+          "taxId": "FR123456789",
+          "siren": "123456789",
+          "siret": "12345678900010",
+          "legalForm": "SARL",
+          "capital": "10000 €",
+          "rcsNumber": "RCS PARIS 123456",
+          "nafCode": "6201Z",
+          "tvaExempt": false
+        }
+      }
+    }
+  },
+  "validationResults": [
+    {
+      "id": 1,
+      "name": "新格式数据验证",
+      "description": "验证新格式数据(clientId, issueDate等)能通过验证",
+      "status": "passed"
+    },
+    {
+      "id": 2,
+      "name": "卖方信息存储",
+      "description": "验证卖方信息从settings正确存储到发票中",
+      "status": "passed"
+    },
+    {
+      "id": 3,
+      "name": "客户端关联",
+      "description": "验证clientId正确关联到现有客户",
+      "status": "passed"
+    },
+    {
+      "id": 4,
+      "name": "金额计算",
+      "description": "验证提供的金额数据被正确使用",
+      "status": "passed"
+    },
+    {
+      "id": 5,
+      "name": "旧格式兼容性",
+      "description": "验证旧格式(buyer对象)仍然可用",
+      "status": "info"
+    }
+  ],
+  "processingResult": {
+    "clientId": 1,
+    "issueDate": "2024-01-15",
+    "dueDate": "2024-02-15",
+    "status": "draft",
+    "subtotal": 1000,
+    "taxAmount": 200,
+    "total": 1200,
+    "notes": "测试新格式发票创建",
+    "items": "[{\"description\":\"测试服务1\",\"quantity\":2,\"unitPrice\":400,\"taxRate\":20,\"taxAmount\":160,\"total\":960},{\"description\":\"测试服务2\",\"quantity\":1,\"unitPrice\":200,\"taxRate\":20,\"taxAmount\":40,\"total\":240}]",
+    "sellerCompanyName": "测试公司",
+    "sellerCompanyAddress": "测试地址",
+    "sellerTaxId": "FR123456789",
+    "sellerSiren": "123456789",
+    "sellerSiret": "12345678900010",
+    "sellerLegalForm": "SARL",
+    "sellerRegisteredCapital": "10000 €",
+    "sellerRcsNumber": "RCS PARIS 123456",
+    "sellerNafCode": "6201Z"
+  },
+  "summary": {
+    "passed": 4,
+    "total": 5,
+    "status": "PARTIAL_SUCCESS"
+  }
+}

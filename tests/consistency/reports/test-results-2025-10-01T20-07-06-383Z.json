@@ -1,0 +1,278 @@
+{
+  "summary": {
+    "startTime": "1970-01-01T00:00:00.461Z",
+    "endTime": "1970-01-01T00:00:31.643Z",
+    "duration": 31182,
+    "testSuites": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3
+    },
+    "tests": {
+      "total": 10,
+      "passed": 0,
+      "failed": 10,
+      "skipped": 0
+    },
+    "successRate": 0,
+    "failedTests": [
+      {
+        "suite": "发票管理数据一致性测试",
+        "test": "验证发票列表数据完整性",
+        "error": "发票列表数据测试失败: Request failed with status code 500"
+      },
+      {
+        "suite": "发票管理数据一致性测试",
+        "test": "验证发票创建后数据同步",
+        "error": "获取创建前发票数据失败: Request failed with status code 500"
+      },
+      {
+        "suite": "发票管理数据一致性测试",
+        "test": "验证发票状态更新一致性",
+        "error": "没有可用的发票进行状态更新测试"
+      },
+      {
+        "suite": "发票管理数据一致性测试",
+        "test": "验证发票搜索筛选功能",
+        "error": "按状态筛选失败: Request failed with status code 500"
+      },
+      {
+        "suite": "发票管理数据一致性测试",
+        "test": "验证发票分页功能",
+        "error": "获取第一页数据失败: Request failed with status code 500"
+      },
+      {
+        "suite": "发票数据验证测试",
+        "test": "验证发票金额计算准确性",
+        "error": "获取发票列表失败: Request failed with status code 500"
+      },
+      {
+        "suite": "发票数据验证测试",
+        "test": "验证发票统计数据一致性",
+        "error": "获取发票列表失败: Request failed with status code 500"
+      },
+      {
+        "suite": "发票数据验证测试",
+        "test": "验证发票与客户关联数据",
+        "error": "获取发票列表失败: Request failed with status code 500"
+      },
+      {
+        "suite": "发票API性能测试",
+        "test": "测试发票API响应时间",
+        "error": "/invoices 请求失败: Request failed with status code 500"
+      },
+      {
+        "suite": "发票API性能测试",
+        "test": "测试发票并发操作",
+        "error": "并发请求 1 失败: Request failed with status code 500"
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "uvdy3l5cf",
+      "name": "发票管理数据一致性测试",
+      "description": "",
+      "startTime": "2025-10-01T20:06:35.200Z",
+      "tests": [
+        {
+          "name": "验证发票列表数据完整性",
+          "description": "",
+          "startTime": "2025-10-01T20:06:35.200Z",
+          "status": "failed",
+          "duration": 3133,
+          "retries": 3,
+          "error": {
+            "message": "发票列表数据测试失败: Request failed with status code 500",
+            "stack": "Error: 发票列表数据测试失败: Request failed with status code 500\n    at InvoiceConsistencyTest.testInvoiceListData (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:153:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:06:38.333Z"
+        },
+        {
+          "name": "验证发票创建后数据同步",
+          "description": "",
+          "startTime": "2025-10-01T20:06:38.333Z",
+          "status": "failed",
+          "duration": 3122,
+          "retries": 3,
+          "error": {
+            "message": "获取创建前发票数据失败: Request failed with status code 500",
+            "stack": "Error: 获取创建前发票数据失败: Request failed with status code 500\n    at InvoiceConsistencyTest.testInvoiceCreationSync (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:186:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:06:41.456Z"
+        },
+        {
+          "name": "验证发票状态更新一致性",
+          "description": "",
+          "startTime": "2025-10-01T20:06:41.456Z",
+          "status": "failed",
+          "duration": 3087,
+          "retries": 3,
+          "error": {
+            "message": "没有可用的发票进行状态更新测试",
+            "stack": "Error: 没有可用的发票进行状态更新测试\n    at InvoiceConsistencyTest.testInvoiceStatusUpdate (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:252:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:06:44.542Z"
+        },
+        {
+          "name": "验证发票搜索筛选功能",
+          "description": "",
+          "startTime": "2025-10-01T20:06:44.542Z",
+          "status": "failed",
+          "duration": 3056,
+          "retries": 3,
+          "error": {
+            "message": "按状态筛选失败: Request failed with status code 500",
+            "stack": "Error: 按状态筛选失败: Request failed with status code 500\n    at InvoiceConsistencyTest.testInvoiceSearchFilter (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:309:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:06:47.599Z"
+        },
+        {
+          "name": "验证发票分页功能",
+          "description": "",
+          "startTime": "2025-10-01T20:06:47.599Z",
+          "status": "failed",
+          "duration": 3061,
+          "retries": 3,
+          "error": {
+            "message": "获取第一页数据失败: Request failed with status code 500",
+            "stack": "Error: 获取第一页数据失败: Request failed with status code 500\n    at InvoiceConsistencyTest.testInvoicePagination (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:337:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:06:50.659Z"
+        }
+      ],
+      "summary": {
+        "total": 5,
+        "passed": 0,
+        "failed": 5,
+        "skipped": 0,
+        "duration": 15460
+      },
+      "endTime": "2025-10-01T20:06:50.659Z"
+    },
+    {
+      "id": "or1zisjpd",
+      "name": "发票数据验证测试",
+      "description": "",
+      "startTime": "2025-10-01T20:06:50.659Z",
+      "tests": [
+        {
+          "name": "验证发票金额计算准确性",
+          "description": "",
+          "startTime": "2025-10-01T20:06:50.660Z",
+          "status": "failed",
+          "duration": 3061,
+          "retries": 3,
+          "error": {
+            "message": "获取发票列表失败: Request failed with status code 500",
+            "stack": "Error: 获取发票列表失败: Request failed with status code 500\n    at InvoiceConsistencyTest.testInvoiceAmountCalculation (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:368:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:06:53.721Z"
+        },
+        {
+          "name": "验证发票统计数据一致性",
+          "description": "",
+          "startTime": "2025-10-01T20:06:53.721Z",
+          "status": "failed",
+          "duration": 3108,
+          "retries": 3,
+          "error": {
+            "message": "获取发票列表失败: Request failed with status code 500",
+            "stack": "Error: 获取发票列表失败: Request failed with status code 500\n    at InvoiceConsistencyTest.testInvoiceStatsConsistency (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:404:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:06:56.829Z"
+        },
+        {
+          "name": "验证发票与客户关联数据",
+          "description": "",
+          "startTime": "2025-10-01T20:06:56.829Z",
+          "status": "failed",
+          "duration": 3138,
+          "retries": 3,
+          "error": {
+            "message": "获取发票列表失败: Request failed with status code 500",
+            "stack": "Error: 获取发票列表失败: Request failed with status code 500\n    at InvoiceConsistencyTest.testInvoiceClientRelation (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:441:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:06:59.967Z"
+        }
+      ],
+      "summary": {
+        "total": 3,
+        "passed": 0,
+        "failed": 3,
+        "skipped": 0,
+        "duration": 9308
+      },
+      "endTime": "2025-10-01T20:06:59.967Z"
+    },
+    {
+      "id": "s4t8l0yhy",
+      "name": "发票API性能测试",
+      "description": "",
+      "startTime": "2025-10-01T20:06:59.967Z",
+      "tests": [
+        {
+          "name": "测试发票API响应时间",
+          "description": "",
+          "startTime": "2025-10-01T20:06:59.967Z",
+          "status": "failed",
+          "duration": 3095,
+          "retries": 3,
+          "error": {
+            "message": "/invoices 请求失败: Request failed with status code 500",
+            "stack": "Error: /invoices 请求失败: Request failed with status code 500\n    at InvoiceConsistencyTest.testInvoiceAPIPerformance (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:492:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:07:03.062Z"
+        },
+        {
+          "name": "测试发票并发操作",
+          "description": "",
+          "startTime": "2025-10-01T20:07:03.062Z",
+          "status": "failed",
+          "duration": 3319,
+          "retries": 3,
+          "error": {
+            "message": "并发请求 1 失败: Request failed with status code 500",
+            "stack": "Error: 并发请求 1 失败: Request failed with status code 500\n    at InvoiceConsistencyTest.testInvoiceConcurrentOperations (G:\\发票软件\\tests\\consistency\\invoice-consistency-test.js:532:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:07:06.381Z"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "skipped": 0,
+        "duration": 6414
+      },
+      "endTime": "2025-10-01T20:07:06.381Z"
+    }
+  ],
+  "config": {
+    "timeout": 10000,
+    "retries": 3,
+    "parallel": false,
+    "outputDir": "./reports"
+  },
+  "timestamp": "2025-10-01T20-07-06-383Z"
+}

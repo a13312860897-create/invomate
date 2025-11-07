@@ -1,0 +1,56 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { FormGroup, Input } from '../components/DesignSystem';
+
+const FranceStaticFields = ({ value, onChange }) => {
+  const { t } = useTranslation(['common']);
+
+  const handleInputChange = (field, fieldValue) => {
+    onChange({
+      ...value,
+      [field]: fieldValue
+    });
+  };
+
+  return (
+    <>
+      <FormGroup label="Company Name">
+        <Input
+          type="text"
+          value={value?.companyName || ''}
+          onChange={(e) => handleInputChange('companyName', e.target.value)}
+          placeholder="Enter your company name"
+        />
+      </FormGroup>
+      
+      <FormGroup label="Company Address">
+        <Input
+          type="text"
+          value={value?.companyAddress || ''}
+          onChange={(e) => handleInputChange('companyAddress', e.target.value)}
+          placeholder="Enter your company address"
+        />
+      </FormGroup>
+      
+      <FormGroup label="VAT Number">
+        <Input
+          type="text"
+          value={value?.taxId || ''}
+          onChange={(e) => handleInputChange('taxId', e.target.value)}
+          placeholder="FR12345678901"
+        />
+      </FormGroup>
+      
+      <FormGroup label="SIREN">
+        <Input
+          type="text"
+          value={value?.siren || ''}
+          onChange={(e) => handleInputChange('siren', e.target.value)}
+          placeholder="123456789"
+        />
+      </FormGroup>
+    </>
+  );
+};
+
+export default FranceStaticFields;

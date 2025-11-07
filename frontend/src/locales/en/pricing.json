@@ -1,0 +1,132 @@
+{
+  "title": "Choose Your Plan",
+  "subtitle": "Professional invoice management solutions to grow your business",
+  "loading": "Loading pricing plans...",
+  "retry": "Retry",
+  "error": {
+    "title": "Failed to load pricing plans"
+  },
+  "no_plans_title": "No Plans Available",
+  "no_plans_description": "No pricing plans are currently available. Please try again later.",
+  "current_plan": "Current Plan",
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "trial": "Trial",
+    "expired": "Expired",
+    "cancelled": "Cancelled"
+  },
+  "billing": {
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "save_percent": "Save 20%",
+    "per_month": "/month"
+  },
+  "plans": {
+    "free_trial": {
+      "name": "Basic",
+      "description": "Perfect for freelancers and small businesses",
+      "features": [
+        "Unlimited invoices",
+        "Customer management",
+        "Professional templates",
+        "Email support",
+        "Basic reporting",
+        "PDF export"
+      ]
+    },
+    "basic": {
+      "name": "Professional",
+      "description": "Advanced features for growing businesses",
+      "features": [
+        "Everything in Basic",
+        "Advanced reporting & analytics",
+        "Multi-currency support",
+        "Custom branding",
+        "Priority support",
+        "API access",
+        "Automated reminders"
+      ]
+    },
+    "professional": {
+      "name": "Enterprise Edition",
+      "description": "Complete solution for large enterprises",
+      "features": [
+        "Everything in Professional",
+        "Advanced integrations",
+        "Custom workflows",
+        "Dedicated account manager",
+        "24/7 priority support",
+        "Custom SLA",
+        "Advanced security features"
+      ]
+    }
+  },
+  "buttons": {
+    "processing": "Processing...",
+    "select_free_trial": "Activated",
+    "select_basic": "Choose Professional",
+    "select_professional": "Coming Soon",
+    "recommended": "Most Popular",
+    "upgrade_zero": "Start Free Trial",
+    "start_using": "Start Using"
+  },
+  "features": {
+    "title": "Features included:",
+    "trial": {
+      "first_upgrade_offer": "Start your free trial!",
+      "free_trial_days": "Enjoy 14 days free trial",
+      "trial_used_message": "You have already used the free trial"
+    }
+  },
+  "buttons": {
+    "processing": "Processing...",
+    "select_basic": "Choose Basic",
+    "select_premium": "Choose Premium", 
+    "select_enterprise": "Choose Enterprise",
+    "recommended": "Recommended",
+    "upgrade_zero": "Upgrade for €0 Now",
+    "start_using": "Start Using"
+  },
+  "security": {
+    "title": "Security Guarantee",
+    "description": "We use bank-level security standards to ensure your data safety. 30-day money-back guarantee for peace of mind.",
+    "features": [
+      "SSL Encryption",
+      "Data Backup", 
+      "30-day Refund"
+    ]
+  },
+  "messages": {
+    "trial_already_used": "You have already used the free trial",
+    "trial_success": "Congratulations! You have successfully activated the 14-day free trial, enjoy all professional features!",
+    "activation_failed": "Activation failed, please try again later",
+    "payment_success": "Payment successful! Activating your subscription...",
+    "payment_failed": "Payment processing failed, please try again later",
+    "paddle_not_loaded": "Paddle not loaded"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "trial": {
+      "question": "Do you offer a free trial?",
+      "answer": "Yes, we offer a 14-day free trial for all our premium plans. No credit card required."
+    },
+    "cancel": {
+      "question": "Can I cancel anytime?",
+      "answer": "Yes, you can cancel your subscription at any time. Your access will continue until the end of your billing period."
+    },
+    "upgrade": {
+      "question": "Can I upgrade or downgrade my plan?",
+      "answer": "Yes, you can change your plan at any time. Changes will be prorated and reflected in your next billing cycle."
+    },
+    "support": {
+      "question": "What kind of support do you provide?",
+      "answer": "We provide email support for all plans, with priority support for premium subscribers."
+    }
+  },
+  "support": {
+    "title": "Need Help?",
+    "description": "Our support team is here to help you choose the right plan for your business.",
+    "contact": "Contact Support"
+  }
+}

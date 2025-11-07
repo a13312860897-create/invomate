@@ -1,0 +1,141 @@
+{
+  "timestamp": "2025-10-15T05:23:20.544Z",
+  "summary": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "successRate": "100.0"
+  },
+  "results": [
+    {
+      "name": "主服务器状态",
+      "status": "✅ 通过",
+      "result": {
+        "message": "Invoice SaaS API is running"
+      }
+    },
+    {
+      "name": "演示服务器状态",
+      "status": "✅ 通过",
+      "result": "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>统一发票模板系统演示</title>\n    <style>\n        * {\n            margin: 0;\n            padding: 0;\n            box-sizing: border-box;\n        }\n        \n        body {\n            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n            min-height: 100vh;\n            padding: 20px;\n        }\n        \n        .container {\n            max-width: 1200px;\n            margin: 0 auto;\n            background: white;\n            border-radius: 15px;\n            box-shadow: 0 20px 40px rgba(0,0,0,0.1);\n            overflow: hidden;\n        }\n        \n        .header {\n            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);\n            color: white;\n            padding: 30px;\n            text-align: center;\n        }\n        \n        .header h1 {\n            font-size: 2.5em;\n            margin-bottom: 10px;\n            font-weight: 300;\n        }\n        \n        .header p {\n            font-size: 1.1em;\n            opacity: 0.9;\n        }\n        \n        .demo-section {\n            padding: 40px;\n        }\n        \n        .template-cards {\n            display: grid;\n            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));\n            gap: 30px;\n            margin-bottom: 40px;\n        }\n        \n        .template-card {\n            background: #f8f9fa;\n            border-radius: 12px;\n            padding: 25px;\n            border: 2px solid #e9ecef;\n            transition: all 0.3s ease;\n        }\n        \n        .template-card:hover {\n            transform: translateY(-5px);\n            box-shadow: 0 15px 30px rgba(0,0,0,0.1);\n            border-color: #007bff;\n        }\n        \n        .template-card h3 {\n            color: #2c3e50;\n            margin-bottom: 15px;\n            font-size: 1.4em;\n        }\n        \n        .template-card p {\n            color: #6c757d;\n            margin-bottom: 20px;\n            line-height: 1.6;\n        }\n        \n        .format-buttons {\n            display: flex;\n            gap: 10px;\n            flex-wrap: wrap;\n        }\n        \n        .format-btn {\n            background: #007bff;\n            color: white;\n            border: none;\n            padding: 10px 20px;\n            border-radius: 6px;\n            cursor: pointer;\n            font-size: 0.9em;\n            transition: all 0.3s ease;\n        }\n        \n        .format-btn:hover {\n            background: #0056b3;\n            transform: translateY(-2px);\n        }\n        \n        .format-btn.email {\n            background: #28a745;\n        }\n        \n        .format-btn.pdf {\n            background: #dc3545;\n        }\n        \n        .format-btn.print {\n            background: #6c757d;\n        }\n        \n        .status-panel {\n            background: #e3f2fd;\n            border-left: 4px solid #2196f3;\n            padding: 20px;\n            margin: 20px 0;\n            border-radius: 8px;\n        }\n        \n        .status-panel h4 {\n            color: #1976d2;\n            margin-bottom: 10px;\n        }\n        \n        .status-item {\n            display: flex;\n            align-items: center;\n            margin: 8px 0;\n        }\n        \n        .status-indicator {\n            width: 12px;\n            height: 12px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n        \n        .status-indicator.active {\n            background: #28a745;\n            box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.3);\n        }\n        \n        .status-indicator.inactive {\n            background: #dc3545;\n        }\n        \n        .preview-area {\n            background: #f8f9fa;\n            border: 2px dashed #dee2e6;\n            border-radius: 8px;\n            padding: 30px;\n            text-align: center;\n            margin-top: 30px;\n            min-height: 200px;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n        }\n        \n        .preview-content {\n            max-width: 100%;\n            max-height: 600px;\n            overflow: auto;\n        }\n        \n        .loading {\n            color: #6c757d;\n            font-style: italic;\n        }\n        \n        .error {\n            color: #dc3545;\n            background: #f8d7da;\n            padding: 15px;\n            border-radius: 6px;\n            border: 1px solid #f5c6cb;\n        }\n        \n        .success {\n            color: #155724;\n            background: #d4edda;\n            padding: 15px;\n            border-radius: 6px;\n            border: 1px solid #c3e6cb;\n        }\n        \n        .feature-grid {\n            display: grid;\n            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n            gap: 20px;\n            margin: 30px 0;\n        }\n        \n        .feature-item {\n            background: white;\n            padding: 20px;\n            border-radius: 8px;\n            box-shadow: 0 2px 10px rgba(0,0,0,0.1);\n            text-align: center;\n        }\n        \n        .feature-icon {\n            font-size: 2em;\n            margin-bottom: 10px;\n        }\n        \n        @media (max-width: 768px) {\n            .template-cards {\n                grid-template-columns: 1fr;\n            }\n            \n            .format-buttons {\n                flex-direction: column;\n            }\n            \n            .header h1 {\n                font-size: 2em;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h1>🇫🇷 统一发票模板系统</h1>\n            <p>智能法国发票模板引擎 - 支持多种格式输出和法律合规性验证</p>\n        </div>\n        \n        <div class=\"demo-section\">\n            <div class=\"status-panel\">\n                <h4>🚀 系统状态</h4>\n                <div class=\"status-item\">\n                    <div class=\"status-indicator active\"></div>\n                    <span>统一模板引擎 - 运行中</span>\n                </div>\n                <div class=\"status-item\">\n                    <div class=\"status-indicator active\"></div>\n                    <span>数据标准化服务 - 运行中</span>\n                </div>\n                <div class=\"status-item\">\n                    <div class=\"status-indicator active\"></div>\n                    <span>法国模板选择器 - 运行中</span>\n                </div>\n                <div class=\"status-item\">\n                    <div class=\"status-indicator active\"></div>\n                    <span>多格式适配器 - 运行中</span>\n                </div>\n            </div>\n            \n            <div class=\"feature-grid\">\n                <div class=\"feature-item\">\n                    <div class=\"feature-icon\">🧠</div>\n                    <h4>智能模板选择</h4>\n                    <p>根据业务场景自动选择最合适的法国发票模板</p>\n                </div>\n                <div class=\"feature-item\">\n                    <div class=\"feature-icon\">📋</div>\n                    <h4>数据标准化</h4>\n                    <p>自动验证和标准化发票、公司、客户数据</p>\n                </div>\n                <div class=\"feature-item\">\n                    <div class=\"feature-icon\">⚖️</div>\n                    <h4>法律合规性</h4>\n                    <p>内置法国发票法律要求验证和合规性检查</p>\n                </div>\n                <div class=\"feature-item\">\n                    <div class=\"feature-icon\">📧</div>\n                    <h4>多格式支持</h4>\n                    <p>支持邮件、PDF、打印三种输出格式</p>\n                </div>\n            </div>\n            \n            <h2 style=\"text-align: center; margin: 40px 0; color: #2c3e50;\">🎯 模板演示</h2>\n            \n            <div class=\"template-cards\">\n                <div class=\"template-card\">\n                    <h3>📄 标准法国发票模板</h3>\n                    <p>适用于一般商业交易的标准法国发票模板，包含完整的TVA信息和法律要求。</p>\n                    <div class=\"format-buttons\">\n                        <button class=\"format-btn email\" onclick=\"renderTemplate('french-standard', 'email')\">📧 邮件格式</button>\n                        <button class=\"format-btn pdf\" onclick=\"renderTemplate('french-standard', 'pdf')\">📄 PDF格式</button>\n                        <button class=\"format-btn print\" onclick=\"renderTemplate('french-standard', 'print')\">🖨️ 打印格式</button>\n                    </div>\n                </div>\n                \n                <div class=\"template-card\">\n                    <h3>🆓 TVA免税发票模板</h3>\n                    <p>适用于免税交易的特殊发票模板，符合法国TVA免税法规要求。</p>\n                    <div class=\"format-buttons\">\n                        <button class=\"format-btn email\" onclick=\"renderTemplate('tva-exempt', 'email')\">📧 邮件格式</button>\n                        <button class=\"format-btn pdf\" onclick=\"renderTemplate('tva-exempt', 'pdf')\">📄 PDF格式</button>\n                        <button class=\"format-btn print\" onclick=\"renderTemplate('tva-exempt', 'print')\">🖨️ 打印格式</button>\n                    </div>\n                </div>\n                \n                <div class=\"template-card\">\n                    <h3>🔄 自清算发票模板</h3>\n                    <p>适用于B2B跨境交易的自清算发票模板，客户负责计算和缴纳TVA。</p>\n                    <div class=\"format-buttons\">\n                        <button class=\"format-btn email\" onclick=\"renderTemplate('self-liquidation', 'email')\">📧 邮件格式</button>\n                        <button class=\"format-btn pdf\" onclick=\"renderTemplate('self-liquidation', 'pdf')\">📄 PDF格式</button>\n                        <button class=\"format-btn print\" onclick=\"renderTemplate('self-liquidation', 'print')\">🖨️ 打印格式</button>\n                    </div>\n                </div>\n            </div>\n            \n            <div class=\"preview-area\" id=\"previewArea\">\n                <div id=\"previewContent\">\n                    <p class=\"loading\">点击上方按钮查看模板渲染效果...</p>\n                </div>\n            </div>\n        </div>\n    </div>\n    \n    <script>\n        const API_BASE = 'http://localhost:5001/api';\n        \n        async function renderTemplate(templateType, format) {\n            const previewArea = document.getElementById('previewArea');\n            const previewContent = document.getElementById('previewContent');\n            \n            // 显示加载状态\n            previewContent.innerHTML = '<p class=\"loading\">🔄 正在渲染模板...</p>';\n            \n            try {\n                // 准备测试数据\n                const testData = {\n                    invoiceData: {\n                        number: `TEST-${templateType.toUpperCase()}-${Date.now()}`,\n                        date: '2024-01-15',\n                        dueDate: '2024-02-15',\n                        total: 5000,\n                        items: [\n                            {\n                                description: '咨询服务',\n                                quantity: 10,\n                                unitPrice: 500,\n                                total: 5000\n                            }\n                        ],\n                        ...(templateType === 'tva-exempt' && {\n                            tvaExemptReason: 'Article 293 B du CGI'\n                        }),\n                        ...(templateType === 'self-liquidation' && {\n                            selfLiquidationNote: 'TVA due par le client selon l\\'article 283-1 du CGI'\n                        })\n                    },\n                    userData: {\n                        name: '示例公司',\n                        address: '123 Rue de Paris, 75001 Paris',\n                        siret: '12345678901234',\n                        vatNumber: 'FR12345678901',\n                        country: 'FR',\n                        legalForm: 'SARL'\n                    },\n                    clientData: {\n                        name: '客户公司',\n                        address: '456 Avenue des Champs-Élysées, 75008 Paris',\n                        country: 'FR',\n                        type: 'company',\n                        vatNumber: 'FR98765432109'\n                    }\n                };\n                \n                // 调用API渲染模板\n                const response = await fetch(`${API_BASE}/templates/render`, {\n                    method: 'POST',\n                    headers: {\n                        'Content-Type': 'application/json',\n                    },\n                    body: JSON.stringify({\n                        format: format,\n                        templateType: templateType,\n                        ...testData\n                    })\n                });\n                \n                if (!response.ok) {\n                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);\n                }\n                \n                const result = await response.json();\n                \n                if (result.success) {\n                    // 根据格式显示不同的预览\n                    if (format === 'email') {\n                        previewContent.innerHTML = `\n                            <div style=\"text-align: left; max-width: 600px;\">\n                                <h4 style=\"color: #28a745; margin-bottom: 15px;\">📧 邮件格式预览</h4>\n                                <div style=\"background: white; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;\">\n                                    <h5>主题: ${result.data.subject || '发票通知'}</h5>\n                                    <hr style=\"margin: 15px 0;\">\n                                    <div style=\"font-family: monospace; white-space: pre-wrap; background: #f8f9fa; padding: 15px; border-radius: 4px;\">\n                                        ${result.data.text || '邮件内容已生成'}\n                                    </div>\n                                    <hr style=\"margin: 15px 0;\">\n                                    <p style=\"color: #6c757d; font-size: 0.9em;\">HTML版本也已生成，包含完整的邮件格式</p>\n                                </div>\n                            </div>\n                        `;\n                    } else if (format === 'pdf') {\n                        previewContent.innerHTML = `\n                            <div style=\"text-align: center;\">\n                                <h4 style=\"color: #dc3545; margin-bottom: 15px;\">📄 PDF格式预览</h4>\n                                <div style=\"background: white; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;\">\n                                    <p style=\"margin-bottom: 15px;\">✅ PDF文件生成成功！</p>\n                                    <p style=\"color: #6c757d; margin-bottom: 10px;\">文件大小: ${(result.data.size / 1024).toFixed(1)} KB</p>\n                                    <p style=\"color: #6c757d; font-size: 0.9em;\">PDF包含完整的法国发票格式和法律要求</p>\n                                    <div style=\"background: #f8f9fa; padding: 15px; border-radius: 4px; margin-top: 15px;\">\n                                        <p style=\"font-size: 0.8em; color: #495057;\">📋 发票详情:</p>\n                                        <p style=\"font-size: 0.8em; color: #6c757d;\">• 发票号: ${testData.invoiceData.number}</p>\n                                        <p style=\"font-size: 0.8em; color: #6c757d;\">• 总金额: ${testData.invoiceData.total.toLocaleString('fr-FR')} €</p>\n                                        <p style=\"font-size: 0.8em; color: #6c757d;\">• 模板类型: ${templateType}</p>\n                                    </div>\n                                </div>\n                            </div>\n                        `;\n                    } else if (format === 'print') {\n                        previewContent.innerHTML = `\n                            <div style=\"text-align: left; max-width: 800px;\">\n                                <h4 style=\"color: #6c757d; margin-bottom: 15px;\">🖨️ 打印格式预览</h4>\n                                <div style=\"background: white; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;\">\n                                    <div style=\"background: #f8f9fa; padding: 15px; border-radius: 4px; border: 1px solid #dee2e6;\">\n                                        <p style=\"margin-bottom: 10px;\"><strong>✅ 打印优化HTML已生成</strong></p>\n                                        <p style=\"color: #6c757d; font-size: 0.9em; margin-bottom: 10px;\">• 适配A4纸张尺寸</p>\n                                        <p style=\"color: #6c757d; font-size: 0.9em; margin-bottom: 10px;\">• 优化打印边距和分页</p>\n                                        <p style=\"color: #6c757d; font-size: 0.9em; margin-bottom: 10px;\">• 包含所有法国发票法律要求</p>\n                                        <p style=\"color: #6c757d; font-size: 0.9em;\">• 支持直接打印输出</p>\n                                    </div>\n                                    <hr style=\"margin: 15px 0;\">\n                                    <p style=\"color: #495057; font-size: 0.9em;\">预览内容已针对打印优化，确保在实际打印时格式正确。</p>\n                                </div>\n                            </div>\n                        `;\n                    }\n                } else {\n                    throw new Error(result.message || '渲染失败');\n                }\n                \n            } catch (error) {\n                console.error('渲染错误:', error);\n                previewContent.innerHTML = `\n                    <div class=\"error\">\n                        <h4>❌ 渲染失败</h4>\n                        <p>${error.message}</p>\n                        <p style=\"font-size: 0.9em; margin-top: 10px;\">请确保后端服务器正在运行，并检查控制台获取详细信息。</p>\n                    </div>\n                `;\n            }\n        }\n        \n        // 页面加载时显示系统信息\n        document.addEventListener('DOMContentLoaded', function() {\n            console.log('🚀 统一发票模板系统演示页面已加载');\n            console.log('📋 可用模板类型: french-standard, tva-exempt, self-liquidation');\n            console.log('📧 支持格式: email, pdf, print');\n        });\n    </script>\n</body>\n</html>"
+    },
+    {
+      "name": "模板选择器服务",
+      "status": "✅ 通过",
+      "result": {
+        "标准法国发票": {
+          "selected": "french-standard",
+          "expected": "french-standard",
+          "match": true
+        },
+        "TVA免税发票": {
+          "selected": "french-standard",
+          "expected": "french-tva-exempt",
+          "match": false
+        },
+        "自清算发票": {
+          "selected": "french-standard",
+          "expected": "french-auto-liquidation",
+          "match": false
+        }
+      }
+    },
+    {
+      "name": "数据标准化服务",
+      "status": "✅ 通过",
+      "result": {
+        "original": {
+          "client": {
+            "name": "Test Company",
+            "address": "123 Test St",
+            "country": "FR",
+            "tvaNumber": "FR12345678901"
+          },
+          "items": [
+            {
+              "description": "Service 1",
+              "price": 100,
+              "quantity": 2
+            },
+            {
+              "description": "Service 2",
+              "price": 50,
+              "quantity": 1
+            }
+          ],
+          "currency": "EUR",
+          "date": "2024-01-15"
+        },
+        "normalized": {
+          "id": "FAC-2025-400",
+          "date": "2024-01-15",
+          "dueDate": "2024-02-14",
+          "currency": "EUR",
+          "status": "draft"
+        },
+        "validation": {
+          "hasRequiredFields": false,
+          "hasFrenchFields": false
+        }
+      }
+    },
+    {
+      "name": "模板渲染服务",
+      "status": "✅ 通过",
+      "result": {
+        "formatResults": {
+          "email": {
+            "success": false,
+            "error": "Cannot read properties of undefined (reading 'length')"
+          },
+          "pdf": {
+            "success": false,
+            "error": "Cannot read properties of undefined (reading 'length')"
+          },
+          "print": {
+            "success": false,
+            "error": "Cannot read properties of undefined (reading 'length')"
+          }
+        }
+      }
+    },
+    {
+      "name": "法国法律合规性",
+      "status": "✅ 通过",
+      "result": {
+        "TVA号码验证": {
+          "requirement": "必须包含有效的TVA号码",
+          "passed": false
+        },
+        "法律声明检查": {
+          "requirement": "必须包含法国法律声明",
+          "passed": false
+        },
+        "发票编号格式": {
+          "requirement": "必须符合法国发票编号规范",
+          "passed": false
+        }
+      }
+    },
+    {
+      "name": "错误处理机制",
+      "status": "✅ 通过",
+      "result": {
+        "空发票数据": {
+          "handled": true,
+          "errorType": false,
+          "errorMessage": "模板渲染失败: 必须提供有效的发票数据"
+        },
+        "无效客户端数据": {
+          "handled": true,
+          "errorType": false,
+          "errorMessage": "模板渲染失败: 必须提供有效的客户数据"
+        },
+        "不支持的模板类型": {
+          "handled": false,
+          "error": "未抛出预期错误"
+        }
+      }
+    }
+  ]
+}

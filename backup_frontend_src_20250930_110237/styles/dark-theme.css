@@ -1,0 +1,397 @@
+/* 深海蓝色主题 - 降低明度版本 */
+:root[data-theme="dark"] {
+  /* 主要背景色 - 深海蓝色调，降低明度 */
+  --bg-primary: linear-gradient(135deg, #0a1929 0%, #1e3a5f 50%, #2d5a87 100%);
+  --bg-secondary: #1a2332;
+  --bg-card: #1f2937;
+  --bg-hover: #374151;
+  
+  /* 专用背景变量 */
+  --bg-input: #1f2937;
+  --bg-button: #1e3a5f;
+  --bg-button-hover: #2d5a87;
+  
+  /* 文本颜色 */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-accent: #60a5fa;
+  
+  /* 边框颜色 */
+  --border-primary: #374151;
+  --border-accent: #2563eb;
+  
+  /* 状态颜色 */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+  
+  /* 阴影效果 - 简洁实用 */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  
+  /* 品牌色彩 - 深海蓝色调 */
+  --brand-primary: #1e40af;
+  --brand-secondary: #3b82f6;
+  --brand-accent: #60a5fa;
+  
+  /* 移除光效变量 - 专注边框设计 */
+}
+
+/* 基础样式覆盖 */
+[data-theme="dark"] {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* 强制覆盖所有白色背景元素 */
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .bg-gray-50,
+[data-theme="dark"] .bg-blue-50,
+[data-theme="dark"] .bg-primary-50 {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 文本颜色统一处理 */
+[data-theme="dark"] .text-gray-900,
+[data-theme="dark"] .text-gray-800,
+[data-theme="dark"] .text-blue-800 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .text-gray-700,
+[data-theme="dark"] .text-gray-600,
+[data-theme="dark"] .text-primary-700 {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .text-blue-600 {
+  color: var(--text-accent) !important;
+}
+
+/* 图标颜色适配 - 修复过亮问题 */
+[data-theme="dark"] .text-gray-400,
+[data-theme="dark"] .text-gray-500 {
+  color: #9ca3af !important;
+}
+
+[data-theme="dark"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+/* 边框颜色处理 */
+[data-theme="dark"] .border-gray-200,
+[data-theme="dark"] .border-blue-200,
+[data-theme="dark"] .divide-gray-200 > * + *,
+[data-theme="dark"] .border-t {
+  border-color: var(--border-primary) !important;
+}
+
+/* 悬停状态 */
+[data-theme="dark"] .hover\:bg-primary-100:hover,
+[data-theme="dark"] .hover\:bg-gray-50:hover,
+[data-theme="dark"] .hover\:bg-gray-100:hover {
+  background: var(--bg-hover) !important;
+}
+
+[data-theme="dark"] .hover\:text-gray-900:hover,
+[data-theme="dark"] .hover\:text-gray-700:hover,
+[data-theme="dark"] .hover\:text-gray-600:hover {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .hover\:text-gray-500:hover {
+  color: var(--text-secondary) !important;
+}
+
+/* 表格相关 */
+[data-theme="dark"] table,
+[data-theme="dark"] thead,
+[data-theme="dark"] tbody,
+[data-theme="dark"] tfoot,
+[data-theme="dark"] tr,
+[data-theme="dark"] td,
+[data-theme="dark"] th {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* 表格脚部特殊处理 */
+[data-theme="dark"] tfoot {
+  background: var(--bg-card) !important;
+}
+
+/* 按钮样式 */
+[data-theme="dark"] button,
+[data-theme="dark"] .btn {
+  background: var(--bg-button) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+[data-theme="dark"] button:hover,
+[data-theme="dark"] .btn:hover {
+  background: var(--bg-button-hover) !important;
+}
+
+/* 输入框样式 */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* 卡片和容器 */
+[data-theme="dark"] .card,
+[data-theme="dark"] .container,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .box {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* 强制覆盖内联样式 */
+[data-theme="dark"] [style*="background: white"],
+[data-theme="dark"] [style*="background-color: white"],
+[data-theme="dark"] [style*="background: #fff"],
+[data-theme="dark"] [style*="background-color: #fff"],
+[data-theme="dark"] [style*="background: #ffffff"],
+[data-theme="dark"] [style*="background-color: #ffffff"] {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 特殊元素处理 */
+[data-theme="dark"] .invoice-preview,
+[data-theme="dark"] .invoice-form,
+[data-theme="dark"] .legal-declaration,
+[data-theme="dark"] .totals-section,
+[data-theme="dark"] .calculation-area {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* 移除所有呼吸光动画效果 - 专注工作效率 */
+
+
+
+/* 增强边框样式 - 提升组件边界清晰度 */
+
+/* 卡片增强边框 */
+[data-theme="dark"] .card,
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .invoice-card {
+  border: 2px solid var(--border-primary) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 按钮增强边框 */
+[data-theme="dark"] .btn,
+[data-theme="dark"] button:not(.no-animation) {
+  border: 1px solid var(--border-accent) !important;
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .btn:hover,
+[data-theme="dark"] button:hover:not(.no-animation) {
+  border: 2px solid var(--brand-secondary) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 输入框增强边框 */
+[data-theme="dark"] .form-input,
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  border: 2px solid var(--border-primary) !important;
+}
+
+[data-theme="dark"] .form-input:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+  border: 2px solid var(--brand-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* 表格增强边框 */
+[data-theme="dark"] table {
+  border: 2px solid var(--border-primary) !important;
+}
+
+[data-theme="dark"] th,
+[data-theme="dark"] td {
+  border: 1px solid var(--border-primary) !important;
+}
+
+/* Dashboard组件增强边框 */
+[data-theme="dark"] .dashboard-card,
+[data-theme="dark"] .stats-card,
+[data-theme="dark"] .chart-container {
+  border: 2px solid var(--border-primary) !important;
+  margin: 8px !important;
+  padding: 16px !important;
+  border-radius: 8px !important;
+}
+
+/* 侧边栏增强边框 */
+[data-theme="dark"] .sidebar,
+[data-theme="dark"] nav {
+  border-right: 3px solid var(--border-primary) !important;
+}
+
+/* 导航项增强边框 */
+[data-theme="dark"] .nav-item,
+[data-theme="dark"] .menu-item {
+  border: 1px solid transparent !important;
+  margin: 2px 0 !important;
+  border-radius: 4px !important;
+}
+
+[data-theme="dark"] .nav-item:hover,
+[data-theme="dark"] .menu-item:hover,
+[data-theme="dark"] .nav-item.active,
+[data-theme="dark"] .menu-item.active {
+  border: 1px solid var(--border-accent) !important;
+  background: var(--bg-hover) !important;
+}
+
+/* 移除导航元素光效动画 */
+
+/* 表格行悬停效果 - 无动画 */
+[data-theme="dark"] tbody tr:hover {
+  background: var(--bg-hover) !important;
+  border: 1px solid var(--border-accent) !important;
+}
+
+/* 确保所有可能的白色元素都被覆盖 */
+[data-theme="dark"] * {
+  /* 只对明确的白色背景进行覆盖，避免影响其他元素 */
+}
+
+[data-theme="dark"] div[class*="bg-white"],
+[data-theme="dark"] div[class*="bg-gray-50"],
+[data-theme="dark"] div[class*="bg-blue-50"],
+[data-theme="dark"] div[class*="bg-primary-50"],
+[data-theme="dark"] span[class*="bg-white"],
+[data-theme="dark"] span[class*="bg-gray-50"],
+[data-theme="dark"] span[class*="bg-blue-50"],
+[data-theme="dark"] span[class*="bg-primary-50"] {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 全局过渡效果优化 - 保留基础过渡 */
+[data-theme="dark"] * {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* 更多组件边框增强 */
+[data-theme="dark"] .modal,
+[data-theme="dark"] .dialog,
+[data-theme="dark"] .popup {
+  border: 3px solid var(--border-accent) !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .form-group,
+[data-theme="dark"] .input-group {
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 6px !important;
+  padding: 8px !important;
+  margin: 4px 0 !important;
+}
+
+[data-theme="dark"] .panel,
+[data-theme="dark"] .section,
+[data-theme="dark"] .container {
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 8px !important;
+  margin: 8px !important;
+  padding: 12px !important;
+}
+
+[data-theme="dark"] .header,
+[data-theme="dark"] .footer {
+  border-bottom: 2px solid var(--border-primary) !important;
+}
+
+[data-theme="dark"] .divider,
+[data-theme="dark"] hr {
+  border: 1px solid var(--border-primary) !important;
+  margin: 16px 0 !important;
+}
+
+/* 列表项边框 */
+[data-theme="dark"] .list-item,
+[data-theme="dark"] li {
+  border-bottom: 1px solid var(--border-primary) !important;
+  padding: 8px 0 !important;
+}
+
+/* 标签页边框 */
+[data-theme="dark"] .tab,
+[data-theme="dark"] .tab-item {
+  border: 1px solid var(--border-primary) !important;
+  border-bottom: none !important;
+  margin-right: 2px !important;
+}
+
+[data-theme="dark"] .tab.active,
+[data-theme="dark"] .tab-item.active {
+  border-bottom: 2px solid var(--brand-secondary) !important;
+  background: var(--bg-card) !important;
+}
+
+/* 工具栏边框 */
+[data-theme="dark"] .toolbar,
+[data-theme="dark"] .action-bar {
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 6px !important;
+  padding: 8px !important;
+  margin: 4px 0 !important;
+}
+
+/* 修复左侧栏滚动条闪烁问题 */
+[data-theme="dark"] .fixed.inset-y-0.left-0 {
+  overflow: hidden;
+}
+
+[data-theme="dark"] .fixed.inset-y-0.left-0 .overflow-y-auto {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+[data-theme="dark"] .fixed.inset-y-0.left-0 .overflow-y-auto::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* 无动画设计 - 专注工作效率 */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="dark"] * {
+    transition: none !important;
+  }
+}
+
+/* 确保所有动画都被禁用 */
+[data-theme="dark"] *,
+[data-theme="dark"] *::before,
+[data-theme="dark"] *::after {
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+}

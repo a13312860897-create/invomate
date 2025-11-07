@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-10-01T21:10:27.940Z",
+  "startTime": "2025-10-01T21:10:27.442Z",
+  "duration": 498,
+  "status": "FAILED",
+  "error": "一致性测试失败: Command failed: node tests/run-all-consistency-tests.js\n❌ 获取认证token失败: Error\n❌ 仪表板数据一致性测试失败: 无法获取认证token\n❌ 仪表板数据一致性测试 失败: 无法获取认证token\n❌ 获取认证token失败: Error\n❌ 发票数据一致性测试失败: 无法获取认证token，测试终止\n❌ 发票管理数据一致性测试 失败: 无法获取认证token，测试终止\n❌ 获取认证token失败: Error\n❌ 客户数据一致性测试失败: 无法获取认证token，测试终止\n❌ 客户管理数据一致性测试 失败: 无法获取认证token，测试终止\n❌ 获取认证token失败: Error\n❌ 报表数据一致性测试失败: 无法获取认证token，测试终止\n❌ 报表数据一致性测试 失败: 无法获取认证token，测试终止\n",
+  "systemInfo": {
+    "nodeVersion": "v22.17.1",
+    "platform": "win32",
+    "uptime": 0.7779322
+  }
+}

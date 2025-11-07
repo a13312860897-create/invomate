@@ -1,0 +1,526 @@
+{
+  "summary": {
+    "startTime": "1970-01-01T00:00:00.561Z",
+    "endTime": "1970-01-01T00:01:03.053Z",
+    "duration": 62492,
+    "testSuites": {
+      "total": 6,
+      "passed": 0,
+      "failed": 6
+    },
+    "tests": {
+      "total": 20,
+      "passed": 0,
+      "failed": 20,
+      "skipped": 0
+    },
+    "successRate": 0,
+    "failedTests": [
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证统计数据API一致性",
+        "error": "API一致性测试失败: 一致性检查失败: 无法从端点结果中提取数据: stats 或 dashboardStats"
+      },
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证仪表板数据结构",
+        "error": "仪表板数据结构测试失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证发票状态分布数据",
+        "error": "发票状态分布测试失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证通知数据获取",
+        "error": "通知数据测试失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证最近发票数据",
+        "error": "获取仪表板数据失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板数据验证测试",
+        "test": "验证财务统计计算准确性",
+        "error": "获取统计数据失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板数据验证测试",
+        "test": "验证发票状态统计一致性",
+        "error": "获取状态分布失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板数据验证测试",
+        "test": "验证客户统计数据",
+        "error": "获取统计数据失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板性能测试",
+        "test": "测试仪表板API响应时间",
+        "error": "/dashboard/stats 成功率过低: 0%"
+      },
+      {
+        "suite": "仪表板性能测试",
+        "test": "测试并发数据加载",
+        "error": "并发请求失败: stats: [object Object], dashboardStats: [object Object], distribution: [object Object], notifications: [object Object]"
+      },
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证统计数据API一致性",
+        "error": "API一致性测试失败: 一致性检查失败: 无法从端点结果中提取数据: stats 或 dashboardStats"
+      },
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证仪表板数据结构",
+        "error": "仪表板数据结构测试失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证发票状态分布数据",
+        "error": "发票状态分布测试失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证通知数据获取",
+        "error": "通知数据测试失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板API数据一致性测试",
+        "test": "验证最近发票数据",
+        "error": "获取仪表板数据失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板数据验证测试",
+        "test": "验证财务统计计算准确性",
+        "error": "获取统计数据失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板数据验证测试",
+        "test": "验证发票状态统计一致性",
+        "error": "获取状态分布失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板数据验证测试",
+        "test": "验证客户统计数据",
+        "error": "获取统计数据失败: Request failed with status code 500"
+      },
+      {
+        "suite": "仪表板性能测试",
+        "test": "测试仪表板API响应时间",
+        "error": "/dashboard/stats 成功率过低: 0%"
+      },
+      {
+        "suite": "仪表板性能测试",
+        "test": "测试并发数据加载",
+        "error": "并发请求失败: stats: [object Object], dashboardStats: [object Object], distribution: [object Object], notifications: [object Object]"
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "hgqkbcc4k",
+      "name": "仪表板API数据一致性测试",
+      "description": "",
+      "startTime": "2025-10-01T20:02:26.708Z",
+      "tests": [
+        {
+          "name": "验证统计数据API一致性",
+          "description": "",
+          "startTime": "2025-10-01T20:02:26.708Z",
+          "status": "failed",
+          "duration": 3145,
+          "retries": 3,
+          "error": {
+            "message": "API一致性测试失败: 一致性检查失败: 无法从端点结果中提取数据: stats 或 dashboardStats",
+            "stack": "Error: API一致性测试失败: 一致性检查失败: 无法从端点结果中提取数据: stats 或 dashboardStats\n    at DashboardConsistencyTest.testStatsAPIConsistency (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:193:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:29.853Z"
+        },
+        {
+          "name": "验证仪表板数据结构",
+          "description": "",
+          "startTime": "2025-10-01T20:02:29.853Z",
+          "status": "failed",
+          "duration": 3090,
+          "retries": 3,
+          "error": {
+            "message": "仪表板数据结构测试失败: Request failed with status code 500",
+            "stack": "Error: 仪表板数据结构测试失败: Request failed with status code 500\n    at DashboardConsistencyTest.testDashboardDataStructure (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:230:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:32.943Z"
+        },
+        {
+          "name": "验证发票状态分布数据",
+          "description": "",
+          "startTime": "2025-10-01T20:02:32.943Z",
+          "status": "failed",
+          "duration": 3090,
+          "retries": 3,
+          "error": {
+            "message": "发票状态分布测试失败: Request failed with status code 500",
+            "stack": "Error: 发票状态分布测试失败: Request failed with status code 500\n    at DashboardConsistencyTest.testInvoiceStatusDistribution (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:254:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:36.033Z"
+        },
+        {
+          "name": "验证通知数据获取",
+          "description": "",
+          "startTime": "2025-10-01T20:02:36.033Z",
+          "status": "failed",
+          "duration": 3079,
+          "retries": 3,
+          "error": {
+            "message": "通知数据测试失败: Request failed with status code 500",
+            "stack": "Error: 通知数据测试失败: Request failed with status code 500\n    at DashboardConsistencyTest.testNotificationsData (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:305:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:39.112Z"
+        },
+        {
+          "name": "验证最近发票数据",
+          "description": "",
+          "startTime": "2025-10-01T20:02:39.112Z",
+          "status": "failed",
+          "duration": 3088,
+          "retries": 3,
+          "error": {
+            "message": "获取仪表板数据失败: Request failed with status code 500",
+            "stack": "Error: 获取仪表板数据失败: Request failed with status code 500\n    at DashboardConsistencyTest.testRecentInvoicesData (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:355:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:42.201Z"
+        }
+      ],
+      "summary": {
+        "total": 5,
+        "passed": 0,
+        "failed": 5,
+        "skipped": 0,
+        "duration": 15493
+      },
+      "endTime": "2025-10-01T20:02:42.201Z"
+    },
+    {
+      "id": "o1z4ag3n1",
+      "name": "仪表板数据验证测试",
+      "description": "",
+      "startTime": "2025-10-01T20:02:42.202Z",
+      "tests": [
+        {
+          "name": "验证财务统计计算准确性",
+          "description": "",
+          "startTime": "2025-10-01T20:02:42.202Z",
+          "status": "failed",
+          "duration": 3113,
+          "retries": 3,
+          "error": {
+            "message": "获取统计数据失败: Request failed with status code 500",
+            "stack": "Error: 获取统计数据失败: Request failed with status code 500\n    at DashboardConsistencyTest.testFinancialCalculations (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:401:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:45.314Z"
+        },
+        {
+          "name": "验证发票状态统计一致性",
+          "description": "",
+          "startTime": "2025-10-01T20:02:45.314Z",
+          "status": "failed",
+          "duration": 3061,
+          "retries": 3,
+          "error": {
+            "message": "获取状态分布失败: Request failed with status code 500",
+            "stack": "Error: 获取状态分布失败: Request failed with status code 500\n    at DashboardConsistencyTest.testInvoiceStatusConsistency (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:459:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:48.376Z"
+        },
+        {
+          "name": "验证客户统计数据",
+          "description": "",
+          "startTime": "2025-10-01T20:02:48.376Z",
+          "status": "failed",
+          "duration": 3079,
+          "retries": 3,
+          "error": {
+            "message": "获取统计数据失败: Request failed with status code 500",
+            "stack": "Error: 获取统计数据失败: Request failed with status code 500\n    at DashboardConsistencyTest.testClientStatistics (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:510:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:51.455Z"
+        }
+      ],
+      "summary": {
+        "total": 3,
+        "passed": 0,
+        "failed": 3,
+        "skipped": 0,
+        "duration": 9254
+      },
+      "endTime": "2025-10-01T20:02:51.455Z"
+    },
+    {
+      "id": "lyxwsu12r",
+      "name": "仪表板性能测试",
+      "description": "",
+      "startTime": "2025-10-01T20:02:51.455Z",
+      "tests": [
+        {
+          "name": "测试仪表板API响应时间",
+          "description": "",
+          "startTime": "2025-10-01T20:02:51.456Z",
+          "status": "failed",
+          "duration": 3258,
+          "retries": 3,
+          "error": {
+            "message": "/dashboard/stats 成功率过低: 0%",
+            "stack": "Error: /dashboard/stats 成功率过低: 0%\n    at DashboardConsistencyTest.testDashboardPerformance (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:569:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:54.714Z"
+        },
+        {
+          "name": "测试并发数据加载",
+          "description": "",
+          "startTime": "2025-10-01T20:02:54.714Z",
+          "status": "failed",
+          "duration": 3216,
+          "retries": 3,
+          "error": {
+            "message": "并发请求失败: stats: [object Object], dashboardStats: [object Object], distribution: [object Object], notifications: [object Object]",
+            "stack": "Error: 并发请求失败: stats: [object Object], dashboardStats: [object Object], distribution: [object Object], notifications: [object Object]\n    at DashboardConsistencyTest.testConcurrentDataLoading (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:608:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:02:57.929Z"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "skipped": 0,
+        "duration": 6474
+      },
+      "endTime": "2025-10-01T20:02:57.929Z"
+    },
+    {
+      "id": "q3gc4yic1",
+      "name": "仪表板API数据一致性测试",
+      "description": "",
+      "startTime": "2025-10-01T20:02:57.930Z",
+      "tests": [
+        {
+          "name": "验证统计数据API一致性",
+          "description": "",
+          "startTime": "2025-10-01T20:02:57.930Z",
+          "status": "failed",
+          "duration": 3169,
+          "retries": 3,
+          "error": {
+            "message": "API一致性测试失败: 一致性检查失败: 无法从端点结果中提取数据: stats 或 dashboardStats",
+            "stack": "Error: API一致性测试失败: 一致性检查失败: 无法从端点结果中提取数据: stats 或 dashboardStats\n    at DashboardConsistencyTest.testStatsAPIConsistency (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:193:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:01.098Z"
+        },
+        {
+          "name": "验证仪表板数据结构",
+          "description": "",
+          "startTime": "2025-10-01T20:03:01.098Z",
+          "status": "failed",
+          "duration": 3074,
+          "retries": 3,
+          "error": {
+            "message": "仪表板数据结构测试失败: Request failed with status code 500",
+            "stack": "Error: 仪表板数据结构测试失败: Request failed with status code 500\n    at DashboardConsistencyTest.testDashboardDataStructure (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:230:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:04.172Z"
+        },
+        {
+          "name": "验证发票状态分布数据",
+          "description": "",
+          "startTime": "2025-10-01T20:03:04.172Z",
+          "status": "failed",
+          "duration": 3085,
+          "retries": 3,
+          "error": {
+            "message": "发票状态分布测试失败: Request failed with status code 500",
+            "stack": "Error: 发票状态分布测试失败: Request failed with status code 500\n    at DashboardConsistencyTest.testInvoiceStatusDistribution (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:254:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:07.257Z"
+        },
+        {
+          "name": "验证通知数据获取",
+          "description": "",
+          "startTime": "2025-10-01T20:03:07.257Z",
+          "status": "failed",
+          "duration": 3090,
+          "retries": 3,
+          "error": {
+            "message": "通知数据测试失败: Request failed with status code 500",
+            "stack": "Error: 通知数据测试失败: Request failed with status code 500\n    at DashboardConsistencyTest.testNotificationsData (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:305:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:10.348Z"
+        },
+        {
+          "name": "验证最近发票数据",
+          "description": "",
+          "startTime": "2025-10-01T20:03:10.348Z",
+          "status": "failed",
+          "duration": 3088,
+          "retries": 3,
+          "error": {
+            "message": "获取仪表板数据失败: Request failed with status code 500",
+            "stack": "Error: 获取仪表板数据失败: Request failed with status code 500\n    at DashboardConsistencyTest.testRecentInvoicesData (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:355:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:13.436Z"
+        }
+      ],
+      "summary": {
+        "total": 5,
+        "passed": 0,
+        "failed": 5,
+        "skipped": 0,
+        "duration": 15506
+      },
+      "endTime": "2025-10-01T20:03:13.436Z"
+    },
+    {
+      "id": "dbptiggkp",
+      "name": "仪表板数据验证测试",
+      "description": "",
+      "startTime": "2025-10-01T20:03:13.437Z",
+      "tests": [
+        {
+          "name": "验证财务统计计算准确性",
+          "description": "",
+          "startTime": "2025-10-01T20:03:13.437Z",
+          "status": "failed",
+          "duration": 3078,
+          "retries": 3,
+          "error": {
+            "message": "获取统计数据失败: Request failed with status code 500",
+            "stack": "Error: 获取统计数据失败: Request failed with status code 500\n    at DashboardConsistencyTest.testFinancialCalculations (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:401:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:16.515Z"
+        },
+        {
+          "name": "验证发票状态统计一致性",
+          "description": "",
+          "startTime": "2025-10-01T20:03:16.515Z",
+          "status": "failed",
+          "duration": 3092,
+          "retries": 3,
+          "error": {
+            "message": "获取状态分布失败: Request failed with status code 500",
+            "stack": "Error: 获取状态分布失败: Request failed with status code 500\n    at DashboardConsistencyTest.testInvoiceStatusConsistency (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:459:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:19.607Z"
+        },
+        {
+          "name": "验证客户统计数据",
+          "description": "",
+          "startTime": "2025-10-01T20:03:19.607Z",
+          "status": "failed",
+          "duration": 3089,
+          "retries": 3,
+          "error": {
+            "message": "获取统计数据失败: Request failed with status code 500",
+            "stack": "Error: 获取统计数据失败: Request failed with status code 500\n    at DashboardConsistencyTest.testClientStatistics (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:510:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:22.696Z"
+        }
+      ],
+      "summary": {
+        "total": 3,
+        "passed": 0,
+        "failed": 3,
+        "skipped": 0,
+        "duration": 9259
+      },
+      "endTime": "2025-10-01T20:03:22.696Z"
+    },
+    {
+      "id": "ekxeswnql",
+      "name": "仪表板性能测试",
+      "description": "",
+      "startTime": "2025-10-01T20:03:22.697Z",
+      "tests": [
+        {
+          "name": "测试仪表板API响应时间",
+          "description": "",
+          "startTime": "2025-10-01T20:03:22.697Z",
+          "status": "failed",
+          "duration": 3301,
+          "retries": 3,
+          "error": {
+            "message": "/dashboard/stats 成功率过低: 0%",
+            "stack": "Error: /dashboard/stats 成功率过低: 0%\n    at DashboardConsistencyTest.testDashboardPerformance (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:569:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:25.998Z"
+        },
+        {
+          "name": "测试并发数据加载",
+          "description": "",
+          "startTime": "2025-10-01T20:03:25.998Z",
+          "status": "failed",
+          "duration": 3201,
+          "retries": 3,
+          "error": {
+            "message": "并发请求失败: stats: [object Object], dashboardStats: [object Object], distribution: [object Object], notifications: [object Object]",
+            "stack": "Error: 并发请求失败: stats: [object Object], dashboardStats: [object Object], distribution: [object Object], notifications: [object Object]\n    at DashboardConsistencyTest.testConcurrentDataLoading (G:\\发票软件\\tests\\consistency\\dashboard-consistency-test.js:608:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T20:03:29.199Z"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "skipped": 0,
+        "duration": 6503
+      },
+      "endTime": "2025-10-01T20:03:29.199Z"
+    }
+  ],
+  "config": {
+    "timeout": 10000,
+    "retries": 3,
+    "parallel": false,
+    "outputDir": "./reports"
+  },
+  "timestamp": "2025-10-01T20-03-29-201Z"
+}

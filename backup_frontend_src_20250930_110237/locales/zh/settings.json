@@ -1,0 +1,9 @@
+{
+  "appearance": "外观",
+  "lightMode": "浅色",
+  "darkMode": "深色",
+  "autoMode": "自动",
+  "autoModeDescription": "根据系统设置自动切换主题",
+  "themeSettings": "主题设置",
+  "chooseTheme": "选择您偏好的主题模式"
+}

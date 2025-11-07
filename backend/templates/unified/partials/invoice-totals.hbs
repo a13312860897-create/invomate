@@ -1,0 +1,20 @@
+<div class="totals-section">
+    <table class="totals-table">
+        <tbody>
+            <tr>
+                <td style="text-align: right; font-weight: bold;">Sous-total:</td>
+                <td style="text-align: right;">{{formatCurrency invoice.subtotal}}</td>
+            </tr>
+            {{#ifCond invoice.tax ">" 0}}
+                <tr>
+                    <td style="text-align: right; font-weight: bold;">TVA:</td>
+                    <td style="text-align: right;">{{formatCurrency invoice.tax}}</td>
+                </tr>
+            {{/ifCond}}
+            <tr class="total-row">
+                <td style="text-align: right;">TOTAL:</td>
+                <td style="text-align: right;">{{formatCurrency invoice.total}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

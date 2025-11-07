@@ -1,0 +1,77 @@
+{
+  "title": "Privacy Policy",
+  "lastUpdated": "Last updated: January 2024",
+  "effectiveDate": "This Privacy Policy is effective as of January 1, 2024.",
+  
+  "introduction": "Introduction",
+  "introductionText": "invomate ('we', 'our', or 'us') is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our invoice management service.",
+  
+  "infoWeCollect": "1. Information We Collect",
+  "infoWeCollectText": "We collect information you provide directly to us, such as when you create an account, use our services, or contact us for support. This includes your name, email address, company information, billing details, and any content you create or upload through our service.",
+  
+  "personalInfo": "Personal Information",
+  "personalInfoText": "• Account information (name, email, password)\n• Company details (business name, address, tax ID)\n• Billing information (payment method, billing address)\n• Profile information (phone number, preferences)",
+  
+  "businessData": "Business Data",
+  "businessDataText": "• Invoice data (client information, amounts, dates)\n• Client contact information\n• Payment records and transaction history\n• Reports and analytics data",
+  
+  "technicalInfo": "Technical Information",
+  "technicalInfoText": "• IP address and device information\n• Browser type and version\n• Usage patterns and feature interactions\n• Log files and error reports",
+  
+  "howWeUseInfo": "2. How We Use Your Information",
+  "howWeUseInfoText": "We use the information we collect to provide, maintain, and improve our services, process transactions, send you technical notices and support messages, and communicate with you about products, services, and promotional offers.",
+  
+  "serviceProvision": "Service Provision",
+  "serviceProvisionText": "• Creating and managing your account\n• Processing invoices and payments\n• Providing customer support\n• Generating reports and analytics",
+  
+  "communication": "Communication",
+  "communicationText": "• Sending service-related notifications\n• Responding to your inquiries\n• Providing product updates and announcements\n• Marketing communications (with your consent)",
+  
+  "improvement": "Service Improvement",
+  "improvementText": "• Analyzing usage patterns to improve features\n• Developing new functionality\n• Ensuring security and preventing fraud\n• Complying with legal obligations",
+  
+  "infoSharing": "3. Information Sharing and Disclosure",
+  "infoSharingText": "We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy. We may share your information with service providers, business partners, and in certain legal circumstances.",
+  
+  "serviceProviders": "Service Providers",
+  "serviceProvidersText": "We may share your information with third-party service providers who assist us in operating our service, such as payment processors, email service providers, and hosting services. These providers are bound by confidentiality agreements.",
+  
+  "legalRequirements": "Legal Requirements",
+  "legalRequirementsText": "We may disclose your information if required by law, court order, or government request, or to protect our rights, property, or safety, or that of our users or the public.",
+  
+  "dataSecurity": "4. Data Security",
+  "dataSecurityText": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure.",
+  
+  "securityMeasures": "Security Measures",
+  "securityMeasuresText": "• SSL/TLS encryption for data transmission\n• Encrypted data storage\n• Regular security audits and updates\n• Access controls and authentication\n• Employee training on data protection",
+  
+  "dataRetention": "5. Data Retention",
+  "dataRetentionText": "We retain your personal information for as long as necessary to provide our services, comply with legal obligations, resolve disputes, and enforce our agreements. You may request deletion of your account and associated data at any time.",
+  
+  "cookies": "6. Cookies and Tracking Technologies",
+  "cookiesText": "We use cookies and similar tracking technologies to enhance your experience, analyze usage patterns, and provide personalized content. You can control cookie settings through your browser preferences.",
+  
+  "cookieTypes": "Types of Cookies",
+  "cookieTypesText": "• Essential cookies for service functionality\n• Analytics cookies for usage insights\n• Preference cookies for personalization\n• Marketing cookies for relevant advertising",
+  
+  "thirdPartyServices": "7. Third-Party Services",
+  "thirdPartyServicesText": "Our service may integrate with third-party services such as payment processors, email providers, and analytics tools. These services have their own privacy policies, and we encourage you to review them.",
+  
+  "internationalTransfers": "8. International Data Transfers",
+  "internationalTransfersText": "Your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place to protect your data in accordance with applicable privacy laws.",
+  
+  "yourRights": "9. Your Privacy Rights",
+  "yourRightsText": "Depending on your location, you may have certain rights regarding your personal information, including the right to access, update, delete, or restrict processing of your data.",
+  
+  "rightsDetails": "Your Rights Include",
+  "rightsDetailsText": "• Right to access your personal data\n• Right to correct inaccurate information\n• Right to delete your data\n• Right to data portability\n• Right to restrict processing\n• Right to object to processing",
+  
+  "childrenPrivacy": "10. Children's Privacy",
+  "childrenPrivacyText": "Our service is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If we become aware that we have collected such information, we will take steps to delete it.",
+  
+  "changes": "11. Changes to This Privacy Policy",
+  "changesText": "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on our website and sending you an email notification. Your continued use of our service constitutes acceptance of the updated policy.",
+  
+  "contact": "12. Contact Us",
+  "contactText": "If you have any questions about this Privacy Policy or our privacy practices, please contact us at privacy@invomate.app or through our website contact form. We will respond to your inquiry within 30 days."
+}

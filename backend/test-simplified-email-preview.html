@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facture FR-2025-TEST-001</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .email-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 30px;
+      text-align: center;
+    }
+    
+    .email-header h1 {
+      margin: 0 0 10px 0;
+      font-size: 32px;
+      font-weight: 300;
+    }
+    
+    .email-header .subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+      margin: 0;
+    }
+    
+    .email-content {
+      padding: 40px 30px;
+    }
+    
+    .greeting {
+      font-size: 18px;
+      margin-bottom: 25px;
+      color: #2c3e50;
+    }
+    
+    .main-message {
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 30px;
+      color: #34495e;
+    }
+    
+    .invoice-summary {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      padding: 25px;
+      margin: 30px 0;
+      text-align: center;
+    }
+    
+    .invoice-summary h3 {
+      color: #667eea;
+      margin: 0 0 20px 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .summary-item {
+      text-align: center;
+    }
+    
+    .summary-label {
+      font-size: 14px;
+      color: #6c757d;
+      margin-bottom: 5px;
+    }
+    
+    .summary-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .total-amount {
+      background: #667eea;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 20px;
+    }
+    
+    .pdf-attachment-notice {
+      background: #e8f5e8;
+      border: 2px solid #28a745;
+      border-radius: 12px;
+      padding: 25px;
+      margin: 30px 0;
+      text-align: center;
+    }
+    
+    .pdf-icon {
+      font-size: 48px;
+      color: #28a745;
+      margin-bottom: 15px;
+    }
+    
+    .pdf-attachment-notice h3 {
+      color: #28a745;
+      margin: 0 0 15px 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .pdf-attachment-notice p {
+      margin: 0;
+      font-size: 16px;
+      color: #155724;
+      line-height: 1.6;
+    }
+    
+    .contact-info {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 30px 0;
+    }
+    
+    .contact-info h4 {
+      color: #2c3e50;
+      margin: 0 0 15px 0;
+      font-size: 16px;
+    }
+    
+    .contact-info p {
+      margin: 5px 0;
+      color: #6c757d;
+    }
+    
+    .closing-message {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 30px 0;
+      color: #34495e;
+    }
+    
+    .signature {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    .email-footer {
+      background: #2c3e50;
+      color: white;
+      padding: 25px 30px;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .email-footer p {
+      margin: 5px 0;
+      opacity: 0.8;
+    }
+    
+    @media (max-width: 600px) {
+      .email-container {
+        margin: 10px;
+        border-radius: 8px;
+      }
+      
+      .email-header {
+        padding: 30px 20px;
+      }
+      
+      .email-header h1 {
+        font-size: 28px;
+      }
+      
+      .email-content {
+        padding: 30px 20px;
+      }
+      
+      .summary-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .total-amount {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <!-- 邮件头部 -->
+    <div class="email-header">
+      <h1>📄 Facture</h1>
+      <p class="subtitle">Votre facture est prête</p>
+    </div>
+    
+    <!-- 邮件内容 -->
+    <div class="email-content">
+      <!-- 问候语 -->
+      <div class="greeting">
+        Bonjour Marie Martin,
+      </div>
+      
+      <!-- 主要信息 -->
+      <div class="main-message">
+        <p>Nous vous remercions pour votre confiance. Veuillez trouver ci-joint votre facture en format PDF.</p>
+      </div>
+      
+      <!-- 发票摘要 -->
+      <div class="invoice-summary">
+        <h3>📋 Résumé de votre facture</h3>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="summary-label">Numéro de facture</div>
+            <div class="summary-value">FR-2025-TEST-001</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Date d'émission</div>
+            <div class="summary-value">25 octobre 2025</div>
+          </div>
+          
+          <div class="summary-item">
+            <div class="summary-label">Date d'échéance</div>
+            <div class="summary-value">24 novembre 2025</div>
+          </div>
+          
+        </div>
+        <div class="total-amount">
+          💰 Montant total : 2 520,00 €
+        </div>
+      </div>
+      
+      <!-- PDF附件提醒 -->
+      <div class="pdf-attachment-notice">
+        <div class="pdf-icon">📎</div>
+        <h3>Facture PDF en pièce jointe</h3>
+        <p>
+          <strong>La facture complète et officielle est disponible en pièce jointe au format PDF.</strong><br>
+          Ce document PDF contient tous les détails légaux, les conditions de paiement et peut être utilisé pour vos archives comptables.
+        </p>
+      </div>
+      
+      <!-- 信息联系 -->
+      <div class="contact-info">
+        <h4>💬 Une question sur cette facture ?</h4>
+        <p>N'hésitez pas à nous contacter :</p>
+        <p>📧 Email : jean.dupont@example.com</p>
+        <p>📞 Téléphone : +33 1 23 45 67 89</p>
+      </div>
+      
+      <!-- 结束语 -->
+      <div class="closing-message">
+        <p>Nous vous remercions de votre confiance et restons à votre disposition pour toute question.</p>
+      </div>
+      
+      <!-- 签名 -->
+      <div class="signature">
+        <p>Cordialement,</p>
+        <p><strong>TechSolutions SARL</strong></p>
+      </div>
+    </div>
+    
+    <!-- 邮件底部 -->
+    <div class="email-footer">
+      <p>&copy; 2025 TechSolutions SARL</p>
+      <p>Cette facture a été générée automatiquement par notre système de facturation.</p>
+    </div>
+  </div>
+</body>
+</html>
+  

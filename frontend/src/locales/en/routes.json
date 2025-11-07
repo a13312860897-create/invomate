@@ -1,0 +1,23 @@
+{
+  "dashboard": "dashboard",
+  "invoices": "invoices",
+  "new": "new",
+  "edit": "edit",
+  "clients": "clients",
+  "settings": "settings",
+  "sandboxSettings": "sandbox-settings",
+  "profile": "profile",
+  "reports": "reports",
+  "integrations": "integrations",
+
+  "pricing": "pricing",
+  "legal": "legal",
+  "terms": "terms",
+  "privacy": "privacy",
+  "refund": "refund",
+  "all": "all",
+  "create": "create",
+  "templates": "templates",
+  "login": "login",
+  "register": "register"
+}

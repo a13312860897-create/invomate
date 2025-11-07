@@ -1,0 +1,13 @@
+{{> invoice-header}}
+
+{{> invoice-body}}
+
+{{> invoice-items}}
+
+{{> invoice-totals}}
+
+{{#if invoice.notes}}
+    {{> invoice-notes}}
+{{/if}}
+
+{{> invoice-legal}}

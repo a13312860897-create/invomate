@@ -1,0 +1,278 @@
+{
+  "summary": {
+    "startTime": "1970-01-01T00:00:00.503Z",
+    "endTime": "1970-01-01T00:00:31.345Z",
+    "duration": 30842,
+    "testSuites": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3
+    },
+    "tests": {
+      "total": 10,
+      "passed": 0,
+      "failed": 10,
+      "skipped": 0
+    },
+    "successRate": 0,
+    "failedTests": [
+      {
+        "suite": "客户管理数据一致性测试",
+        "test": "验证客户列表数据完整性",
+        "error": "客户列表数据测试失败: Request failed with status code 500"
+      },
+      {
+        "suite": "客户管理数据一致性测试",
+        "test": "验证客户创建后数据同步",
+        "error": "获取创建前客户数据失败: Request failed with status code 500"
+      },
+      {
+        "suite": "客户管理数据一致性测试",
+        "test": "验证客户信息更新一致性",
+        "error": "没有可用的客户进行更新测试"
+      },
+      {
+        "suite": "客户管理数据一致性测试",
+        "test": "验证客户搜索功能",
+        "error": "没有客户数据进行搜索测试"
+      },
+      {
+        "suite": "客户管理数据一致性测试",
+        "test": "验证客户关联发票数据",
+        "error": "获取客户列表失败: Request failed with status code 500"
+      },
+      {
+        "suite": "客户统计数据验证测试",
+        "test": "验证客户总数统计一致性",
+        "error": "获取客户列表失败: Request failed with status code 500"
+      },
+      {
+        "suite": "客户统计数据验证测试",
+        "test": "验证客户收入统计准确性",
+        "error": "获取客户列表失败: Request failed with status code 500"
+      },
+      {
+        "suite": "客户统计数据验证测试",
+        "test": "验证客户发票统计数据",
+        "error": "获取客户列表失败: Request failed with status code 500"
+      },
+      {
+        "suite": "客户API性能测试",
+        "test": "测试客户API响应时间",
+        "error": "/clients 请求失败: Request failed with status code 500"
+      },
+      {
+        "suite": "客户API性能测试",
+        "test": "测试客户搜索性能",
+        "error": "搜索 \"测试\" 失败: Request failed with status code 500"
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "auh3j1mry",
+      "name": "客户管理数据一致性测试",
+      "description": "",
+      "startTime": "2025-10-01T19:47:11.218Z",
+      "tests": [
+        {
+          "name": "验证客户列表数据完整性",
+          "description": "",
+          "startTime": "2025-10-01T19:47:11.218Z",
+          "status": "failed",
+          "duration": 3067,
+          "retries": 3,
+          "error": {
+            "message": "客户列表数据测试失败: Request failed with status code 500",
+            "stack": "Error: 客户列表数据测试失败: Request failed with status code 500\n    at ClientConsistencyTest.testClientListData (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:153:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:14.285Z"
+        },
+        {
+          "name": "验证客户创建后数据同步",
+          "description": "",
+          "startTime": "2025-10-01T19:47:14.285Z",
+          "status": "failed",
+          "duration": 3067,
+          "retries": 3,
+          "error": {
+            "message": "获取创建前客户数据失败: Request failed with status code 500",
+            "stack": "Error: 获取创建前客户数据失败: Request failed with status code 500\n    at ClientConsistencyTest.testClientCreationSync (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:186:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:17.352Z"
+        },
+        {
+          "name": "验证客户信息更新一致性",
+          "description": "",
+          "startTime": "2025-10-01T19:47:17.352Z",
+          "status": "failed",
+          "duration": 3069,
+          "retries": 3,
+          "error": {
+            "message": "没有可用的客户进行更新测试",
+            "stack": "Error: 没有可用的客户进行更新测试\n    at ClientConsistencyTest.testClientUpdateConsistency (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:253:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:20.420Z"
+        },
+        {
+          "name": "验证客户搜索功能",
+          "description": "",
+          "startTime": "2025-10-01T19:47:20.421Z",
+          "status": "failed",
+          "duration": 3058,
+          "retries": 3,
+          "error": {
+            "message": "没有客户数据进行搜索测试",
+            "stack": "Error: 没有客户数据进行搜索测试\n    at ClientConsistencyTest.testClientSearchFunction (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:310:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:23.478Z"
+        },
+        {
+          "name": "验证客户关联发票数据",
+          "description": "",
+          "startTime": "2025-10-01T19:47:23.478Z",
+          "status": "failed",
+          "duration": 3102,
+          "retries": 3,
+          "error": {
+            "message": "获取客户列表失败: Request failed with status code 500",
+            "stack": "Error: 获取客户列表失败: Request failed with status code 500\n    at ClientConsistencyTest.testClientInvoiceRelation (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:353:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:26.580Z"
+        }
+      ],
+      "summary": {
+        "total": 5,
+        "passed": 0,
+        "failed": 5,
+        "skipped": 0,
+        "duration": 15362
+      },
+      "endTime": "2025-10-01T19:47:26.580Z"
+    },
+    {
+      "id": "tr6k7xaca",
+      "name": "客户统计数据验证测试",
+      "description": "",
+      "startTime": "2025-10-01T19:47:26.581Z",
+      "tests": [
+        {
+          "name": "验证客户总数统计一致性",
+          "description": "",
+          "startTime": "2025-10-01T19:47:26.581Z",
+          "status": "failed",
+          "duration": 3154,
+          "retries": 3,
+          "error": {
+            "message": "获取客户列表失败: Request failed with status code 500",
+            "stack": "Error: 获取客户列表失败: Request failed with status code 500\n    at ClientConsistencyTest.testClientCountConsistency (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:401:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:29.735Z"
+        },
+        {
+          "name": "验证客户收入统计准确性",
+          "description": "",
+          "startTime": "2025-10-01T19:47:29.735Z",
+          "status": "failed",
+          "duration": 3057,
+          "retries": 3,
+          "error": {
+            "message": "获取客户列表失败: Request failed with status code 500",
+            "stack": "Error: 获取客户列表失败: Request failed with status code 500\n    at ClientConsistencyTest.testClientRevenueStats (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:438:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:32.792Z"
+        },
+        {
+          "name": "验证客户发票统计数据",
+          "description": "",
+          "startTime": "2025-10-01T19:47:32.792Z",
+          "status": "failed",
+          "duration": 3075,
+          "retries": 3,
+          "error": {
+            "message": "获取客户列表失败: Request failed with status code 500",
+            "stack": "Error: 获取客户列表失败: Request failed with status code 500\n    at ClientConsistencyTest.testClientInvoiceStats (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:482:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:35.867Z"
+        }
+      ],
+      "summary": {
+        "total": 3,
+        "passed": 0,
+        "failed": 3,
+        "skipped": 0,
+        "duration": 9286
+      },
+      "endTime": "2025-10-01T19:47:35.867Z"
+    },
+    {
+      "id": "z8roh1zgn",
+      "name": "客户API性能测试",
+      "description": "",
+      "startTime": "2025-10-01T19:47:35.867Z",
+      "tests": [
+        {
+          "name": "测试客户API响应时间",
+          "description": "",
+          "startTime": "2025-10-01T19:47:35.867Z",
+          "status": "failed",
+          "duration": 3142,
+          "retries": 3,
+          "error": {
+            "message": "/clients 请求失败: Request failed with status code 500",
+            "stack": "Error: /clients 请求失败: Request failed with status code 500\n    at ClientConsistencyTest.testClientAPIPerformance (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:540:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:39.009Z"
+        },
+        {
+          "name": "测试客户搜索性能",
+          "description": "",
+          "startTime": "2025-10-01T19:47:39.009Z",
+          "status": "failed",
+          "duration": 3050,
+          "retries": 3,
+          "error": {
+            "message": "搜索 \"测试\" 失败: Request failed with status code 500",
+            "stack": "Error: 搜索 \"测试\" 失败: Request failed with status code 500\n    at ClientConsistencyTest.testClientSearchPerformance (G:\\发票软件\\tests\\consistency\\client-consistency-test.js:578:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+            "attempt": 4
+          },
+          "logs": [],
+          "endTime": "2025-10-01T19:47:42.059Z"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "skipped": 0,
+        "duration": 6192
+      },
+      "endTime": "2025-10-01T19:47:42.059Z"
+    }
+  ],
+  "config": {
+    "timeout": 10000,
+    "retries": 3,
+    "parallel": false,
+    "outputDir": "./reports"
+  },
+  "timestamp": "2025-10-01T19-47-42-060Z"
+}

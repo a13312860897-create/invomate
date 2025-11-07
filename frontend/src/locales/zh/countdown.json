@@ -1,0 +1,22 @@
+{
+  "trial": {
+    "title": "免费试用剩余时间",
+    "info": "试用期结束后请升级以继续使用所有功能"
+  },
+  "subscription": {
+    "title": "订阅剩余时间",
+    "info": "请续费订阅以继续使用高级功能"
+  },
+  "expired": {
+    "title": "时间已到期",
+    "message": "您的订阅已过期，请升级以继续使用高级功能。"
+  },
+  "warning": {
+    "badge": "即将到期",
+    "message": "仅剩 {{days}} 天！立即升级以避免服务中断。"
+  },
+  "days": "天",
+  "hours": "小时",
+  "minutes": "分钟",
+  "seconds": "秒"
+}

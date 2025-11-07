@@ -1,0 +1,230 @@
+{
+  "timestamp": "2025-09-30T00:42:05.565Z",
+  "summary": {
+    "totalTests": 25,
+    "totalPassed": 22,
+    "totalFailed": 3,
+    "overallPassRate": "88%"
+  },
+  "testSuites": [
+    {
+      "name": "全面数据一致性测试",
+      "passed": 0,
+      "total": 1,
+      "passRate": "0%",
+      "results": [
+        {
+          "name": "测试执行",
+          "pass": false,
+          "details": "错误: Cannot read properties of undefined (reading 'find')"
+        }
+      ]
+    },
+    {
+      "name": "边界情况测试",
+      "passed": 0,
+      "total": 1,
+      "passRate": "0%",
+      "results": [
+        {
+          "name": "边界测试执行",
+          "pass": false,
+          "details": "错误: Cannot read properties of undefined (reading 'length')"
+        }
+      ]
+    },
+    {
+      "name": "性能测试",
+      "passed": 22,
+      "total": 23,
+      "passRate": "96%",
+      "results": [
+        {
+          "name": "getInvoiceStatusDistribution 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 4.54ms, 内存变化: 40KB"
+        },
+        {
+          "name": "getRevenueTrend 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 3.59ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getMonthlyInvoiceSummary 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 3.52ms, 内存变化: 29KB"
+        },
+        {
+          "name": "getUnifiedChartData 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 7.99ms, 内存变化: 62KB"
+        },
+        {
+          "name": "validateDataConsistency 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 14.99ms, 内存变化: 98KB"
+        },
+        {
+          "name": "getInvoiceStatusDistribution 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 3.76ms, 内存变化: 29KB"
+        },
+        {
+          "name": "getRevenueTrend 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 3.37ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getMonthlyInvoiceSummary 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 3.46ms, 内存变化: 29KB"
+        },
+        {
+          "name": "getUnifiedChartData 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 9.02ms, 内存变化: 62KB"
+        },
+        {
+          "name": "validateDataConsistency 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 13.78ms, 内存变化: 104KB"
+        },
+        {
+          "name": "getInvoiceStatusDistribution 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 3.79ms, 内存变化: 29KB"
+        },
+        {
+          "name": "getRevenueTrend 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 5.53ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getMonthlyInvoiceSummary 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 3.61ms, 内存变化: 29KB"
+        },
+        {
+          "name": "getUnifiedChartData 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 11.18ms, 内存变化: 62KB"
+        },
+        {
+          "name": "validateDataConsistency 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 14.73ms, 内存变化: 93KB"
+        },
+        {
+          "name": "getInvoiceStatusDistribution 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 7.88ms, 内存变化: 29KB"
+        },
+        {
+          "name": "getRevenueTrend 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 8.02ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getMonthlyInvoiceSummary 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 4.82ms, 内存变化: 35KB"
+        },
+        {
+          "name": "getUnifiedChartData 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 7.7ms, 内存变化: 62KB"
+        },
+        {
+          "name": "validateDataConsistency 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 18.22ms, 内存变化: 93KB"
+        },
+        {
+          "name": "并发API调用性能",
+          "pass": true,
+          "details": "10个并发请求组耗时: 126ms"
+        },
+        {
+          "name": "内存泄漏测试",
+          "pass": true,
+          "details": "100次迭代后内存增长: -1MB"
+        },
+        {
+          "name": "缓存性能提升",
+          "pass": false,
+          "details": "首次: 2ms, 缓存: 2ms, 提升: 1.00x"
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "failure",
+      "message": "发现 3 个失败的测试，需要关注以下问题：",
+      "priority": "high",
+      "details": [
+        {
+          "suite": "全面数据一致性测试",
+          "test": "测试执行",
+          "details": "错误: Cannot read properties of undefined (reading 'find')"
+        },
+        {
+          "suite": "边界情况测试",
+          "test": "边界测试执行",
+          "details": "错误: Cannot read properties of undefined (reading 'length')"
+        },
+        {
+          "suite": "性能测试",
+          "test": "缓存性能提升",
+          "details": "首次: 2ms, 缓存: 2ms, 提升: 1.00x"
+        }
+      ]
+    },
+    {
+      "type": "performance",
+      "message": "检测到性能问题，建议进行以下优化：",
+      "priority": "medium",
+      "suggestions": [
+        "考虑实施数据分页以处理大数据集",
+        "优化数据库查询和索引",
+        "实施更高效的缓存策略",
+        "考虑异步处理长时间运行的操作"
+      ]
+    },
+    {
+      "type": "robustness",
+      "message": "发现边界情况处理问题，建议加强：",
+      "priority": "medium",
+      "suggestions": [
+        "添加更严格的输入验证",
+        "改进错误处理和异常捕获",
+        "增加数据清洗和标准化流程",
+        "实施更全面的日志记录"
+      ]
+    },
+    {
+      "type": "consistency",
+      "message": "数据一致性需要改进：",
+      "priority": "high",
+      "suggestions": [
+        "审查和统一数据筛选逻辑",
+        "实施更频繁的数据一致性检查",
+        "考虑使用事务确保数据完整性",
+        "建立数据质量监控机制"
+      ]
+    }
+  ],
+  "systemInfo": {
+    "nodeVersion": "v22.17.1",
+    "platform": "win32",
+    "arch": "x64",
+    "memoryUsage": {
+      "rss": 59191296,
+      "heapTotal": 27066368,
+      "heapUsed": 14069768,
+      "external": 1548752,
+      "arrayBuffers": 10515
+    }
+  },
+  "executionTime": "2秒"
+}

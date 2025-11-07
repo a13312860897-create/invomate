@@ -1,0 +1,11 @@
+{
+  "title": "Invomate",
+  "subtitle": "Don't have an account?",
+  "register": "Sign up",
+  "email": "Email",
+  "password": "Password",
+  "submit": "Sign in",
+  "success": "Login successful",
+  "error": "Login failed",
+  "taxIntegration": "Integrated tax solutions for France"
+}

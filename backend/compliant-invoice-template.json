@@ -1,0 +1,58 @@
+{
+  "invoiceNumber": "FAC-2025-001",
+  "invoiceDate": "2025-10-16",
+  "dueDate": "2025-11-16",
+  "sellerCompanyName": "SARL TECHNO SOLUTIONS",
+  "sellerCompanyAddress": "123 Rue de la République, 75001 Paris, France",
+  "sellerTaxId": "FR12345678901",
+  "sellerSiren": "123456789",
+  "sellerSiret": "12345678900010",
+  "sellerLegalForm": "SARL",
+  "sellerRegisteredCapital": "10000 €",
+  "sellerRcsNumber": "RCS Paris 123 456 789",
+  "sellerNafCode": "6201Z",
+  "clientName": "CLIENT ENTREPRISE SAS",
+  "clientAddress": "456 Avenue des Champs-Élysées, 75008 Paris, France",
+  "clientTaxId": "FR98765432109",
+  "clientSiret": "98765432100020",
+  "items": [
+    {
+      "description": "Développement de logiciel sur mesure",
+      "quantity": 1,
+      "unitPrice": 5000,
+      "totalPrice": 5000,
+      "taxRate": 20
+    },
+    {
+      "description": "Consulting technique et support",
+      "quantity": 10,
+      "unitPrice": 150,
+      "totalPrice": 1500,
+      "taxRate": 20
+    }
+  ],
+  "subtotal": 6500,
+  "taxAmount": 1300,
+  "total": 7800,
+  "currency": "EUR",
+  "paymentMethod": "Virement bancaire",
+  "paymentDetails": "IBAN: FR76 1234 5678 9012 3456 7890 123",
+  "tvaExempt": false,
+  "tvaExemptClause": "",
+  "autoLiquidation": false,
+  "vicesCachés": "Conformément à l'article 1648 du Code civil, l'action résultant des vices rédhibitoires doit être intentée dans un délai de deux ans à compter de la découverte du vice.",
+  "legalMentions": [
+    "SARL au capital de 10 000 €",
+    "RCS Paris 123 456 789",
+    "N° TVA intracommunautaire: FR12345678901",
+    "Code NAF: 6201Z"
+  ],
+  "termsAndConditions": "Paiement à 30 jours. Pénalités de retard: trois fois le taux d'intérêt légal. Indemnité forfaitaire pour frais de recouvrement: 40 euros.",
+  "serviceProvider": {
+    "name": "SARL TECHNO SOLUTIONS",
+    "address": "123 Rue de la République, 75001 Paris, France",
+    "phone": "+33 1 23 45 67 89",
+    "email": "contact@technosolutions.fr",
+    "website": "www.technosolutions.fr"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "dashboard": "Dashboard",
+  "invoicesSection": "Invoices",
+  "clients": "Clients",
+  "reports": "Reports",
+
+  "settings": "Settings",
+  "sandboxSettings": "Sandbox Settings",
+  "pricing": "Pricing",
+  "legal": "Legal",
+  "terms": "Terms of Service",
+  "privacy": "Privacy Policy",
+  "refund": "Refund Policy",
+  "all": "All",
+  "create": "Create",
+  "templates": "Templates",
+  "sidebar": {
+    "quickActions": "Quick Actions",
+    "createInvoice": "Create Invoice",
+    "createClient": "Create Client"
+  }
+}

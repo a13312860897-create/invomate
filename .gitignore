@@ -1,0 +1,14 @@
+﻿# Env files
+.env
+backend/.env
+frontend/.env
+
+# Node
+node_modules/
+build/
+dist/
+*.log
+
+# Uploads / Generated PDFs
+uploads/
+generated_pdfs/

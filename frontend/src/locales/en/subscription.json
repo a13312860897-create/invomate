@@ -1,0 +1,33 @@
+{
+  "expired": {
+    "title": "Subscription Expired",
+    "message": "Your subscription has expired. Please upgrade to continue using premium features and creating invoices."
+  },
+  "upgrade_required": {
+    "title": "Upgrade Required",
+    "message": "This feature requires a premium subscription. Upgrade now to unlock all features."
+  },
+  "current_plan": "Current Plan",
+  "invoice_limit": "Invoice limit: {{limit}} per month",
+  "upgrade_now": "Upgrade Now",
+  "view_plans": "View Plans",
+  "features": {
+    "create_invoice": "Create Invoices",
+    "unlimited_invoices": "Unlimited Invoices",
+    "advanced_templates": "Advanced Templates",
+    "integrations": "Integrations",
+    "analytics": "Analytics",
+    "priority_support": "Priority Support",
+    "custom_branding": "Custom Branding"
+  },
+  "status": {
+    "active": "Active",
+    "trial": "Trial",
+    "expired": "Expired",
+    "cancelled": "Cancelled",
+    "inactive": "Inactive"
+  },
+  "professional_plan": "Professional",
+  "basic_plan": "Basic",
+  "trial_remaining": "Trial {{days}}d left"
+}

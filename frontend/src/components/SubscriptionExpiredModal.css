@@ -1,0 +1,372 @@
+/* 订阅到期模态框样式 */
+/* 背景遮罩层 */
+.subscription-expired-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999; /* 背景层级 */
+}
+
+.subscription-expired-modal-backdrop.with-background {
+  background: rgba(0, 0, 0, 0.75); /* 深色遮罩背景 */
+  backdrop-filter: blur(8px); /* 背景模糊效果 */
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6); /* 额外的遮罩层 */
+  pointer-events: none;
+}
+
+/* 模态框内容层 */
+.subscription-expired-modal-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000; /* 内容层级，高于背景 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  pointer-events: none; /* 让背景点击穿透 */
+}
+
+.modal-content {
+  position: relative;
+  background: linear-gradient(135deg, #0a1929 0%, #1e3a5f 50%, #2d5a87 100%); /* 使用暗色模式的深海蓝色 */
+  color: white; /* 白色文字 */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 40px;
+  text-align: center;
+  animation: modalSlideIn 0.3s ease-out;
+  pointer-events: auto; /* 恢复模态框内容的点击事件 */
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 锁定图标 */
+.modal-icon {
+  margin-bottom: 24px;
+}
+
+.lock-icon {
+  font-size: 48px;
+  line-height: 1;
+  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.9); /* 白色图标 */
+  animation: lockPulse 2s ease-in-out infinite;
+}
+
+@keyframes lockPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* 标题 */
+.modal-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: white; /* 白色标题 */
+  margin: 0 0 20px 0;
+  line-height: 1.3;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 消息内容 */
+.modal-message {
+  text-align: left;
+  margin-bottom: 32px;
+}
+
+.primary-message {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.95); /* 白色文字 */
+  line-height: 1.6;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* 订阅详情 */
+.subscription-details {
+  background: rgba(31, 41, 55, 0.8); /* 使用暗色模式的卡片背景色 */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  backdrop-filter: blur(10px);
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-item .label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8); /* 半透明白色 */
+  font-weight: 500;
+}
+
+.detail-item .value {
+  font-size: 14px;
+  color: white; /* 白色 */
+  font-weight: 600;
+}
+
+.plan-name {
+  background: rgba(30, 58, 95, 0.8); /* 使用暗色模式的按钮背景色 */
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.expiry-date {
+  color: #fca5a5; /* 浅红色 */
+}
+
+.days-remaining {
+  color: #fbbf24; /* 浅黄色 */
+}
+
+.days-remaining.urgent {
+  color: var(--error-primary, #dc2626);
+  font-weight: 700;
+}
+
+/* 功能限制说明 */
+.restrictions-info {
+  background: rgba(220, 38, 38, 0.15); /* 深色背景，红色调 */
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px 0;
+  backdrop-filter: blur(10px);
+}
+
+.restrictions-info h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fca5a5; /* 浅红色，适合深色背景 */
+  margin: 0 0 12px 0;
+}
+
+.restrictions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.restrictions-list li {
+  font-size: 13px;
+  color: rgba(252, 165, 165, 0.9); /* 浅红色，适合深色背景 */
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.restrictions-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* 操作按钮 */
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.btn-large {
+  padding: 16px 32px;
+  font-size: 16px;
+  min-height: 52px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); /* 使用暗色模式的品牌色 */
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+  box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: rgba(31, 41, 55, 0.8); /* 使用暗色模式的卡片背景色 */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+  background: rgba(55, 65, 81, 0.9);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-link {
+  background: transparent;
+  color: rgba(203, 213, 225, 0.8); /* 使用暗色模式的次要文字色 */
+  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.btn-link:hover {
+  color: rgba(248, 250, 252, 1); /* 使用暗色模式的主要文字色 */
+  text-decoration: underline;
+}
+
+.btn-icon {
+  font-size: 16px;
+}
+
+/* 底部说明 */
+.modal-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.2); /* 半透明白色边框 */
+  padding-top: 20px;
+}
+
+.footer-text {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7); /* 半透明白色文字 */
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 暗色模式适配 */
+[data-theme="dark"] .subscription-expired-modal .modal-content {
+  background: var(--bg-primary);
+  border-color: var(--border-primary);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .subscription-details {
+  background: var(--bg-secondary);
+  border-color: var(--border-secondary);
+}
+
+[data-theme="dark"] .restrictions-info {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
+[data-theme="dark"] .restrictions-info h4 {
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .restrictions-list li {
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .subscription-expired-modal {
+    padding: 16px;
+  }
+  
+  .modal-content {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+  
+  .modal-title {
+    font-size: 20px;
+  }
+  
+  .primary-message {
+    font-size: 15px;
+  }
+  
+  .subscription-details {
+    padding: 16px;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .btn {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+  
+  .btn-large {
+    padding: 16px 24px;
+    font-size: 16px;
+  }
+}
+
+/* 防止页面滚动 */
+body.modal-open {
+  overflow: hidden;
+}

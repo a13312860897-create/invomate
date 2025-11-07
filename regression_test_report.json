@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-10-17T10:55:46.111Z",
+  "totalSuites": 3,
+  "totalTests": 8,
+  "passed": 8,
+  "failed": 0,
+  "skipped": 0,
+  "duration": 306,
+  "suites": [
+    {
+      "name": "新格式发票创建",
+      "file": "test_new_format.js",
+      "description": "测试使用clientId的新格式发票创建功能",
+      "status": "passed",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "duration": 20,
+      "error": null
+    },
+    {
+      "name": "发票预览显示",
+      "file": "test_invoice_preview.js",
+      "description": "测试发票预览组件的买卖方信息显示",
+      "status": "passed",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "duration": 48,
+      "error": null
+    },
+    {
+      "name": "发票编辑更新",
+      "file": "test_invoice_update.js",
+      "description": "测试发票编辑和更新功能",
+      "status": "passed",
+      "tests": 8,
+      "passed": 8,
+      "failed": 0,
+      "duration": 230,
+      "error": null
+    }
+  ]
+}

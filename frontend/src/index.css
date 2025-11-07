@@ -1,0 +1,331 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import './styles/mobile.css';
+@import './styles/dark-theme.css';
+@import './styles/print.css';
+
+:root {
+  /* FreshBooks inspired color variables */
+  --color-primary: #0076D6;
+  --color-primary-dark: #0056A3;
+  --color-background: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-surface-variant: #F1F3F4;
+  --color-text-primary: #2D3748;
+  --color-text-secondary: #4A5568;
+  --color-text-tertiary: #718096;
+  --color-border: #E2E8F0;
+  --color-border-light: #F1F5F9;
+  --color-success: #38A169;
+  --color-warning: #D69E2E;
+  --color-error: #E53E3E;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+code {
+  font-family: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', 'Droid Sans Mono', 'Source Code Pro', monospace;
+}
+
+/* FreshBooks inspired scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-variant);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-tertiary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* FreshBooks inspired utility classes */
+.invoice-card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.invoice-card:hover {
+  @apply shadow-md;
+}
+
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md text-sm;
+  @apply focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+  @apply transition-colors duration-200;
+}
+
+.form-input-with-icon {
+  @apply w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm;
+  @apply focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+  @apply transition-colors duration-200;
+}
+
+/* FreshBooks inspired button styles */
+.btn {
+  @apply px-4 py-2 rounded-md font-medium text-sm transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-primary-600 text-white shadow-sm;
+  @apply hover:bg-primary-700 hover:shadow-md;
+  @apply focus:ring-primary-500;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-700 border border-gray-300 shadow-sm;
+  @apply hover:bg-gray-50 hover:shadow-md;
+  @apply focus:ring-primary-500;
+}
+
+.btn-ghost {
+  @apply bg-transparent text-gray-600 border border-transparent;
+  @apply hover:bg-gray-100 hover:text-gray-900;
+  @apply focus:ring-primary-500;
+}
+
+.btn-danger {
+  @apply bg-error text-white shadow-sm;
+  @apply hover:bg-red-700 hover:shadow-md;
+  @apply focus:ring-red-500;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-xs;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-base;
+}
+
+/* FreshBooks inspired status badges */
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border;
+}
+
+/* Status badge color variants */
+.status-badge-green {
+  @apply bg-green-100 text-green-700 border-green-300;
+}
+
+.status-badge-blue {
+  @apply bg-blue-100 text-blue-700 border-blue-300;
+}
+
+.status-badge-yellow {
+  @apply bg-yellow-100 text-yellow-700 border-yellow-300;
+}
+
+.status-badge-red {
+  @apply bg-red-100 text-red-700 border-red-300;
+}
+
+.status-badge-gray {
+  @apply bg-gray-100 text-gray-700 border-gray-300;
+}
+
+/* Legacy status classes for backward compatibility */
+.status-draft {
+  @apply bg-gray-100 text-gray-700 border border-gray-300;
+}
+
+.status-sent {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.status-paid {
+  @apply bg-green-100 text-green-700;
+}
+
+.status-overdue {
+  @apply bg-red-100 text-red-700;
+}
+
+.status-cancelled {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.status-pending {
+  @apply bg-orange-100 text-orange-700;
+}
+
+/* Dark mode support for status badges */
+.dark .status-badge-green {
+  @apply bg-green-900 text-green-200 border-green-700;
+}
+
+.dark .status-badge-blue {
+  @apply bg-blue-900 text-blue-200 border-blue-700;
+}
+
+.dark .status-badge-yellow {
+  @apply bg-yellow-900 text-yellow-200 border-yellow-700;
+}
+
+.dark .status-badge-red {
+  @apply bg-red-900 text-red-200 border-red-700;
+}
+
+.dark .status-badge-gray {
+  @apply bg-gray-800 text-gray-300 border-gray-600;
+}
+
+.dark .status-draft {
+  @apply bg-blue-900 text-blue-200 border-blue-600;
+}
+
+/* FreshBooks inspired card styles */
+.card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+  @apply shadow-md;
+}
+
+.card-header {
+  @apply px-6 py-4 border-b border-gray-200;
+}
+
+.card-body {
+  @apply px-6 py-4;
+}
+
+.card-footer {
+  @apply px-6 py-4 border-t border-gray-200;
+}
+
+/* FreshBooks inspired navigation */
+.nav-link {
+  @apply px-3 py-2 text-sm font-medium text-gray-600 rounded-md;
+  @apply hover:text-gray-900 hover:bg-gray-100;
+  @apply transition-colors duration-200;
+}
+
+.nav-link-active {
+  @apply text-primary-600 bg-primary-50;
+}
+
+/* FreshBooks inspired typography */
+.text-heading {
+  @apply font-semibold text-gray-900;
+}
+
+.text-body {
+  @apply text-gray-700;
+}
+
+.text-caption {
+  @apply text-sm text-gray-500;
+}
+
+/* FreshBooks inspired layout utilities */
+.page-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.section-container {
+  @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Loading states */
+.loading-skeleton {
+  @apply bg-gray-200 rounded animate-pulse;
+}
+
+.loading-spinner {
+  @apply animate-spin rounded-full border-2 border-gray-300 border-t-primary-600;
+}
+
+/* Focus styles for accessibility */
+.focus-visible {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.transition-colors {
+  transition-property: color, background-color, border-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+.transition-shadow {
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .invoice-card {
+    @apply p-4;
+  }
+  
+  .card {
+    @apply rounded-none border-x-0;
+  }
+  
+  .card-header,
+  .card-body,
+  .card-footer {
+    @apply px-4;
+  }
+}
+
+/* Dark mode support (future enhancement) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #1a202c;
+    --color-surface: #2d3748;
+    --color-surface-variant: #4a5568;
+    --color-text-primary: #f7fafc;
+    --color-text-secondary: #e2e8f0;
+    --color-border: #4a5568;
+  }
+}

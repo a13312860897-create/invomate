@@ -1,0 +1,21 @@
+{
+  "dashboard": "仪表板",
+  "invoicesSection": "发票管理",
+  "clients": "客户管理",
+  "reports": "报表分析",
+  "integrations": "集成管理",
+  "settings": "设置",
+  "pricing": "定价",
+  "legal": "法律条款",
+  "terms": "服务条款",
+  "privacy": "隐私政策",
+  "refund": "退款政策",
+  "logout": "退出登录",
+  "profile": "个人资料",
+  "sidebar": {
+    "quickActions": "快捷操作",
+    "createInvoice": "创建发票",
+    "createClient": "创建客户"
+  },
+
+}

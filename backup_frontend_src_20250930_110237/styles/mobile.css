@@ -1,0 +1,328 @@
+/* 移动端优化样式 */
+
+/* 触屏操作优化 */
+@media (max-width: 768px) {
+  /* 增大触摸目标 */
+  .btn, button, a[role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 16px;
+  }
+  
+  /* 表格移动端优化 */
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .mobile-table {
+    display: none;
+  }
+  
+  .desktop-table {
+    display: table;
+  }
+  
+  /* 卡片式表格布局 */
+  .mobile-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .mobile-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  
+  .mobile-card-title {
+    font-weight: 600;
+    color: #111827;
+    font-size: 16px;
+  }
+  
+  .mobile-card-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  
+  .mobile-card-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mobile-card-label {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  
+  .mobile-card-value {
+    font-size: 14px;
+    color: #111827;
+    font-weight: 500;
+  }
+  
+  .mobile-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+  }
+  
+  .mobile-card-actions .btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 14px;
+  }
+  
+  /* 表单优化 */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-input, .form-select, .form-textarea {
+    font-size: 16px; /* 防止iOS缩放 */
+    padding: 12px;
+    border-radius: 8px;
+  }
+  
+  /* 导航优化 */
+  .mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    padding: 8px 0;
+    z-index: 50;
+  }
+  
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 12px;
+  }
+  
+  .mobile-nav-item.active {
+    color: #0076d6;
+  }
+  
+  .mobile-nav-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+  }
+  
+  /* 搜索栏优化 */
+  .mobile-search {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    z-index: 10;
+  }
+  
+  .mobile-search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  
+  /* 模态框优化 */
+  .mobile-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: flex-end;
+  }
+  
+  .mobile-modal-content {
+    background: white;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 24px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .mobile-modal-handle {
+    width: 40px;
+    height: 4px;
+    background: #d1d5db;
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  
+  /* 滑动操作 */
+  .swipe-actions {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .swipe-content {
+    transition: transform 0.3s ease;
+  }
+  
+  .swipe-actions-left,
+  .swipe-actions-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .swipe-actions-left {
+    left: 0;
+    background: #10b981;
+  }
+  
+  .swipe-actions-right {
+    right: 0;
+    background: #ef4444;
+  }
+  
+  .swipe-action {
+    padding: 0 20px;
+    color: white;
+    font-weight: 500;
+  }
+}
+
+/* 平板优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tablet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  
+  .tablet-sidebar {
+    width: 280px;
+  }
+}
+
+/* 横屏优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .landscape-nav {
+    display: flex;
+    overflow-x: auto;
+    padding: 8px 16px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .landscape-nav-item {
+    white-space: nowrap;
+    padding: 8px 16px;
+    margin-right: 8px;
+    border-radius: 6px;
+    background: #f3f4f6;
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  
+  .landscape-nav-item.active {
+    background: #0076d6;
+    color: white;
+  }
+}
+
+/* 可访问性增强 */
+@media (prefers-reduced-motion: reduce) {
+  .swipe-content,
+  .mobile-modal-content {
+    transition: none;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .mobile-card {
+    border: 2px solid #000;
+  }
+  
+  .btn {
+    border: 2px solid currentColor;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .mobile-card {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .mobile-card-title,
+  .mobile-card-value {
+    color: #f9fafb;
+  }
+  
+  .mobile-card-label {
+    color: #9ca3af;
+  }
+  
+  .mobile-nav {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .mobile-nav-item {
+    color: #9ca3af;
+  }
+  
+  .mobile-nav-item.active {
+    color: #60a5fa;
+  }
+}
+
+/* 触摸反馈 */
+.touch-feedback {
+  -webkit-tap-highlight-color: rgba(0, 118, 214, 0.1);
+  transition: background-color 0.15s ease;
+}
+
+.touch-feedback:active {
+  background-color: rgba(0, 118, 214, 0.05);
+}
+
+/* 安全区域适配 */
+@supports (padding: max(0px)) {
+  .safe-area-inset-top {
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+  
+  .safe-area-inset-bottom {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  
+  .mobile-nav {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+}

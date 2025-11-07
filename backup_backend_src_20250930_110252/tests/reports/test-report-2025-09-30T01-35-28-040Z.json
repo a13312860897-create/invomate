@@ -1,0 +1,296 @@
+{
+  "timestamp": "2025-09-30T01:35:28.037Z",
+  "summary": {
+    "totalTests": 45,
+    "totalPassed": 45,
+    "totalFailed": 0,
+    "overallPassRate": "100%"
+  },
+  "testSuites": [
+    {
+      "name": "全面数据一致性测试",
+      "passed": 10,
+      "total": 10,
+      "passRate": "100%",
+      "results": [
+        {
+          "name": "状态分布与收入趋势已支付金额一致性",
+          "pass": true,
+          "details": "状态分布已支付: 0元, 收入趋势: 0元, 差异: 0元"
+        },
+        {
+          "name": "收入趋势与月度摘要已支付数据一致性",
+          "pass": true,
+          "details": "摘要已支付: 0元/0张, 收入趋势: 0元/0张"
+        },
+        {
+          "name": "月初边界数据处理",
+          "pass": true,
+          "details": "月初创建的发票: 1张"
+        },
+        {
+          "name": "月末边界数据处理",
+          "pass": true,
+          "details": "月末创建的发票: 1张"
+        },
+        {
+          "name": "跨时区/跨月支付处理",
+          "pass": true,
+          "details": "跨月支付的发票: 4张"
+        },
+        {
+          "name": "大金额数值精度处理",
+          "pass": true,
+          "details": "大金额发票: 1张, 总额: 999999.99元"
+        },
+        {
+          "name": "小金额数值精度处理",
+          "pass": true,
+          "details": "小金额发票: 1张"
+        },
+        {
+          "name": "大数据量API响应性能",
+          "pass": true,
+          "details": "处理110张发票耗时: 12ms"
+        },
+        {
+          "name": "内存使用效率",
+          "pass": true,
+          "details": "堆内存使用: 5MB"
+        },
+        {
+          "name": "综合数据一致性验证",
+          "pass": true,
+          "details": "状态分布使用混合筛选逻辑：已支付按支付月份，其他按创建月份"
+        }
+      ]
+    },
+    {
+      "name": "边界情况测试",
+      "passed": 12,
+      "total": 12,
+      "passRate": "100%",
+      "results": [
+        {
+          "name": "空数据库处理",
+          "pass": {
+            "month": "2024-09",
+            "created": {
+              "count": 0,
+              "totalAmount": 0,
+              "byStatus": []
+            },
+            "paid": {
+              "count": 0,
+              "totalAmount": 0
+            },
+            "metadata": {
+              "generatedAt": "2025-09-30T01:35:24.856Z",
+              "userId": 1,
+              "error": "获取发票数据失败: 数据源未正确配置"
+            }
+          },
+          "details": "空数据库时API正常返回默认值"
+        },
+        {
+          "name": "无效月份参数处理",
+          "pass": true,
+          "details": "正确处理无效月份: 无效的月份格式：请使用YYYY-MM格式，例如2024-01"
+        },
+        {
+          "name": "无效用户ID处理",
+          "pass": true,
+          "details": "正确处理无效用户ID: 无效的用户ID：用户ID必须是大于0的数字"
+        },
+        {
+          "name": "负金额发票处理",
+          "pass": true,
+          "details": "发现 1 张负金额发票，系统应能正确处理"
+        },
+        {
+          "name": "缺少必要字段处理",
+          "pass": true,
+          "details": "发现 1 张缺少金额字段的发票"
+        },
+        {
+          "name": "无效状态发票处理",
+          "pass": true,
+          "details": "发现 1 张无效状态发票"
+        },
+        {
+          "name": "无效日期格式处理",
+          "pass": true,
+          "details": "发现 0 张无效日期发票"
+        },
+        {
+          "name": "未来日期发票处理",
+          "pass": true,
+          "details": "发现 1 张未来日期发票"
+        },
+        {
+          "name": "逻辑错误日期处理",
+          "pass": true,
+          "details": "发现 1 张支付日期早于创建日期的发票"
+        },
+        {
+          "name": "极大金额处理",
+          "pass": true,
+          "details": "发现 1 张极大金额发票"
+        },
+        {
+          "name": "极小金额处理",
+          "pass": true,
+          "details": "发现 1 张极小金额发票"
+        },
+        {
+          "name": "异常数据下的一致性验证",
+          "pass": true,
+          "details": "验证结果: 一致, 问题数: 0"
+        }
+      ]
+    },
+    {
+      "name": "性能测试",
+      "passed": 23,
+      "total": 23,
+      "passRate": "100%",
+      "results": [
+        {
+          "name": "getInvoiceStatusDistribution 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 5.32ms, 内存变化: 31KB"
+        },
+        {
+          "name": "getRevenueTrend 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 8.14ms, 内存变化: -520KB"
+        },
+        {
+          "name": "getMonthlyInvoiceSummary 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 6.34ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getUnifiedChartData 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 12.57ms, 内存变化: 64KB"
+        },
+        {
+          "name": "validateDataConsistency 性能 (100条数据)",
+          "pass": true,
+          "details": "执行时间: 16.3ms, 内存变化: 102KB"
+        },
+        {
+          "name": "getInvoiceStatusDistribution 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 4.41ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getRevenueTrend 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 4.11ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getMonthlyInvoiceSummary 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 5.62ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getUnifiedChartData 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 13.04ms, 内存变化: 64KB"
+        },
+        {
+          "name": "validateDataConsistency 性能 (1000条数据)",
+          "pass": true,
+          "details": "执行时间: 24.28ms, 内存变化: 106KB"
+        },
+        {
+          "name": "getInvoiceStatusDistribution 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 11.74ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getRevenueTrend 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 25.07ms, 内存变化: 27KB"
+        },
+        {
+          "name": "getMonthlyInvoiceSummary 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 9.2ms, 内存变化: 29KB"
+        },
+        {
+          "name": "getUnifiedChartData 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 67.52ms, 内存变化: 63KB"
+        },
+        {
+          "name": "validateDataConsistency 性能 (5000条数据)",
+          "pass": true,
+          "details": "执行时间: 69.63ms, 内存变化: 95KB"
+        },
+        {
+          "name": "getInvoiceStatusDistribution 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 13.72ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getRevenueTrend 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 24.57ms, 内存变化: 27KB"
+        },
+        {
+          "name": "getMonthlyInvoiceSummary 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 52.4ms, 内存变化: 28KB"
+        },
+        {
+          "name": "getUnifiedChartData 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 77.3ms, 内存变化: 63KB"
+        },
+        {
+          "name": "validateDataConsistency 性能 (10000条数据)",
+          "pass": true,
+          "details": "执行时间: 53.15ms, 内存变化: 94KB"
+        },
+        {
+          "name": "并发API调用性能",
+          "pass": true,
+          "details": "10个并发请求组耗时: 217ms"
+        },
+        {
+          "name": "内存泄漏测试",
+          "pass": true,
+          "details": "100次迭代后内存增长: 1MB"
+        },
+        {
+          "name": "缓存性能提升",
+          "pass": true,
+          "details": "首次: 9ms, 缓存: 3ms, 提升: 3.00x"
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "success",
+      "message": "🎉 所有测试通过！系统运行状态良好。",
+      "priority": "info"
+    }
+  ],
+  "systemInfo": {
+    "nodeVersion": "v22.17.1",
+    "platform": "win32",
+    "arch": "x64",
+    "memoryUsage": {
+      "rss": 60727296,
+      "heapTotal": 27328512,
+      "heapUsed": 15356600,
+      "external": 1548752,
+      "arrayBuffers": 10515
+    }
+  },
+  "executionTime": "3秒"
+}

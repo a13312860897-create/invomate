@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-10-17T10:55:46.412Z",
+  "summary": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "successRate": "100.0%"
+  },
+  "details": [
+    {
+      "name": "必填字段验证",
+      "passed": true,
+      "message": "缺少必填字段"
+    },
+    {
+      "name": "客户ID验证",
+      "passed": true,
+      "message": "客户ID无效"
+    },
+    {
+      "name": "日期逻辑验证",
+      "passed": true,
+      "message": "到期日期早于开票日期"
+    },
+    {
+      "name": "项目数据验证",
+      "passed": true,
+      "message": "项目数据不完整"
+    },
+    {
+      "name": "金额计算验证",
+      "passed": true,
+      "message": "计算总额: 540, 期望: 540"
+    },
+    {
+      "name": "状态值验证",
+      "passed": true,
+      "message": "无效的状态值"
+    },
+    {
+      "name": "数据更新完整性",
+      "passed": true,
+      "message": "更新数据不完整"
+    },
+    {
+      "name": "错误检测",
+      "passed": true,
+      "message": "未能检测到错误数据"
+    }
+  ],
+  "features": [
+    "客户关联更新",
+    "发票项目更新",
+    "金额自动重计算",
+    "状态管理",
+    "数据验证",
+    "错误处理"
+  ]
+}

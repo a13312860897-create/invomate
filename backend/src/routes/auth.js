@@ -1,0 +1,410 @@
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const {
+  authenticateToken,
+  requireEmailVerification,
+  optionalAuth
+} = require('../middleware/auth');
+const {
+  register,
+  login,
+  verifyEmail,
+  requestPasswordReset,
+  resetPassword,
+  refreshToken,
+  logout,
+  getProfile
+} = require('../controllers/authController');
+const { auditLogger, securityMonitor, logAuditEvent, AUDIT_ACTIONS } = require('../middleware/auditLogger');
+const { sendVerificationEmail } = require('../services/emailService');
+const { generateSecureToken } = require('../utils/encryption');
+const router = express.Router();
+
+// Apply audit logging to all auth routes
+router.use(auditLogger('auth'));
+router.use(securityMonitor());
+
+// Public routes
+/**
+ * @route POST /api/auth/register
+ * @desc Register a new user
+ * @access Public
+ */
+router.post('/register', register);
+
+/**
+ * @route POST /api/auth/login
+ * @desc Login user
+ * @access Public
+ */
+router.post('/login', login);
+
+/**
+ * @route POST /api/auth/verify-email
+ * @desc Verify user email
+ * @access Public
+ */
+router.post('/verify-email', verifyEmail);
+
+/**
+ * @route POST /api/auth/request-password-reset
+ * @desc Request password reset
+ * @access Public
+ */
+router.post('/request-password-reset', requestPasswordReset);
+
+/**
+ * @route POST /api/auth/reset-password
+ * @desc Reset password with token
+ * @access Public
+ */
+router.post('/reset-password', resetPassword);
+
+/**
+ * @route POST /api/auth/refresh-token
+ * @desc Refresh access token
+ * @access Public
+ */
+router.post('/refresh-token', refreshToken);
+
+// Protected routes
+/**
+ * @route GET /api/auth/profile
+ * @desc Get current user profile
+ * @access Private
+ */
+router.get('/profile', authenticateToken, getProfile);
+
+/**
+ * @route POST /api/auth/logout
+ * @desc Logout user
+ * @access Private
+ */
+router.post('/logout', authenticateToken, logout);
+
+/**
+ * @route POST /api/auth/resend-verification
+ * @desc Resend email verification
+ * @access Private
+ */
+router.post('/resend-verification', authenticateToken, async (req, res) => {
+  try {
+
+    const user = await User.findByPk(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé'
+      });
+    }
+
+    if (user.emailVerified) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email déjà vérifié'
+      });
+    }
+
+    // Generate new verification token
+    const verificationToken = generateSecureToken();
+    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    await user.update({
+      verificationToken,
+      verificationExpires
+    });
+
+    // Send verification email
+    const emailResult = await sendVerificationEmail(user.id, verificationToken);
+
+    if (!emailResult.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Erreur lors de l\'envoi de l\'email de vérification'
+      });
+    }
+
+    // Log audit event
+    await logAuditEvent(
+      user.id,
+      AUDIT_ACTIONS.VERIFICATION_EMAIL_RESENT,
+      {
+        email: user.email,
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent')
+      }
+    );
+
+    res.json({
+      success: true,
+      message: 'Email de vérification renvoyé'
+    });
+  } catch (error) {
+    console.error('Resend verification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors du renvoi de l\'email de vérification'
+    });
+  }
+});
+
+/**
+ * @route PUT /api/auth/profile
+ * @desc Update user profile
+ * @access Private
+ */
+router.put('/profile', authenticateToken, requireEmailVerification, async (req, res) => {
+  try {
+    
+    const {
+      firstName,
+      lastName,
+      companyName,
+      phone,
+      address,
+      city,
+      postalCode,
+      country,
+      vatNumber,
+      currency,
+      language
+    } = req.body;
+
+    const user = await User.findByPk(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé'
+      });
+    }
+
+    // Validate VAT number format if provided
+    if (vatNumber && vatNumber !== user.vatNumber) {
+      const vatRegex = /^FR[0-9A-Z]{2}[0-9]{9}$/;
+      if (!vatRegex.test(vatNumber)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Format de numéro de TVA invalide (format attendu: FR + 2 caractères + 9 chiffres)'
+        });
+      }
+    }
+
+    // Track changes for audit
+    const changes = {};
+    const fieldsToUpdate = {
+      firstName,
+      lastName,
+      companyName,
+      phone,
+      address,
+      city,
+      postalCode,
+      country,
+      vatNumber,
+      currency,
+      language
+    };
+
+    Object.keys(fieldsToUpdate).forEach(field => {
+      if (fieldsToUpdate[field] !== undefined && fieldsToUpdate[field] !== user[field]) {
+        changes[field] = {
+          from: user[field],
+          to: fieldsToUpdate[field]
+        };
+      }
+    });
+
+    // Update user
+    await user.update(fieldsToUpdate);
+
+    // Log audit event if there were changes
+    if (Object.keys(changes).length > 0) {
+      await logAuditEvent(
+        user.id,
+        AUDIT_ACTIONS.PROFILE_UPDATED,
+        {
+          changes,
+          ipAddress: req.ip,
+          userAgent: req.get('User-Agent')
+        }
+      );
+    }
+
+    // Return updated user (excluding sensitive fields)
+    const updatedUser = await User.findByPk(user.id, {
+      attributes: { exclude: ['password', 'refreshToken', 'verificationToken', 'resetPasswordToken'] }
+    });
+
+    res.json({
+      success: true,
+      message: 'Profil mis à jour avec succès',
+      data: { user: updatedUser }
+    });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors de la mise à jour du profil'
+    });
+  }
+});
+
+/**
+ * @route PUT /api/auth/change-password
+ * @desc Change user password
+ * @access Private
+ */
+router.put('/change-password', authenticateToken, requireEmailVerification, async (req, res) => {
+  try {
+    const { User } = require('../models');
+    const { verifyPassword, hashPassword } = require('../utils/encryption');
+    const { logAuditEvent, AUDIT_ACTIONS } = require('../middleware/auditLogger');
+    
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Mot de passe actuel et nouveau mot de passe requis'
+      });
+    }
+
+    // Validate new password strength
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'Le nouveau mot de passe doit contenir au moins 8 caractères'
+      });
+    }
+
+    const user = await User.findByPk(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé'
+      });
+    }
+
+    // Verify current password
+    const isValidPassword = await verifyPassword(currentPassword, user.password);
+    if (!isValidPassword) {
+      await logAuditEvent(
+        user.id,
+        AUDIT_ACTIONS.PASSWORD_CHANGE_FAILED,
+        {
+          reason: 'Invalid current password',
+          ipAddress: req.ip,
+          userAgent: req.get('User-Agent')
+        }
+      );
+
+      return res.status(400).json({
+        success: false,
+        message: 'Mot de passe actuel incorrect'
+      });
+    }
+
+    // Hash new password
+    const hashedPassword = await hashPassword(newPassword);
+
+    // Update password and invalidate refresh tokens
+    await user.update({
+      password: hashedPassword,
+      refreshToken: null
+    });
+
+    // Log audit event
+    await logAuditEvent(
+      user.id,
+      AUDIT_ACTIONS.PASSWORD_CHANGED,
+      {
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent')
+      }
+    );
+
+    res.json({
+      success: true,
+      message: 'Mot de passe modifié avec succès. Veuillez vous reconnecter.'
+    });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors du changement de mot de passe'
+    });
+  }
+});
+
+/**
+ * @route DELETE /api/auth/account
+ * @desc Delete user account (GDPR compliance)
+ * @access Private
+ */
+router.delete('/account', authenticateToken, requireEmailVerification, async (req, res) => {
+  try {
+    const { User, Invoice, Client } = require('../models');
+    const { logAuditEvent, AUDIT_ACTIONS } = require('../middleware/auditLogger');
+    const gdprCompliance = require('../utils/gdprCompliance');
+    
+    const { confirmPassword } = req.body;
+
+    if (!confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Confirmation du mot de passe requise'
+      });
+    }
+
+    const user = await User.findByPk(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé'
+      });
+    }
+
+    // Verify password
+    const { verifyPassword } = require('../utils/encryption');
+    const isValidPassword = await verifyPassword(confirmPassword, user.password);
+    if (!isValidPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Mot de passe incorrect'
+      });
+    }
+
+    // Log audit event before deletion
+    await logAuditEvent(
+      user.id,
+      AUDIT_ACTIONS.ACCOUNT_DELETED,
+      {
+        email: user.email,
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent')
+      }
+    );
+
+    // Handle account deletion with GDPR compliance
+    await gdprCompliance.handleAccountDeletion(user.id);
+
+    res.json({
+      success: true,
+      message: 'Compte supprimé avec succès'
+    });
+  } catch (error) {
+    console.error('Account deletion error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors de la suppression du compte'
+    });
+  }
+});
+
+module.exports = router;

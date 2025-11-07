@@ -1,0 +1,29 @@
+[build]
+  publish = "build"
+  command = "npm run build"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    x-frame-options = "deny"
+    x-xss-protection = "1; mode=block"
+    x-content-type-options = "nosniff"
+    referrer-policy = "strict-origin-when-cross-origin"
+
+# Netlify Functions环境变量
+[context.production.environment]
+  PADDLE_WEBHOOK_SECRET = "ntfset_01k8fvwxgq48qv7smd2e5k3rhz"
+  BACKEND_URL = "https://your-backend-url.com"
+  BACKEND_API_KEY = "your-backend-api-key"

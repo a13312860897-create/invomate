@@ -1,0 +1,47 @@
+{
+  "timestamp": "2025-10-25T14:09:37.921Z",
+  "emailSent": true,
+  "messageId": "<cb72d5a7-f95a-ea8a-6a0b-c0457f07ee9c@163.com>",
+  "recipient": "test@example.com",
+  "frenchInvoiceFeatures": {
+    "total": 8,
+    "found": 8,
+    "completionRate": 100,
+    "details": [
+      {
+        "feature": "FACTURE",
+        "found": true
+      },
+      {
+        "feature": "SIRET",
+        "found": true
+      },
+      {
+        "feature": "TVA",
+        "found": true
+      },
+      {
+        "feature": "Mentions légales",
+        "found": true
+      },
+      {
+        "feature": "Pénalités de retard",
+        "found": true
+      },
+      {
+        "feature": "indemnité forfaitaire",
+        "found": true
+      },
+      {
+        "feature": "Code APE",
+        "found": true
+      },
+      {
+        "feature": "article 289 du CGI",
+        "found": true
+      }
+    ]
+  },
+  "status": "SUCCESS",
+  "message": "邮件模板已成功更新为法国发票格式"
+}

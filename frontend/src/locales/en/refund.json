@@ -1,0 +1,58 @@
+{
+  "title": "Refund Policy",
+  "lastUpdated": "Last updated: January 2024",
+  
+  "overview": "1. Refund Policy Overview",
+  "overviewText": "We offer refunds within 14 days from the date of purchase for eligible purchases. To request a refund, contact refunds@invomate.app with your order ID. We follow Paddle's standard refund policy, which includes a 14-day money-back guarantee for all subscription plans.",
+  
+  "eligibility": "2. Refund Eligibility",
+  "eligibilityText": "You are eligible for a full refund if you request it within 14 days of your initial purchase. This applies to all subscription plans and one-time purchases made through our platform.",
+  
+  "eligiblePurchases": "Eligible Purchases",
+  "eligiblePurchasesText": "• New subscription plans (monthly or annual)\n• Upgrade purchases within 14 days\n• One-time feature purchases\n• Add-on services purchased separately",
+  
+  "ineligiblePurchases": "Ineligible Purchases",
+  "ineligiblePurchasesText": "• Requests made after the 14-day period\n• Accounts with suspected fraudulent activity\n• Violations of our Terms of Service\n• Excessive usage before refund request",
+  
+  "howToRequest": "3. How to Request a Refund",
+  "howToRequestText": "To request a refund, please follow these steps: Locate your payment receipt from Paddle, click on the refund link provided in the receipt, follow the instructions to complete your refund request. Alternatively, you can contact Paddle support directly for assistance.",
+  
+  "requestSteps": "Step-by-Step Process",
+  "requestStepsText": "1. Log into your invomate account\n2. Go to Billing & Subscriptions section\n3. Find your recent purchase\n4. Click 'Request Refund' button\n5. Fill out the refund form with reason\n6. Submit your request for review",
+  
+  "alternativeMethod": "Alternative Method",
+  "alternativeMethodText": "You can also email us directly at refunds@invomate.app with the following information:\n• Your account email address\n• Order ID or transaction reference\n• Reason for refund request\n• Date of purchase",
+  
+  "processingTime": "4. Processing Time",
+  "processingTimeText": "Refund requests are typically processed within 5-7 business days. The time it takes for the refund to appear in your account may vary depending on your payment method and financial institution.",
+  
+  "processingSteps": "Processing Timeline",
+  "processingStepsText": "• Request review: 1-2 business days\n• Approval and processing: 2-3 business days\n• Bank processing: 2-5 business days\n• Total time: 5-10 business days maximum",
+  
+  "paymentMethods": "Refund by Payment Method",
+  "paymentMethodsText": "• Credit/Debit Cards: 3-5 business days\n• PayPal: 1-2 business days\n• Bank Transfer: 5-7 business days\n• Digital Wallets: 1-3 business days",
+  
+  "partialRefunds": "5. Partial Refunds",
+  "partialRefundsText": "In some cases, we may offer partial refunds for services that have been partially used. This is evaluated on a case-by-case basis and depends on the extent of service usage.",
+  
+  "cancellation": "6. Subscription Cancellation",
+  "cancellationText": "You can cancel your subscription at any time through your account settings. Cancellation will prevent future charges but does not automatically trigger a refund for the current billing period unless requested within the 14-day window.",
+  
+  "exceptions": "7. Refund Exceptions",
+  "exceptionsText": "We reserve the right to refuse refund requests in cases of suspected abuse, fraud, or violation of our Terms of Service. This includes but is not limited to: multiple refund requests for the same subscription period, requests made after the 14-day eligibility period, accounts found to be in violation of our Terms of Service.",
+  
+  "fraudPrevention": "Fraud Prevention",
+  "fraudPreventionText": "• Multiple refund requests from same user\n• Suspicious account activity patterns\n• Violation of usage policies\n• Chargebacks or payment disputes\n• Accounts created solely for refund abuse",
+  
+  "disputeResolution": "8. Dispute Resolution",
+  "disputeResolutionText": "If your refund request is denied and you disagree with our decision, you may appeal by contacting our customer support team at support@invomate.app. We will review your case and provide a final decision within 7 business days.",
+  
+  "contact": "9. Contact Information",
+  "contactText": "If you have any questions about our refund policy, please contact our support team at refunds@invomate.app. Our customer service team is available Monday through Friday, 9 AM to 6 PM EST.",
+  
+  "supportChannels": "Support Channels",
+  "supportChannelsText": "• Email: refunds@invomate.app\n• Support Portal: Available in your account\n• Live Chat: Monday-Friday, 9 AM-6 PM EST\n• Phone Support: Available for premium subscribers",
+  
+  "policyChanges": "10. Policy Changes",
+  "policyChangesText": "We may update this refund policy from time to time. Any changes will be posted on our website and will take effect immediately. Continued use of our service after changes constitutes acceptance of the updated policy."
+}

@@ -1,0 +1,9 @@
+{
+  "appearance": "Appearance",
+  "lightMode": "Light",
+  "darkMode": "Dark",
+  "autoMode": "Auto",
+  "autoModeDescription": "Automatically switch theme based on system settings",
+  "themeSettings": "Theme Settings",
+  "chooseTheme": "Choose your preferred theme mode"
+}

@@ -1,0 +1,314 @@
+import React, { useState, useEffect } from 'react';
+import { Line } from 'react-chartjs-2';
+import { getCurrentDisplayMonth } from '../../utils/dateUtils';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
+import { FiTrendingUp, FiCalendar, FiRefreshCw } from 'react-icons/fi';
+import api from '../../services/api';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
+
+const RevenueTrendChart = () => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [chartData, setChartData] = useState(null);
+  const [monthInfo, setMonthInfo] = useState({});
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // 格式化货币
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('zh-CN', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount || 0);
+  };
+
+  // Load revenue trend data
+  const loadRevenueTrend = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const currentMonth = getCurrentDisplayMonth(); // Use dynamic month calculation
+      console.log('📈 Loading revenue trend data, month:', currentMonth);
+      
+      const response = await api.get('/dashboard/unified-chart-data', {
+        params: { month: currentMonth }
+      });
+      
+      console.log('📈 Unified API response:', response.data);
+      
+      if (response.data.success) {
+        const { revenueTrend, monthInfo: monthData } = response.data.data;
+        
+        console.log('📈 Revenue trend data:', revenueTrend);
+        console.log('📈 Trend data array:', revenueTrend.trendData);
+        
+        setMonthInfo(monthData);
+        setTotalRevenue(revenueTrend.totalRevenue);
+        setTotalCount(revenueTrend.totalCount);
+        
+        // 构建图表数据 - 修复：使用正确的数据字段
+        const trendData = revenueTrend.trendData || [];
+        
+        console.log('📈 Processing trend data, length:', trendData.length);
+        console.log('📈 First item in trendData:', trendData[0]);
+        
+        if (trendData.length > 0) {
+          console.log('📈 trendData length:', trendData.length);
+          console.log('📈 First trendData item:', trendData[0]);
+          console.log('📈 All trendData items:', trendData);
+          
+          const labels = trendData.map(item => {
+            console.log('📈 Processing item for label:', item);
+            console.log('📈 Item keys:', Object.keys(item));
+            // 修复：使用正确的日期字段和标签生成
+            if (item.date) {
+              console.log('📈 Found date field:', item.date, 'type:', typeof item.date);
+              const date = new Date(item.date);
+              console.log('📈 Parsed date object:', date);
+              const label = `${date.getMonth() + 1}/${date.getDate()}`;
+              console.log('📈 Generated label from date:', label);
+              return label;
+            } else if (item.time) {
+              console.log('📈 Using time field:', item.time);
+              return item.time;
+            } else if (item.label) {
+              console.log('📈 Using label field:', item.label);
+              return item.label;
+            } else {
+              console.log('📈 No valid date/time/label field found, using N/A');
+              return 'N/A';
+            }
+          });
+          
+          const dataValues = trendData.map(item => item.revenue || 0);
+          
+          console.log('📈 Generated labels:', labels);
+          console.log('📈 Labels length:', labels.length);
+          console.log('📈 Generated data values:', dataValues);
+          console.log('📈 Data values length:', dataValues.length);
+          
+          const chartConfig = {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Daily Revenue',
+                data: dataValues,
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: 'rgb(59, 130, 246)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointHoverBackgroundColor: 'rgb(59, 130, 246)',
+                pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 2
+              }
+            ]
+          };
+          
+          console.log('📈 Chart config before setting:', chartConfig);
+          console.log('📈 Chart config labels:', chartConfig.labels);
+          console.log('📈 Chart config data:', chartConfig.datasets[0].data);
+          
+          setChartData(chartConfig);
+          console.log('📈 Chart data setup complete:', chartConfig);
+        } else {
+          console.log('📈 trendData is empty, setting chartData to null');
+          setChartData(null);
+        }
+      } else {
+        throw new Error(response.data.message || 'Failed to get data');
+      }
+    } catch (err) {
+      console.error('📈 Failed to load revenue trend:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to load data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRevenueTrend();
+  }, []);
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        display: true,
+        grid: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.1)'
+        },
+        ticks: {
+          color: '#666',
+          font: {
+            size: 11
+          }
+        }
+      },
+      y: {
+        display: true,
+        beginAtZero: true,
+        grid: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.1)'
+        },
+        ticks: {
+          color: '#666',
+          font: {
+            size: 11
+          },
+          callback: function(value) {
+            return formatCurrency(value);
+          }
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        borderColor: 'rgb(59, 130, 246)',
+        borderWidth: 1,
+        callbacks: {
+          label: function(context) {
+            return `Revenue: ${formatCurrency(context.parsed.y)}`;
+          }
+        }
+      }
+    },
+    interaction: {
+      intersect: false,
+      mode: 'index'
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuart'
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center gap-2">
+            <FiTrendingUp className="w-5 h-5 text-blue-600" />
+            <h3 className="text-lg font-semibold text-gray-900">Revenue Trend</h3>
+          </div>
+        </div>
+        <div className="h-64 flex items-center justify-center">
+          <div className="flex items-center gap-2 text-gray-500">
+            <FiRefreshCw className="w-4 h-4 animate-spin" />
+            <span>Loading...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center gap-2">
+            <FiTrendingUp className="w-5 h-5 text-blue-600" />
+            <h3 className="text-lg font-semibold text-gray-900">Revenue Trend</h3>
+          </div>
+        </div>
+        <div className="h-64 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-600 mb-3">{error}</p>
+            <button 
+              onClick={loadRevenueTrend}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <FiTrendingUp className="w-5 h-5 text-blue-600" />
+          <h3 className="text-lg font-semibold text-gray-900">Revenue Trend</h3>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <FiCalendar className="w-4 h-4" />
+          <span>{monthInfo.month}</span>
+        </div>
+      </div>
+      
+      {/* Statistics */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="text-center">
+          <p className="text-sm text-blue-600 font-medium">Total Revenue This Month</p>
+          <p className="text-xl font-bold text-blue-900">{formatCurrency(totalRevenue)}</p>
+        </div>
+        <div className="text-center">
+          <p className="text-sm text-green-600 font-medium">Paid Invoices</p>
+          <p className="text-xl font-bold text-green-900">{totalCount} invoices</p>
+        </div>
+      </div>
+      
+      {/* 图表 */}
+      <div className="h-64 mb-4">
+        {chartData ? (
+          <>
+            <div style={{fontSize: '10px', color: '#666', marginBottom: '5px'}}>
+              Debug: Labels={chartData.labels?.length || 0}, Data={chartData.datasets?.[0]?.data?.length || 0}
+            </div>
+            <Line data={chartData} options={chartOptions} />
+          </>
+        ) : (
+          <div className="h-full flex items-center justify-center text-gray-500">
+            No revenue data for this month
+          </div>
+        )}
+      </div>
+      
+      {/* Description */}
+      <div className="mt-4 text-xs text-gray-500">
+        * Chart shows monthly revenue trend, X-axis is time period, Y-axis is cumulative revenue amount, data from unified API
+      </div>
+    </div>
+  );
+};
+
+export default RevenueTrendChart;

@@ -1,0 +1,110 @@
+{
+  "app": {
+    "name": "invomate",
+    "title": "Invoice Management System"
+  },
+  "dashboard": "Dashboard",
+  "invoices": "Invoices",
+  "clients": "Clients",
+  "reports": "Reports",
+  "settings": "Settings",
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "invoices": "Invoices",
+    "clients": "Clients",
+    "reports": "Reports",
+    "settings": "Settings",
+    "createClient": "Create Client"
+  },
+  "auth": {
+    "signin": "Sign in to your account",
+    "signup": "Sign up",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot your password?",
+    "logout": "Sign out",
+    "or": "Or",
+    "emailAddress": "Email address",
+    "createNewAccount": "Create a new account",
+    "createAccount": "Create your account",
+    "signInToExistingAccount": "Sign in to your existing account",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "companyNameOptional": "Company Name (Optional)",
+    "phoneOptional": "Phone (Optional)",
+    "confirmPassword": "Confirm Password",
+    "defaultCurrency": "Default Currency",
+    "language": "Language",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email address",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "companyName": "Company Name",
+    "confirmPasswordRequired": "Please confirm your password",
+    "passwordsDontMatch": "Passwords do not match"
+  },
+  "invoiceform": {
+    "title": "Create Invoice",
+    "client": "Client",
+    "selectClient": "Select a client",
+    "issueDate": "Issue Date",
+    "dueDate": "Due Date",
+    "items": "Items",
+    "description": "Description",
+    "quantity": "Quantity",
+    "unitPrice": "Unit Price",
+    "total": "Total",
+    "addItem": "Add Item",
+    "removeItem": "Remove Item",
+    "notes": "Notes",
+    "create": "Create Invoice",
+    "cancel": "Cancel"
+  },
+  "clients": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "addClient": "Add Client",
+    "editClient": "Edit Client",
+    "deleteClient": "Delete Client"
+  },
+  "profile": {
+    "title": "Profile",
+    "personalInfo": "Personal Information",
+    "companyInfo": "Company Information",
+    "save": "Save Changes"
+  },
+  "sandboxSettings": {
+    "title": "Sandbox Settings",
+    "enableSandboxMode": "Enable Sandbox Mode",
+    "testEnvironment": "Test Environment"
+  },
+  "clientform": {
+    "title": "Client Form",
+    "name": "Name",
+    "email": "Email",
+    "save": "Save Client"
+  },
+  "payments": {
+    "title": "Payments",
+    "amount": "Amount",
+    "date": "Date",
+    "status": "Status"
+  },
+  "payment": {
+    "title": "Payment",
+    "process": "Process Payment"
+  },
+  "paddle": {
+    "title": "Paddle Integration",
+    "setup": "Setup Paddle"
+  },
+  "sandbox": {
+    "title": "Sandbox Mode",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  }
+}

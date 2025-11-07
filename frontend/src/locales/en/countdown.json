@@ -1,0 +1,22 @@
+{
+  "trial": {
+    "title": "Free Trial Remaining",
+    "info": "Upgrade to continue using all features after trial expires"
+  },
+  "subscription": {
+    "title": "Subscription Remaining",
+    "info": "Renew your subscription to continue using premium features"
+  },
+  "expired": {
+    "title": "Time Expired",
+    "message": "Your subscription has expired. Please upgrade to continue using premium features."
+  },
+  "warning": {
+    "badge": "Expiring Soon",
+    "message": "Only {{days}} days left! Upgrade now to avoid service interruption."
+  },
+  "days": "Days",
+  "hours": "Hours",
+  "minutes": "Min",
+  "seconds": "Sec"
+}
