@@ -1,7 +1,36 @@
 const crypto = require('crypto');
 
+// 解析 paddle-signature 头部，格式类似："t=timestamp; h1=signature"
+function parsePaddleSignatureHeader(signatureHeader) {
+  if (!signatureHeader || typeof signatureHeader !== 'string') return null;
+  const parts = signatureHeader.split(';').map(s => s.trim());
+  const map = {};
+  for (const part of parts) {
+    const [k, v] = part.split('=');
+    if (k && v) map[k] = v;
+  }
+  return { t: map.t, h1: map.h1 };
+}
+
+// 验证Webhook签名（HMAC-SHA256 原始请求体）
+function verifyWebhookSignature(rawBody, signatureHeader, secret) {
+  if (!secret || !signatureHeader) return false;
+  const parsed = parsePaddleSignatureHeader(signatureHeader);
+  if (!parsed || !parsed.h1) return false;
+  try {
+    const expected = crypto
+      .createHmac('sha256', secret)
+      .update(rawBody)
+      .digest('hex');
+    return crypto.timingSafeEqual(Buffer.from(parsed.h1, 'hex'), Buffer.from(expected, 'hex'));
+  } catch (err) {
+    console.error('Signature verification error:', err);
+    return false;
+  }
+}
+
 // Paddle Webhook处理函数
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   // 只允许POST请求
   if (event.httpMethod !== 'POST') {
     return {
@@ -11,14 +40,14 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const signature = event.headers['paddle-signature'];
-    const body = event.body;
-    
+    const signatureHeader = event.headers['paddle-signature'] || event.headers['Paddle-Signature'];
+    const rawBody = event.body || '';
+
     // Webhook密钥（从环境变量获取）
-    const webhookSecret = process.env.PADDLE_WEBHOOK_SECRET || 'ntfset_01k8fvwxgq48qv7smd2e5k3rhz';
-    
+    const webhookSecret = process.env.PADDLE_WEBHOOK_SECRET;
+
     // 验证Webhook签名
-    if (!verifyWebhookSignature(body, signature, webhookSecret)) {
+    if (!verifyWebhookSignature(rawBody, signatureHeader, webhookSecret)) {
       console.error('Invalid Paddle webhook signature');
       return {
         statusCode: 400,
@@ -26,32 +55,42 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const webhookData = JSON.parse(body);
-    console.log('Paddle webhook received:', webhookData.event_type);
+    const payload = JSON.parse(rawBody);
+    console.log('Paddle webhook received:', payload.event_type);
 
-    // 处理不同的Webhook事件
-    switch (webhookData.event_type) {
-      case 'transaction.completed':
-        await handleTransactionCompleted(webhookData);
-        break;
-      case 'subscription.created':
-        await handleSubscriptionCreated(webhookData);
-        break;
-      case 'subscription.updated':
-        await handleSubscriptionUpdated(webhookData);
-        break;
-      case 'subscription.canceled':
-        await handleSubscriptionCanceled(webhookData);
-        break;
-      default:
-        console.log('Unhandled webhook event:', webhookData.event_type);
+    // 将已校验的事件安全转发到后端进行统一处理
+    const backendBase = process.env.BACKEND_URL || process.env.RENDER_BACKEND_URL;
+    if (!backendBase) {
+      console.warn('BACKEND_URL not configured; acknowledging webhook without forwarding');
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ received: true, forwarded: false })
+      };
+    }
+
+    const forwardResp = await fetch(`${backendBase}/api/paddle/webhook`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // 告知后端此请求已在边缘完成签名验证
+        'X-Paddle-Verified': 'true'
+      },
+      body: rawBody
+    });
+
+    if (!forwardResp.ok) {
+      const text = await forwardResp.text().catch(() => '');
+      console.error('Forwarding webhook failed:', forwardResp.status, text);
+      return {
+        statusCode: 502,
+        body: JSON.stringify({ error: 'Upstream webhook handler failed' })
+      };
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ received: true })
+      body: JSON.stringify({ received: true, forwarded: true })
     };
-
   } catch (error) {
     console.error('Webhook processing error:', error);
     return {
@@ -60,85 +99,3 @@ exports.handler = async (event, context) => {
     };
   }
 };
-
-// 验证Webhook签名
-function verifyWebhookSignature(body, signature, secret) {
-  if (!signature || !secret) {
-    return false;
-  }
-
-  try {
-    // Paddle使用HMAC-SHA256签名
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(body)
-      .digest('hex');
-    
-    return crypto.timingSafeEqual(
-      Buffer.from(signature, 'hex'),
-      Buffer.from(expectedSignature, 'hex')
-    );
-  } catch (error) {
-    console.error('Signature verification error:', error);
-    return false;
-  }
-}
-
-// 处理交易完成事件
-async function handleTransactionCompleted(data) {
-  console.log('Transaction completed:', data.data.id);
-  
-  // 获取自定义数据
-  const customData = data.data.custom_data;
-  if (customData && customData.userId) {
-    // 这里你需要调用你的后端API来更新用户订阅状态
-    // 或者直接操作数据库（如果使用无服务器数据库）
-    
-    const updateData = {
-      userId: customData.userId,
-      plan: customData.plan,
-      billingType: customData.billingType,
-      transactionId: data.data.id,
-      status: 'active'
-    };
-    
-    // 调用后端API更新用户订阅
-    try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/paddle/update-subscription`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.BACKEND_API_KEY}`
-        },
-        body: JSON.stringify(updateData)
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to update subscription');
-      }
-      
-      console.log('Subscription updated successfully');
-    } catch (error) {
-      console.error('Failed to update subscription:', error);
-      // 这里可以实现重试逻辑或错误通知
-    }
-  }
-}
-
-// 处理订阅创建事件
-async function handleSubscriptionCreated(data) {
-  console.log('Subscription created:', data.data.id);
-  // 实现订阅创建逻辑
-}
-
-// 处理订阅更新事件
-async function handleSubscriptionUpdated(data) {
-  console.log('Subscription updated:', data.data.id);
-  // 实现订阅更新逻辑
-}
-
-// 处理订阅取消事件
-async function handleSubscriptionCanceled(data) {
-  console.log('Subscription canceled:', data.data.id);
-  // 实现订阅取消逻辑
-}

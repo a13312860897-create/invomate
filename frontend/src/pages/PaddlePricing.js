@@ -208,21 +208,27 @@ const PaddlePricing = () => {
       const successUrl = `${origin}/payment-success`;
       const cancelUrl = `${origin}/pricing?cancelled=true`;
 
-      // 调用后端创建支付链接
-      const paddleService = (await import('../services/paddleService')).default;
-      const linkResp = await paddleService.createPaymentLink({
-        plan,
-        billingCycle,
-        successUrl,
-        cancelUrl
+      // 直接调用 Netlify 函数创建 Paddle 交易，避免依赖后端
+      const functionUrl = '/.netlify/functions/paddle-create-transaction';
+      const resp = await fetch(functionUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, billingCycle, successUrl, cancelUrl })
       });
 
+      if (!resp.ok) {
+        const text = await resp.text();
+        throw new Error(text || 'Netlify function failed to create transaction');
+      }
+
+      const linkResp = await resp.json();
       const checkoutUrl = linkResp.checkoutUrl || linkResp.url || linkResp?.data?.checkout?.url;
       if (!checkoutUrl) {
         throw new Error('未获取到结账链接');
       }
 
       // 打开Paddle结账
+      const paddleService = (await import('../services/paddleService')).default;
       await paddleService.openCheckout(checkoutUrl);
     } catch (error) {
       console.error('创建真实支付链接失败:', error);
