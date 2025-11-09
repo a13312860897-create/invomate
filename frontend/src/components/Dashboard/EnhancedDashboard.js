@@ -1,18 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
-import { useUnifiedData } from '../../contexts/UnifiedDataContext';
 import { useToast } from '../../hooks/useToast';
 import { authService } from '../../services/authService';
 import dashboardService from '../../services/dashboardService';
-import { invoiceService } from '../../services/invoiceService';
-import { reportService } from '../../services/reportService';
-import { PageHeader } from '../DesignSystem';
 import LoadingSpinner from '../Common/LoadingSpinner';
-import KpiCards from './KpiCards';
-import RevenueTrendChart from './RevenueTrendChart';
-import StatusDistributionChart from './StatusDistributionChart';
 import SimpleStatusDistributionChart from './SimpleStatusDistributionChart';
 import NewRevenueTrendChart from './NewRevenueTrendChart';
 import NotificationCenter from './NotificationCenter';
@@ -21,19 +13,15 @@ import NotificationCenter from './NotificationCenter';
 import { ToastContainer } from '../Common/Toast';
 import ErrorBoundary from '../Common/ErrorBoundary';
 import MobileDashboard from '../Mobile/MobileDashboard';
-import CountdownTimer from '../CountdownTimer';
-
-import { FiRefreshCw, FiEye, FiSend, FiEdit, FiTrash2, FiBell, FiDollarSign, FiFileText, FiUsers, FiTrendingUp, FiAlertCircle, FiAlertTriangle, FiCheck } from 'react-icons/fi';
+import { FiRefreshCw, FiDollarSign, FiFileText, FiUsers, FiTrendingUp, FiAlertCircle, FiAlertTriangle } from 'react-icons/fi';
 
 const EnhancedDashboard = ({ onNavigate }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const { success, error: showErrorToast, toasts, removeToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [isMobile, setIsMobile] = useState(false);
 
   // 检测设备类型
@@ -59,8 +47,6 @@ const EnhancedDashboard = ({ onNavigate }) => {
     paidAmount: 0
   });
   
-  const [overdueInvoices, setOverdueInvoices] = useState([]);
-  const [statusDistribution, setStatusDistribution] = useState({ labels: [], datasets: [] });
   const [notifications, setNotifications] = useState([]);
 const [refreshKey, setRefreshKey] = useState(0);
 
@@ -103,43 +89,7 @@ const [refreshKey, setRefreshKey] = useState(0);
       ]);
 
       setStats(statsData);
-
-      // 从dashboard stats中提取最近发票和逾期发票数据
-      const dashboardData = dashboardStatsData?.data || {};
-
-      // 计算逾期发票（从最近发票中筛选状态为overdue的）
-      const overdueInvoices = (dashboardData.recentInvoices || []).filter(invoice => 
-        invoice.status === 'overdue'
-      );
-      setOverdueInvoices(overdueInvoices);
-
       setNotifications(notificationsData?.notifications || []);
-
-      // Set status distribution data
-      const statusLabels = {
-        'draft': 'Draft',
-        'sent': 'Sent', 
-        'paid': 'Paid',
-        'overdue': 'Overdue',
-        'pending': 'Pending'
-      };
-
-      // 修复数据格式问题 - 后端返回的是 { distribution: [...] } 格式
-      const distributionArray = distributionData?.distribution || [];
-
-      setStatusDistribution({
-        labels: distributionArray.map(item => statusLabels[item.status] || item.status),
-        datasets: [{
-          data: distributionArray.map(item => item.count),
-          backgroundColor: [
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56',
-            '#FF9F40',
-            '#4BC0C0'
-          ]
-        }]
-      });
 
     } catch (err) {
         console.error('Failed to load dashboard data:', err);
@@ -214,29 +164,6 @@ const [refreshKey, setRefreshKey] = useState(0);
     }).format(amount);
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('fr-FR');
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'paid': return 'text-green-600 bg-green-100';
-      case 'pending': return 'text-yellow-600 bg-yellow-100';
-      case 'overdue': return 'text-red-600 bg-red-100';
-      case 'draft': return 'text-gray-600 bg-gray-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  };
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'paid': return 'Paid';
-      case 'pending': return 'Pending';
-      case 'overdue': return 'Overdue';
-      case 'draft': return 'Draft';
-      default: return status;
-    }
-  };
 
   // 如果是移动设备，使用移动端专用组件
   if (isMobile) {

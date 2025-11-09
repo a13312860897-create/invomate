@@ -1,5 +1,42 @@
 # Paddle支付"Something went wrong"错误修复指南
 
+本指南提供“只用 Netlify 就能跑”的最简流程，绕开后端服务器部署复杂度，专注把 Paddle 付款跑通。
+
+## 一句话方案
+- 在 Netlify 新增一个函数 `paddle-create-transaction`，用你的 `PADDLE_API_KEY` 直接请求 Paddle API 创建交易；
+- 订阅页改为调用该函数拿到 `checkoutUrl` 并跳转至 Paddle 收银台；
+- Webhook 保持走 `/.netlify/functions/paddle-webhook`，它已实现签名校验并可按需转发到后端。
+
+## 需要的环境变量（Netlify）
+- `REACT_APP_PADDLE_CLIENT_TOKEN`：你提供的 Client Token（生产）
+- `REACT_APP_PADDLE_ENVIRONMENT`：`production`
+- `PADDLE_API_KEY`：你提供的 Live API Key（生产）
+- `PADDLE_WEBHOOK_SECRET`：Paddle 后台通知签名密钥（生产）
+- `PADDLE_ENVIRONMENT`：`production`
+- `PADDLE_PRO_MONTHLY_PRICE_ID`：当前用到的价格 ID（例如 `pri_...864dv`）
+
+## Webhook 设置（Paddle 后台）
+- URL：`https://<你的站点域名>/.netlify/functions/paddle-webhook`
+- 说明：函数会验证签名；若配置了 `BACKEND_URL`，会安全转发到后端 `/api/paddle/webhook`。
+
+## 验证步骤（最快）
+1. 发布 Netlify（带以上环境变量）；
+2. 打开 `https://<你的站点域名>/pricing`；
+3. 保持“按月”，点击专业版购买；
+4. 跳转到 Paddle 收银台，完成支付后返回成功页；
+5. 在 Netlify 函数日志中可看到创建交易与 Webhook 事件记录。
+
+## 常见问题
+- 看到 "Something went wrong"：
+  - 检查 `PADDLE_API_KEY` 是否为生产且未过期；
+  - `PADDLE_PRO_MONTHLY_PRICE_ID` 必须是 `pri_...` 而不是 `pro_...`；
+  - `REACT_APP_PADDLE_CLIENT_TOKEN` 与环境（生产/沙盒）要匹配；
+- 没有 `checkoutUrl`：
+  - Paddle 控制台是否配置了默认 Payment Link；
+  - 价格 ID 是否启用且可售卖。
+
+> 这个“仅 Netlify”方案只接管支付创建和 Webhook，不改动你的业务后端。若你暂时不想部署后端到 Vultr，也可以先跑通支付，再逐步集成订阅状态同步。
+
 ## 问题描述
 
 用户在使用Paddle支付系统时，支付页面显示"Something went wrong"错误，导致无法完成支付流程。
