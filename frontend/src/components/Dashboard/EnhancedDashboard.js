@@ -121,15 +121,6 @@ const [refreshKey, setRefreshKey] = useState(0);
       ]);
       
       setStats(statsData);
-      
-      // 从dashboard stats中提取最近发票和逾期发票数据
-      const dashboardData = dashboardStatsData?.data || {};
-      
-      // 计算逾期发票（从最近发票中筛选状态为overdue的）
-      const overdueInvoices = (dashboardData.recentInvoices || []).filter(invoice => 
-        invoice.status === 'overdue'
-      );
-      setOverdueInvoices(overdueInvoices);
       setRefreshKey(prev => prev + 1);
       success('发票已成功标记为已支付');
       
