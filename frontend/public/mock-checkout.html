@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>模拟结账 - Invomate</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; background: #f7fafc; color: #1a202c; }
+    .container { max-width: 720px; margin: 0 auto; padding: 32px; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); padding: 24px; }
+    h1 { font-size: 24px; margin: 0 0 12px; }
+    p { margin: 6px 0; color: #4a5568; }
+    .info { margin: 16px 0; padding: 12px 16px; background: #f1f5f9; border-radius: 12px; }
+    .btns { display: flex; gap: 12px; margin-top: 20px; }
+    .btn { appearance: none; border: none; border-radius: 10px; padding: 12px 18px; font-weight: 600; cursor: pointer; }
+    .primary { background: #2563eb; color: #fff; }
+    .secondary { background: #e2e8f0; color: #1f2937; }
+    .small { font-size: 12px; color: #64748b; margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>模拟结账</h1>
+      <p>这是用于本地测试的虚拟结账页面，不会产生真实支付。</p>
+      <div class="info">
+        <p id="plan">订阅：-</p>
+        <p id="billing">周期：-</p>
+        <p id="tx">交易号：-</p>
+      </div>
+      <div class="btns">
+        <button id="complete" class="btn primary">立即完成支付</button>
+        <button id="cancel" class="btn secondary">取消并返回</button>
+      </div>
+      <p class="small">提示：点击“立即完成支付”会跳转到“支付成功”页面，供前端流程联调。</p>
+    </div>
+  </div>
+
+  <script>
+    const qs = new URLSearchParams(location.search);
+    const plan = qs.get('plan') || 'basic';
+    const billing = qs.get('billing') || 'monthly';
+    const tx = qs.get('transaction_id') || `mock_${Date.now()}`;
+    const success = qs.get('success') || `${location.origin}/payment-success`;
+    const origin = location.origin;
+    const cancel = `${origin}/pricing?cancelled=true`;
+
+    document.getElementById('plan').textContent = `订阅：${plan}`;
+    document.getElementById('billing').textContent = `周期：${billing}`;
+    document.getElementById('tx').textContent = `交易号：${tx}`;
+
+    document.getElementById('complete').onclick = () => {
+      const url = new URL(success);
+      url.searchParams.set('transaction_id', tx);
+      url.searchParams.set('plan', plan);
+      url.searchParams.set('billing', billing);
+      location.href = url.toString();
+    };
+
+    document.getElementById('cancel').onclick = () => {
+      location.href = cancel;
+    };
+  </script>
+</body>
+</html>

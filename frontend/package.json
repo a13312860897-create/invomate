@@ -45,7 +45,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build -m \"Deploy to GitHub Pages\""
   },
   "eslintConfig": {
     "extends": [
@@ -68,6 +70,7 @@
   "devDependencies": {
     "@types/node": "^24.3.3",
     "autoprefixer": "^10.4.14",
+    "gh-pages": "^6.1.1",
     "http-proxy-middleware": "^3.0.0",
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.3"

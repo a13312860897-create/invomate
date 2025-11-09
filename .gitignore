@@ -12,3 +12,6 @@ dist/
 # Uploads / Generated PDFs
 uploads/
 generated_pdfs/
+
+# Local Netlify folder
+.netlify

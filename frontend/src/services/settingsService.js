@@ -94,6 +94,36 @@ class SettingsService {
       throw new Error(error.response?.data?.message || '删除账户失败');
     }
   }
+
+  // 获取用户邮件配置
+  async getEmailConfig() {
+    try {
+      const response = await api.get('/email-config');
+      return response.data?.data || null;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || '获取邮件配置失败');
+    }
+  }
+
+  // 保存用户邮件配置
+  async saveEmailConfig(config) {
+    try {
+      const response = await api.put('/email-config', config);
+      return response.data?.data || null;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || '保存邮件配置失败');
+    }
+  }
+
+  // 验证邮件配置（仅测试不保存）
+  async verifyEmailConfig(config) {
+    try {
+      const response = await api.post('/email-config/verify', config);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || '验证邮件配置失败');
+    }
+  }
 }
 
 export default new SettingsService();

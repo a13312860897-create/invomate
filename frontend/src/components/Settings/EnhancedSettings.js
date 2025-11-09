@@ -197,6 +197,26 @@ const EnhancedSettings = () => {
       });
       
       // 税务设置功能已移除
+      // 加载用户邮件配置
+      try {
+        const cfg = await settingsService.getEmailConfig();
+        if (cfg) {
+          setEmailConfig(prev => ({
+            ...prev,
+            email: cfg.email || prev.email,
+            provider: cfg.provider || prev.provider,
+            smtpHost: cfg.smtpHost || prev.smtpHost,
+            smtpPort: typeof cfg.smtpPort === 'number' ? cfg.smtpPort : prev.smtpPort,
+            smtpSecure: typeof cfg.smtpSecure === 'boolean' ? cfg.smtpSecure : prev.smtpSecure,
+            isActive: typeof cfg.isActive === 'boolean' ? cfg.isActive : prev.isActive
+          }));
+          if (cfg.isVerified) {
+            setVerifyStatus({ ok: true, message: 'User SMTP verified' });
+          }
+        }
+      } catch (e) {
+        console.warn('加载邮件配置失败:', e.message);
+      }
       
     } catch (err) {
       setError('Failed to load settings: ' + err.message);
@@ -256,8 +276,29 @@ const EnhancedSettings = () => {
 
   const handleSaveEmailConfig = async (e) => {
     e?.preventDefault();
-    // Backend does not expose user-level EmailConfig save endpoint yet
-    setEmailMsg({ type: 'info', text: 'Saving to server is not supported in this environment. You can still send test emails and verify server configuration.' });
+    setEmailMsg(null);
+    // 基本校验
+    if (!emailConfig.email) {
+      setEmailMsg({ type: 'error', text: '请输入发件邮箱地址' });
+      return;
+    }
+    if (!emailConfig.smtpHost) {
+      setEmailMsg({ type: 'error', text: '请输入SMTP服务器地址' });
+      return;
+    }
+    if (!emailConfig.password) {
+      setEmailMsg({ type: 'error', text: '请输入邮箱授权码或密码' });
+      return;
+    }
+    try {
+      const saved = await settingsService.saveEmailConfig(emailConfig);
+      setEmailMsg({ type: 'success', text: '邮件配置已保存' });
+      if (saved?.isVerified) {
+        setVerifyStatus({ ok: true, message: 'User SMTP verified' });
+      }
+    } catch (err) {
+      setEmailMsg({ type: 'error', text: err.message || '保存失败' });
+    }
   };
 
   const handleTestEmail = async () => {
@@ -274,10 +315,10 @@ const EnhancedSettings = () => {
   const handleVerifyServerConfig = async () => {
     setVerifyStatus(null);
     try {
-      const res = await api.get('/ai/verify-email-config');
-      setVerifyStatus(res?.data || { ok: true });
+      const res = await settingsService.verifyEmailConfig(emailConfig);
+      setVerifyStatus({ ok: !!res?.ok, message: res?.message });
     } catch (err) {
-      setVerifyStatus({ ok: false, message: err?.response?.data?.message || err.message });
+      setVerifyStatus({ ok: false, message: err?.message || '验证失败' });
     }
   };
 
@@ -843,7 +884,7 @@ const EnhancedSettings = () => {
                   <span className={`text-sm ${verifyStatus.ok ? 'text-green-600' : 'text-red-600'}`}>{verifyStatus.ok ? 'Server email config is OK' : `Not OK: ${verifyStatus.message || 'Unknown'}`}</span>
                 )}
               </div>
-              <p className="mt-3 text-xs text-gray-500">Note: User-level email configuration persistence is not enabled in this environment. To enable, expose an EmailConfig save endpoint on the backend.</p>
+              <p className="mt-3 text-xs text-gray-500">Tip: Configure your SMTP here and verify connectivity before sending invoices.</p>
             </div>
           </div>
         );

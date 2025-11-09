@@ -5,6 +5,7 @@
 
 const { generateInvoicePDFNew } = require('./pdfServiceNew');
 const EmailService = require('./emailService');
+const { EmailConfig } = require('../models');
 
 class PDFEmailService {
     constructor() {
@@ -127,6 +128,27 @@ class PDFEmailService {
 
             // 第二步：发送邮件
             console.log('正在发送邮件...');
+            // 如果提供了用户ID，尝试加载用户的邮件配置
+            let resolvedEmailConfig = null;
+            if (userId) {
+                try {
+                    const config = await EmailConfig.findOne({ where: { userId } });
+                    if (config && config.isActive) {
+                        resolvedEmailConfig = {
+                            email: config.email,
+                            password: config.password,
+                            smtpHost: config.smtpHost,
+                            smtpPort: config.smtpPort,
+                            smtpSecure: !!config.smtpSecure
+                        };
+                        console.log('已加载用户级邮件配置用于发送');
+                    } else {
+                        console.log('未找到有效的用户级邮件配置，使用环境变量SMTP');
+                    }
+                } catch (e) {
+                    console.warn('加载用户邮件配置失败，使用环境变量SMTP:', e.message);
+                }
+            }
             const emailResult = await this.sendEmail({
                 recipientEmail,
                 subject: subject || `发票 ${finalInvoiceData.invoiceNumber || invoiceId || 'Preview'}`,
@@ -134,7 +156,8 @@ class PDFEmailService {
                 customHtml,
                 pdfBuffer: pdfResult.pdfBuffer,
                 pdfFileName: `invoice_${invoiceId || 'preview'}.pdf`,
-                invoiceData: finalInvoiceData
+                invoiceData: finalInvoiceData,
+                emailConfig: resolvedEmailConfig
             });
 
             if (!emailResult.success) {

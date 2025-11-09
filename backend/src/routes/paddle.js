@@ -667,15 +667,20 @@ router.post('/create-payment-link', authenticateToken, async (req, res) => {
 // 处理Paddle Webhook
 router.post('/webhook', express.json(), async (req, res) => {
   try {
-    const signature = req.headers['paddle-signature'];
     const body = req.body;
+    const edgeVerified = (req.headers['x-paddle-verified'] || '').toString().toLowerCase() === 'true';
 
-    // 在开发环境中跳过签名验证
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('Development mode: Skipping webhook signature verification');
+    // 在生产环境中，如果前置（边缘函数）已校验签名，则直接信任
+    if (process.env.NODE_ENV === 'production') {
+      if (edgeVerified) {
+        console.log('Webhook verified at edge (X-Paddle-Verified=true). Proceeding.');
+      } else {
+        console.warn('Missing X-Paddle-Verified header in production; rejecting unverified webhook');
+        return res.status(400).json({ error: 'Webhook signature not verified' });
+      }
     } else {
-      // 验证Webhook签名 - 在生产环境中需要原始请求体
-      console.warn('Production webhook signature verification not implemented for JSON middleware');
+      // 开发环境：跳过签名验证，便于调试
+      console.log('Development mode: Skipping webhook signature verification');
     }
 
     console.log('Paddle webhook received:', body.event_type);

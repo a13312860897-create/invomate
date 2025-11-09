@@ -8,6 +8,25 @@ exports.handler = async (event) => {
     };
   }
 
+  const isMock = process.env.PADDLE_MOCK === 'true';
+  if (isMock) {
+    try {
+      const { plan, billingCycle = 'monthly', successUrl } = JSON.parse(event.body || '{}');
+      const txId = `mock_${Date.now()}`;
+      const success = successUrl || 'http://localhost:8888/payment-success';
+      const checkoutUrl = `${success.replace(/\/$/, '')}/../mock-checkout.html?plan=${encodeURIComponent(plan || 'basic')}&billing=${encodeURIComponent(billingCycle)}&success=${encodeURIComponent(success)}&transaction_id=${encodeURIComponent(txId)}`;
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ checkoutUrl, transactionId: txId })
+      };
+    } catch (e) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Invalid request body for mock mode' })
+      };
+    }
+  }
+
   try {
     const { plan, billingCycle = 'monthly', successUrl, cancelUrl } = JSON.parse(event.body || '{}');
 
@@ -55,7 +74,8 @@ exports.handler = async (event) => {
     const resp = await axios.post(`${apiBase}/transactions`, payload, {
       headers: {
         Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Paddle-Version': '1'
       },
       timeout: 30000
     });

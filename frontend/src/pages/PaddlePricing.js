@@ -207,22 +207,69 @@ const PaddlePricing = () => {
       const origin = window.location.origin;
       const successUrl = `${origin}/payment-success`;
       const cancelUrl = `${origin}/pricing?cancelled=true`;
+      // 若开启前端纯 mock，直接跳转到成功页，避免任何后端/沙盒配置
+      const mockEnabled = process.env.REACT_APP_PADDLE_MOCK === 'true';
+      if (mockEnabled) {
+        const mockTransactionId = `txn_mock_${Date.now()}`;
+        const successWithParams = `${successUrl}?transaction_id=${mockTransactionId}&plan=${plan}&billing=${billingCycle}`;
+        window.location.href = successWithParams;
+        return;
+      }
+      // 根据环境选择调用路径：开发环境优先后端，生产可使用 Netlify Functions
+      const useNetlifyFunctions = process.env.REACT_APP_USE_NETLIFY_FUNCTIONS === 'true';
+      let checkoutUrl;
 
-      // 直接调用 Netlify 函数创建 Paddle 交易，避免依赖后端
-      const functionUrl = '/.netlify/functions/paddle-create-transaction';
-      const resp = await fetch(functionUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, billingCycle, successUrl, cancelUrl })
-      });
+      if (useNetlifyFunctions) {
+        // 使用 Netlify Functions
+        const functionUrl = '/.netlify/functions/paddle-create-transaction';
+        const resp = await fetch(functionUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan, billingCycle, successUrl, cancelUrl })
+        });
 
-      if (!resp.ok) {
-        const text = await resp.text();
-        throw new Error(text || 'Netlify function failed to create transaction');
+        if (!resp.ok) {
+          const text = await resp.text();
+          throw new Error(text || 'Netlify function failed to create transaction');
+        }
+
+        const linkResp = await resp.json();
+        checkoutUrl = linkResp.checkoutUrl || linkResp.url || linkResp?.data?.checkout?.url;
+      } else {
+        // 使用后端 API 创建支付链接（开发环境）
+        try {
+          const resp = await api.post('/paddle/create-payment-link', {
+            plan,
+            billingCycle,
+            successUrl,
+            cancelUrl
+          });
+          const linkResp = resp.data || {};
+          checkoutUrl = linkResp.checkoutUrl || linkResp.url || linkResp?.data?.checkout?.url;
+        } catch (error) {
+          // 若后端未配置 Paddle，则在开发环境尝试 mock 兜底
+          const allowMock = process.env.REACT_APP_PADDLE_MOCK === 'true' || process.env.NODE_ENV !== 'production';
+          if (allowMock) {
+            try {
+              const mockResp = await api.post('/paddle/create-payment-link-mock', {
+                plan,
+                billingCycle,
+                successUrl,
+                cancelUrl
+              });
+              const linkResp = mockResp.data || {};
+              checkoutUrl = linkResp.checkoutUrl || linkResp.url;
+            } catch (mockError) {
+              const msg = mockError.response?.data?.error || mockError.message || 'Mock 支付创建失败';
+              throw new Error(msg);
+            }
+          } else {
+            const msg = error.response?.data?.error || error.message || '支付创建失败';
+            throw new Error(msg);
+          }
+        }
       }
 
-      const linkResp = await resp.json();
-      const checkoutUrl = linkResp.checkoutUrl || linkResp.url || linkResp?.data?.checkout?.url;
       if (!checkoutUrl) {
         throw new Error('未获取到结账链接');
       }

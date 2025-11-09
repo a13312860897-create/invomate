@@ -22,7 +22,7 @@ const aiRoutes = require('./routes/ai');
 // const ocrRoutes = require('./routes/ocr'); // MVP阶段暂时禁用OCR功能
 const reportRoutes = require('./routes/reports');
 const subscriptionRoutes = require('./routes/subscriptions'); // Subscription management routes
-// const emailConfigRoutes = require('./routes/emailConfig'); // 文件不存在，暂时注释
+const emailConfigRoutes = require('./routes/emailConfig');
 // const emailTemplatesRoutes = require('./routes/emailTemplates'); // Email template routes
 // const invoiceSendingRoutes = require('./routes/invoiceSending'); // MVP阶段暂时禁用，使用AI路由的邮件发送功能
 const invoiceTemplatesRoutes = require('./routes/invoiceTemplates'); // Invoice template routes
@@ -161,7 +161,7 @@ app.use('/api/ai', aiRoutes);
 // app.use('/api/ocr', ocrRoutes); // MVP阶段暂时禁用OCR功能
 app.use('/api/reports', reportRoutes);
 app.use('/api/subscriptions', subscriptionRoutes); // Subscription management routes
-// app.use('/api/email-config', emailConfigRoutes); // 文件不存在，暂时注释
+app.use('/api/email-config', emailConfigRoutes);
 // app.use('/api/email-templates', emailTemplatesRoutes); // Email template routes
 // app.use('/api/invoice-sending', invoiceSendingRoutes); // 启用发票发送路由
 app.use('/api/invoice-templates', invoiceTemplatesRoutes); // Invoice template routes

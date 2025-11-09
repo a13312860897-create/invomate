@@ -1,11 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const { User } = require('../models');
 const {
   authenticateToken,
   requireEmailVerification,
-  optionalAuth
+  optionalAuth,
+  requireAdmin
 } = require('../middleware/auth');
 const {
   register,
@@ -147,6 +148,66 @@ router.post('/resend-verification', authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Erreur lors du renvoi de l\'email de vérification'
+    });
+  }
+});
+
+/**
+ * @route POST /api/auth/dev/force-verify
+ * @desc Force verify a user's email in development mode
+ * @access Private (dev only)
+ */
+router.post('/dev/force-verify', authenticateToken, async (req, res) => {
+  try {
+    if (process.env.NODE_ENV !== 'development') {
+      return res.status(403).json({
+        success: false,
+        message: 'Endpoint disponible uniquement en développement'
+      });
+    }
+
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email requis'
+      });
+    }
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé'
+      });
+    }
+
+    await User.update({
+      emailVerified: true,
+      verificationToken: null,
+      verificationExpires: null
+    }, { where: { id: user.id } });
+
+    await logAuditEvent(
+      user.id,
+      AUDIT_ACTIONS.EMAIL_VERIFIED,
+      {
+        email: user.email,
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        reason: 'dev/force-verify'
+      }
+    );
+
+    return res.json({
+      success: true,
+      message: 'Email vérifié (dev)'
+    });
+  } catch (error) {
+    console.error('Dev force verify error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors de la vérification (dev)'
     });
   }
 });

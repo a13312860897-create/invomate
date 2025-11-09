@@ -106,7 +106,20 @@ router.get('/invoices/:id/pdf', authenticateToken, async (req, res) => {
         }
         
         // 使用新的PDF服务生成PDF，包含法国法律条款
-        const pdfBuffer = await generateInvoicePDFNew(invoice, userData, client, 'fr');
+        // 兼容返回 Buffer 或 { success, buffer, filename } 对象两种情况
+        const pdfResult = await generateInvoicePDFNew(invoice, userData, client, 'fr');
+
+        const pdfBuffer = (Buffer.isBuffer(pdfResult)
+          ? pdfResult
+          : (pdfResult && Buffer.isBuffer(pdfResult.buffer)
+            ? pdfResult.buffer
+            : (pdfResult && pdfResult.buffer && typeof pdfResult.buffer === 'object' && pdfResult.buffer.type === 'Buffer' && Array.isArray(pdfResult.buffer.data)
+              ? Buffer.from(pdfResult.buffer.data)
+              : null)));
+
+        if (!pdfBuffer) {
+          throw new Error('Invalid PDF buffer returned from generator');
+        }
         
         // 确保PDF目录存在
         if (!fs.existsSync(pdfDir)) {

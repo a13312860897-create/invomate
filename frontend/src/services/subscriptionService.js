@@ -1,47 +1,4 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
-
-// 创建axios实例
-const api = axios.create({
-  baseURL: `${API_BASE_URL}/api/subscriptions`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// 请求拦截器 - 添加认证token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// 响应拦截器 - 处理错误
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      const token = localStorage.getItem('token');
-      // 在测试模式使用的 dev-mock-token 下，不进行重定向，避免打断测试流程
-      if (token !== 'dev-mock-token') {
-        // Token过期，清除本地存储并重定向到登录页
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-      }
-      // 测试token或其他情况，直接抛出错误，让页面自行展示错误提示
-    }
-    return Promise.reject(error);
-  }
-);
+import api from './api';
 
 /**
  * 订阅服务类
@@ -52,7 +9,7 @@ class SubscriptionService {
    */
   async getCurrentSubscription() {
     try {
-      const response = await api.get('/current');
+      const response = await api.get('/subscriptions/current');
       return response.data;
     } catch (error) {
       console.error('Error fetching current subscription:', error);
@@ -65,7 +22,7 @@ class SubscriptionService {
    */
   async getSubscriptionHistory() {
     try {
-      const response = await api.get('/history');
+      const response = await api.get('/subscriptions/history');
       return response.data;
     } catch (error) {
       console.error('Error fetching subscription history:', error);
@@ -78,7 +35,7 @@ class SubscriptionService {
    */
   async syncSubscription() {
     try {
-      const response = await api.post('/sync');
+      const response = await api.post('/subscriptions/sync');
       return response.data;
     } catch (error) {
       console.error('Error syncing subscription:', error);
@@ -92,7 +49,7 @@ class SubscriptionService {
    */
   async cancelSubscription(reason = '') {
     try {
-      const response = await api.post('/cancel', { reason });
+      const response = await api.post('/subscriptions/cancel', { reason });
       return response.data;
     } catch (error) {
       console.error('Error cancelling subscription:', error);
@@ -105,7 +62,7 @@ class SubscriptionService {
    */
   async getBillingHistory() {
     try {
-      const response = await api.get('/billing-history');
+      const response = await api.get('/subscriptions/billing-history');
       return response.data;
     } catch (error) {
       console.error('Error fetching billing history:', error);
@@ -118,7 +75,7 @@ class SubscriptionService {
    */
   async getSubscriptionFeatures() {
     try {
-      const response = await api.get('/features');
+      const response = await api.get('/subscriptions/features');
       return response.data;
     } catch (error) {
       console.error('Error fetching subscription features:', error);
@@ -131,7 +88,7 @@ class SubscriptionService {
    */
   async getSyncStats() {
     try {
-      const response = await api.get('/stats');
+      const response = await api.get('/subscriptions/stats');
       return response.data;
     } catch (error) {
       console.error('Error fetching sync stats:', error);
@@ -144,7 +101,7 @@ class SubscriptionService {
    */
   async syncAllSubscriptions() {
     try {
-      const response = await api.post('/admin/sync-all');
+      const response = await api.post('/subscriptions/admin/sync-all');
       return response.data;
     } catch (error) {
       console.error('Error syncing all subscriptions:', error);

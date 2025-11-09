@@ -9,6 +9,7 @@ const InvoicePaymentService = require('./invoicePaymentService');
 class EmailService {
     constructor() {
         this.transporter = null;
+        this.customFrom = null;
         this.invoicePaymentService = new InvoicePaymentService();
         this.initializeTransporter();
     }
@@ -42,15 +43,44 @@ class EmailService {
     }
 
     /**
+     * 使用用户级邮件配置覆盖当前传输器
+     * @param {Object} emailConfig 用户的SMTP配置
+     * @returns {boolean} 是否成功设置
+     */
+    setTransporterFromConfig(emailConfig) {
+        try {
+            if (!emailConfig) return false;
+            const { email, password, smtpHost, smtpPort = 587, smtpSecure = false } = emailConfig;
+            if (!email || !password || !smtpHost) return false;
+            this.transporter = nodemailer.createTransport({
+                host: smtpHost,
+                port: parseInt(smtpPort) || 587,
+                secure: !!smtpSecure,
+                auth: { user: email, pass: password },
+                debug: true,
+                logger: true
+            });
+            this.customFrom = email;
+            return true;
+        } catch (error) {
+            console.error('根据用户配置设置传输器失败:', error);
+            return false;
+        }
+    }
+
+    /**
      * 发送测试邮件（用于设置页测试）
      * @param {string} recipientEmail 收件人邮箱
      */
-    async sendTestEmail(recipientEmail) {
+    async sendTestEmail(recipientEmail, emailConfig = null) {
         try {
             if (!recipientEmail) {
                 throw new Error('收件人邮箱是必需的');
             }
-
+            // 如果提供用户配置，则优先使用用户配置
+            if (emailConfig) {
+                this.setTransporterFromConfig(emailConfig);
+            }
             if (!this.transporter) {
                 throw new Error('邮件传输器未初始化');
             }
@@ -58,7 +88,7 @@ class EmailService {
             // 验证SMTP连接
             await this.transporter.verify();
 
-            const fromAddress = process.env.FROM_EMAIL || process.env.SMTP_USER;
+            const fromAddress = this.customFrom || process.env.FROM_EMAIL || process.env.SMTP_USER;
             if (!fromAddress) {
                 throw new Error('未配置发件人邮箱(FROM_EMAIL 或 SMTP_USER)');
             }
@@ -103,7 +133,8 @@ class EmailService {
                 customHtml,
                 pdfBuffer,
                 pdfFileName = 'invoice.pdf',
-                invoiceData = {}
+                invoiceData = {},
+                emailConfig = null
             } = options;
 
             console.log('sendInvoicePDF 参数:', {
@@ -125,6 +156,10 @@ class EmailService {
                 throw new Error('PDF文件缓冲区是必需的');
             }
 
+            // 如果提供用户配置，则优先使用用户配置
+            if (emailConfig) {
+                this.setTransporterFromConfig(emailConfig);
+            }
             console.log('检查邮件传输器状态...');
             if (!this.transporter) {
                 console.error('邮件传输器未初始化');
@@ -154,7 +189,7 @@ class EmailService {
 
             // 邮件配置
             const mailOptions = {
-                from: process.env.FROM_EMAIL || process.env.SMTP_USER,
+                from: this.customFrom || process.env.FROM_EMAIL || process.env.SMTP_USER,
                 to: recipientEmail,
                 subject: subject,
                 text: emailContent.text,
