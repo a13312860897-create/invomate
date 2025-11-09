@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Token Debug</title>
+</head>
+<body>
+    <h1>Token Debug</h1>
+    <div id="output"></div>
+    
+    <script>
+        const output = document.getElementById('output');
+        
+        // 检查localStorage中的token
+        const token = localStorage.getItem('token');
+        output.innerHTML += '<h2>Token Status:</h2>';
+        
+        if (token) {
+            output.innerHTML += '<p>✅ Token exists in localStorage</p>';
+            output.innerHTML += '<p>Token: ' + token.substring(0, 50) + '...</p>';
+            
+            // 尝试解析JWT token
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                output.innerHTML += '<p>Token payload: ' + JSON.stringify(payload, null, 2) + '</p>';
+                
+                const now = Math.floor(Date.now() / 1000);
+                if (payload.exp && payload.exp < now) {
+                    output.innerHTML += '<p>❌ Token is expired</p>';
+                } else {
+                    output.innerHTML += '<p>✅ Token is valid</p>';
+                }
+            } catch (e) {
+                output.innerHTML += '<p>❌ Invalid token format</p>';
+            }
+        } else {
+            output.innerHTML += '<p>❌ No token found in localStorage</p>';
+        }
+        
+        // 测试API调用
+        output.innerHTML += '<h2>API Test:</h2>';
+        fetch('/api/reports/tax', {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            output.innerHTML += '<p>API Response Status: ' + response.status + '</p>';
+            return response.json();
+        })
+        .then(data => {
+            output.innerHTML += '<p>API Response: ' + JSON.stringify(data, null, 2) + '</p>';
+        })
+        .catch(error => {
+            output.innerHTML += '<p>❌ API Error: ' + error.message + '</p>';
+        });
+    </script>
+</body>
+</html>
