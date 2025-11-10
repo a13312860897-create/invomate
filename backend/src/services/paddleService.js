@@ -34,7 +34,9 @@ class PaddleService {
       baseURL: this.platformBaseURL,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': this.apiKey ? `Bearer ${this.apiKey}` : undefined
+        'Authorization': this.apiKey ? `Bearer ${this.apiKey}` : undefined,
+        // 明确使用 Platform API v1，避免未来版本变更导致不兼容
+        'Paddle-Version': '1'
       }
     });
   }
@@ -186,7 +188,7 @@ class PaddleService {
   // 取消订阅
   async cancelSubscription(subscriptionId, options = {}) {
     try {
-      const response = await this.api.post(`/subscriptions/${subscriptionId}/cancel`, options);
+      const response = await this.platformApi.post(`/subscriptions/${subscriptionId}/cancel`, options);
       return response.data;
     } catch (error) {
       console.error('Error cancelling subscription:', error);
@@ -281,6 +283,8 @@ class PaddleService {
       console.log(`Processing Paddle webhook event: ${eventType}`);
       
       switch (eventType) {
+        case 'transaction.completed':
+          return await this.handleTransactionCompleted(eventData);
         case 'subscription.created':
           return await this.handleSubscriptionCreated(eventData);
         case 'subscription.activated':
@@ -301,6 +305,75 @@ class PaddleService {
       }
     } catch (error) {
       console.error('Error handling webhook event:', error);
+      throw error;
+    }
+  }
+
+  // 处理交易完成事件（Platform: transaction.completed）
+  async handleTransactionCompleted(eventData) {
+    try {
+      console.log('Handling transaction completed event:', JSON.stringify(eventData, null, 2));
+      const customData = eventData?.custom_data || {};
+
+      // 分流：如果包含发票令牌，交给发票支付服务处理
+      if (customData.payment_token && customData.invoice_id) {
+        const InvoicePaymentService = require('./invoicePaymentService');
+        const invoicePaymentService = new InvoicePaymentService();
+
+        const result = await invoicePaymentService.handlePaymentWebhook({
+          event_type: 'transaction.completed',
+          data: eventData
+        });
+
+        console.log('Invoice payment webhook processed:', result);
+        return result;
+      }
+
+      // 否则处理订阅购买完成（基于自定义数据）
+      const userId = customData.user_id || customData.userId;
+      const plan = customData.plan || 'professional';
+      const billingCycle = customData.billing_cycle || customData.billingCycle || 'monthly';
+
+      if (!userId) {
+        console.warn('transaction.completed without user_id in custom_data; ignoring');
+        return { status: 'ignored', reason: 'missing_user_id' };
+      }
+
+      const SubscriptionTimeManager = require('./SubscriptionTimeManager');
+      const { User } = require('../models');
+
+      const userPk = parseInt(userId, 10) || userId;
+      const user = await User.findByPk(userPk);
+      if (!user) {
+        console.warn(`User not found for transaction.completed: ${userId}`);
+        return { status: 'ignored', reason: 'user_not_found', userId };
+      }
+
+      const newEndDate = SubscriptionTimeManager.purchaseSubscription(user, plan, billingCycle);
+      const updateData = {
+        subscription: plan,
+        subscriptionStatus: plan,
+        subscriptionEndDate: newEndDate,
+        paddleTransactionId: eventData?.id,
+        paddleCustomerId: eventData?.customer_id || user.paddleCustomerId,
+        paddleSubscriptionId: eventData?.subscription_id || user.paddleSubscriptionId
+      };
+
+      try {
+        if (typeof user.update === 'function') {
+          await user.update(updateData);
+          console.log('User subscription updated via model instance');
+        } else {
+          await User.update(updateData, { where: { id: userPk } });
+          console.log('User subscription updated via model update');
+        }
+      } catch (updateError) {
+        console.error('Error updating user subscription from webhook:', updateError);
+      }
+
+      return { status: 'processed', plan, billingCycle, userId: userPk };
+    } catch (error) {
+      console.error('Error handling transaction.completed:', error);
       throw error;
     }
   }

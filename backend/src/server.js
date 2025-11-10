@@ -46,6 +46,9 @@ app.use(helmet());
 // Stripe webhook raw body parser must be registered BEFORE any JSON parser
 // to ensure signature verification receives the unmodified payload
 app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+// Paddle webhook raw body parser must also be registered BEFORE JSON parser
+// so we can verify HMAC against the raw payload on Vultr
+app.use('/api/paddle/webhook', express.raw({ type: 'application/json' }));
 
 // CORS configuration: allow local dev ports and configurable prod origins
 const baseWhitelist = [

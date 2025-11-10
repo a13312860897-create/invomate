@@ -664,29 +664,69 @@ router.post('/create-payment-link', authenticateToken, async (req, res) => {
   }
 });
 
-// 处理Paddle Webhook
-router.post('/webhook', express.json(), async (req, res) => {
+// 处理Paddle Webhook（支持在 Vultr 环境下服务端签名校验）
+router.post('/webhook', async (req, res) => {
   try {
-    const body = req.body;
-    const edgeVerified = (req.headers['x-paddle-verified'] || '').toString().toLowerCase() === 'true';
+    // 1) 读取原始体和签名头（兼容多种命名）
+    const rawBodyBuffer = Buffer.isBuffer(req.body)
+      ? req.body
+      : Buffer.from(typeof req.body === 'string' ? req.body : JSON.stringify(req.body || {}));
+    const rawBody = rawBodyBuffer.toString('utf8');
 
-    // 在生产环境中，如果前置（边缘函数）已校验签名，则直接信任
+    const signatureHeader =
+      req.headers['paddle-signature'] ||
+      req.headers['x-paddle-signature'] ||
+      req.headers['x-paddle-signature-hmac'] || '';
+    const edgeVerified = (req.headers['x-paddle-verified'] || '').toString().toLowerCase() === 'true';
+    const sigHeaderUsed = req.headers['paddle-signature']
+      ? 'paddle-signature'
+      : req.headers['x-paddle-signature']
+      ? 'x-paddle-signature'
+      : req.headers['x-paddle-signature-hmac']
+      ? 'x-paddle-signature-hmac'
+      : 'none';
+    console.log(`Webhook signature header used: ${sigHeaderUsed}; value length: ${signatureHeader ? signatureHeader.length : 0}; edgeVerified=${edgeVerified}`);
+
+    // 2) 生产环境必须有有效校验（优先信任边缘校验；否则执行本地HMAC校验）
     if (process.env.NODE_ENV === 'production') {
+      let verified = false;
       if (edgeVerified) {
         console.log('Webhook verified at edge (X-Paddle-Verified=true). Proceeding.');
-      } else {
-        console.warn('Missing X-Paddle-Verified header in production; rejecting unverified webhook');
+        verified = true;
+      } else if (signatureHeader) {
+        verified = paddleService.verifyWebhookSignature(rawBody, signatureHeader.toString());
+        console.log(`Server-side HMAC verification: ${verified ? 'passed' : 'failed'}`);
+      }
+
+      if (!verified) {
+        console.warn('Missing/invalid Paddle webhook verification in production');
         return res.status(400).json({ error: 'Webhook signature not verified' });
       }
     } else {
-      // 开发环境：跳过签名验证，便于调试
-      console.log('Development mode: Skipping webhook signature verification');
+      // 开发环境：没有签名也允许，便于联调
+      if (!signatureHeader) {
+        console.log('Development mode: no signature header, proceeding');
+      }
+    }
+
+    // 3) 解析事件JSON（优先使用原始体，确保与HMAC一致）
+    let body;
+    try {
+      body = JSON.parse(rawBody);
+    } catch (_) {
+      // 如果不是Buffer或原始体不可解析，则退回已解析的req.body
+      body = req.body;
+    }
+
+    if (!body || !body.event_type) {
+      console.warn('Invalid Paddle webhook payload: missing event_type');
+      return res.status(400).json({ error: 'Invalid webhook payload' });
     }
 
     console.log('Paddle webhook received:', body.event_type);
     console.log('Event data:', JSON.stringify(body.data, null, 2));
 
-    // 使用paddleService处理webhook事件，传递正确的参数
+    // 4) 调用服务处理事件
     const result = await paddleService.handleWebhookEvent(body.event_type, body.data);
     console.log('Webhook processing result:', result);
 
