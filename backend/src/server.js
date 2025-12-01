@@ -454,7 +454,12 @@ app.get('/api/paddle/client-token-public', (req, res) => {
 });
 
 // Dev utilities
-const { requireDevMode } = require('./middleware/auth');
+let requireDevMode;
+try {
+  ({ requireDevMode } = require('./middleware/auth'));
+} catch (e) {
+  requireDevMode = (req, res) => res.status(404).json({ success: false, message: 'Not found' });
+}
 app.post('/api/dev/seed', requireDevMode, (req, res) => {
   try {
     const memoryDb = require('./config/memoryDatabase');
