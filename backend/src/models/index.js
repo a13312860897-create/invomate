@@ -1428,7 +1428,7 @@ if (dbType !== 'memory') {
 // 同步模型到数据库
 const syncDatabase = async () => {
   try {
-    if (sequelize.sync) {
+    if (sequelize && typeof sequelize.sync === 'function') {
       await sequelize.sync({ force: false });
       if (typeof sequelize.getQueryInterface === 'function') {
         const { DataTypes } = require('sequelize');
