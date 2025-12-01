@@ -4,7 +4,14 @@ const helmet = require('helmet');
 const dotenv = require('dotenv');
 const path = require('path');
 const { getDatabase } = require('./config/dbFactory');
-const { scheduleReminderCron } = require('./services/reminderService');
+let scheduleReminderCron = null;
+try {
+  if (String(process.env.DISABLE_REMINDER_CRON).toLowerCase() !== 'true') {
+    ({ scheduleReminderCron } = require('./services/reminderService'));
+  }
+} catch (e) {
+  console.warn(`Reminder service disabled: ${e.message}`);
+}
 const { createDefaultUser } = require('./scripts/initDefaultUser');
 
 // Route imports
@@ -23,6 +30,12 @@ const aiRoutes = require('./routes/ai');
 const reportRoutes = require('./routes/reports');
 const subscriptionRoutes = require('./routes/subscriptions'); // Subscription management routes
 const emailConfigRoutes = require('./routes/emailConfig');
+let hubspotRoutes;
+try {
+  hubspotRoutes = require('./routes/integrations/hubspot');
+} catch (e) {
+  hubspotRoutes = null;
+}
 // const emailTemplatesRoutes = require('./routes/emailTemplates'); // Email template routes
 // const invoiceSendingRoutes = require('./routes/invoiceSending'); // MVP阶段暂时禁用，使用AI路由的邮件发送功能
 const invoiceTemplatesRoutes = require('./routes/invoiceTemplates'); // Invoice template routes
@@ -113,29 +126,29 @@ app.use((req, res, next) => {
 });
 
 // 全局请求日志中间件 - 用于调试
-app.use((req, res, next) => {
-  console.log(`\n=== Global Request Log ===`);
-  console.log(`Time: ${new Date().toISOString()}`);
-  console.log(`Method: ${req.method}`);
-  console.log(`URL: ${req.url}`);
-  console.log(`Original URL: ${req.originalUrl}`);
-  console.log(`IP: ${req.ip}`);
-  console.log(`User-Agent: ${req.get('User-Agent')}`);
-  console.log(`Authorization: ${req.get('Authorization') ? 'present' : 'missing'}`);
-  console.log(`Content-Type: ${req.get('Content-Type')}`);
-  if (req.method === 'POST' || req.method === 'PUT') {
-    const bodyStr = JSON.stringify(req.body);
-    console.log(`Body size: ${bodyStr.length} chars`);
-    console.log(`Body first 200 chars: ${bodyStr.substring(0, 200)}`);
-  }
-  console.log(`==================\n`);
-  next();
-});
+if (String(process.env.ENABLE_GLOBAL_REQUEST_LOG || '').toLowerCase() === 'true') {
+  app.use((req, res, next) => {
+    console.log(`\n=== Global Request Log ===`);
+    console.log(`Time: ${new Date().toISOString()}`);
+    console.log(`Method: ${req.method}`);
+    console.log(`URL: ${req.url}`);
+    console.log(`Original URL: ${req.originalUrl}`);
+    console.log(`IP: ${req.ip}`);
+    console.log(`User-Agent: ${req.get('User-Agent')}`);
+    console.log(`Authorization: ${req.get('Authorization') ? 'present' : 'missing'}`);
+    console.log(`Content-Type: ${req.get('Content-Type')}`);
+    if (req.method === 'POST' || req.method === 'PUT') {
+      const bodyStr = JSON.stringify(req.body);
+      console.log(`Body size: ${bodyStr.length} chars`);
+      console.log(`Body first 200 chars: ${bodyStr.substring(0, 200)}`);
+    }
+    console.log(`==================\n`);
+    next();
+  });
+}
 
 // Increase request header size limit to prevent 431 errors
-// Keep JSON/urlencoded parsers AFTER webhook raw registration
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb', parameterLimit: 50000 }));
+// Note: JSON/urlencoded parsers are already registered above; avoid duplicate parsing
 
 // Set server timeout and header size limits
 app.use((req, res, next) => {
@@ -165,6 +178,9 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/subscriptions', subscriptionRoutes); // Subscription management routes
 app.use('/api/email-config', emailConfigRoutes);
+if (hubspotRoutes) {
+  app.use('/api/integrations/hubspot', hubspotRoutes);
+}
 // app.use('/api/email-templates', emailTemplatesRoutes); // Email template routes
 // app.use('/api/invoice-sending', invoiceSendingRoutes); // 启用发票发送路由
 app.use('/api/invoice-templates', invoiceTemplatesRoutes); // Invoice template routes
@@ -200,6 +216,264 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+const { User, Invoice } = require('./models');
+const { Op } = require('sequelize');
+const DataService = require('./services/DataService');
+app.get('/api/admin/db-check', async (req, res) => {
+  try {
+    const secret = String(req.query.secret || '');
+    const configured = String(process.env.ADMIN_DEBUG_SECRET || '');
+    if (!configured || secret !== configured) {
+      return res.status(403).json({ success: false, error: 'forbidden' });
+    }
+    const email = String(req.query.email || '').trim().toLowerCase();
+    const month = String(req.query.month || '').trim();
+    if (!email) {
+      return res.status(400).json({ success: false, error: 'email required' });
+    }
+    const validMonth = /^\d{4}-\d{2}$/.test(month) ? month : (() => {
+      const d = new Date();
+      const y = d.getUTCFullYear();
+      const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+      return `${y}-${m}`;
+    })();
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'user not found', email });
+    }
+    const parts = validMonth.split('-');
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    const start = new Date(Date.UTC(y, m - 1, 1));
+    const end = new Date(Date.UTC(y, m - 1, new Date(y, m, 0).getUTCDate(), 23, 59, 59));
+    const byIssueMonth = await Invoice.findAll({
+      where: {
+        userId: user.id,
+        issueDate: { [Op.gte]: start, [Op.lte]: end }
+      },
+      attributes: ['id', 'invoiceNumber', 'issueDate', 'status', 'total', 'totalAmount'],
+      order: [['issueDate', 'ASC']]
+    });
+    const paidInMonth = await Invoice.findAll({
+      where: {
+        userId: user.id,
+        status: 'paid',
+        paidDate: { [Op.gte]: start, [Op.lte]: end }
+      },
+      attributes: ['id', 'invoiceNumber', 'paidDate', 'total', 'totalAmount'],
+      order: [['paidDate', 'ASC']]
+    });
+    const paidNoDateIssueMonth = await Invoice.findAll({
+      where: {
+        userId: user.id,
+        status: 'paid',
+        paidDate: null,
+        issueDate: { [Op.gte]: start, [Op.lte]: end }
+      },
+      attributes: ['id', 'invoiceNumber', 'issueDate', 'total', 'totalAmount'],
+      order: [['issueDate', 'ASC']]
+    });
+    const totalInvoicesAmount = byIssueMonth.reduce((s, i) => s + (parseFloat(i.totalAmount || i.total) || 0), 0);
+    const totalRevenue = [...paidInMonth, ...paidNoDateIssueMonth].reduce((s, i) => s + (parseFloat(i.totalAmount || i.total) || 0), 0);
+    const samplesAll = byIssueMonth.slice(0, 10).map(i => ({ id: i.id, no: i.invoiceNumber, issueDate: i.issueDate, total: i.totalAmount || i.total, status: i.status }));
+    const samplesPaid = [...paidInMonth, ...paidNoDateIssueMonth].slice(0, 10).map(i => ({ id: i.id, no: i.invoiceNumber, paidDate: i.paidDate || i.issueDate, total: i.totalAmount || i.total }));
+    res.json({
+      success: true,
+      data: {
+        email,
+        userId: user.id,
+        month: validMonth,
+        counts: {
+          byIssueMonth: byIssueMonth.length,
+          paidInMonth: paidInMonth.length + paidNoDateIssueMonth.length
+        },
+        amounts: {
+          totalInvoicesAmount,
+          totalRevenue
+        },
+        samples: {
+          all: samplesAll,
+          paid: samplesPaid
+        }
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'internal_error', details: String(error && error.message || error) });
+  }
+});
+
+app.get('/api/admin/unified-chart-data', async (req, res) => {
+  try {
+    const secret = String(req.query.secret || '');
+    const configured = String(process.env.ADMIN_DEBUG_SECRET || '');
+    if (!configured || secret !== configured) {
+      return res.status(403).json({ success: false, error: 'forbidden' });
+    }
+    const email = String(req.query.email || '').trim().toLowerCase();
+    const month = String(req.query.month || '').trim();
+    if (!email) {
+      return res.status(400).json({ success: false, error: 'email required' });
+    }
+    const validMonth = /^\d{4}-\d{2}$/.test(month) ? month : (() => {
+      const d = new Date();
+      const y = d.getUTCFullYear();
+      const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+      return `${y}-${m}`;
+    })();
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'user not found', email });
+    }
+    const [y, m] = validMonth.split('-').map(n => parseInt(n, 10));
+    const start = new Date(Date.UTC(y, m - 1, 1));
+    const end = new Date(Date.UTC(y, m - 1, new Date(y, m, 0).getUTCDate(), 23, 59, 59));
+
+    const byIssueMonth = await Invoice.findAll({
+      where: { userId: user.id, issueDate: { [Op.gte]: start, [Op.lte]: end } },
+      attributes: ['id', 'invoiceNumber', 'issueDate', 'status', 'total', 'totalAmount'],
+      order: [['issueDate', 'ASC']]
+    });
+    const paidByPaidDate = await Invoice.findAll({
+      where: { userId: user.id, status: 'paid', paidDate: { [Op.gte]: start, [Op.lte]: end } },
+      attributes: ['id', 'invoiceNumber', 'paidDate', 'issueDate', 'total', 'totalAmount'],
+      order: [['paidDate', 'ASC']]
+    });
+    const paidByIssueNoPaid = await Invoice.findAll({
+      where: { userId: user.id, status: 'paid', paidDate: null, issueDate: { [Op.gte]: start, [Op.lte]: end } },
+      attributes: ['id', 'invoiceNumber', 'issueDate', 'total', 'totalAmount']
+    });
+    const seen = new Set();
+    const paidUnion = [];
+    [...paidByPaidDate, ...paidByIssueNoPaid].forEach(i => {
+      const k = i.id || i.invoiceNumber;
+      if (!seen.has(k)) { seen.add(k); paidUnion.push(i); }
+    });
+
+    const statusCounts = {};
+    const statusAmounts = {};
+    let totalAmount = 0;
+    byIssueMonth.forEach(i => {
+      const s = i.status || 'unknown';
+      const amt = parseFloat(i.totalAmount || i.total) || 0;
+      statusCounts[s] = (statusCounts[s] || 0) + 1;
+      statusAmounts[s] = (statusAmounts[s] || 0) + amt;
+      totalAmount += amt;
+    });
+    const distribution = Object.keys(statusCounts).map(s => ({
+      status: s,
+      count: statusCounts[s],
+      amount: statusAmounts[s],
+      percentage: byIssueMonth.length > 0 ? ((statusCounts[s] / byIssueMonth.length) * 100).toFixed(1) : '0.0'
+    }));
+
+    const pendingAmount = Number((statusAmounts['pending'] || 0) + (statusAmounts['sent'] || 0));
+    const overdueAmount = Number(statusAmounts['overdue'] || 0);
+    const paidAmount = Number(statusAmounts['paid'] || 0);
+
+    const daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const trendData = [];
+    for (let d = 1; d <= daysInMonth; d++) {
+      const key = new Date(Date.UTC(y, m - 1, d)).toISOString().split('T')[0];
+      const dayPaid = paidUnion.filter(i => {
+        const dt = (i.paidDate || i.issueDate);
+        const iso = (dt instanceof Date ? dt.toISOString().split('T')[0] : String(dt).split('T')[0]);
+        return iso === key;
+      });
+      const dayRevenue = dayPaid.reduce((s, i) => s + (parseFloat(i.totalAmount || i.total) || 0), 0);
+      trendData.push({ date: key, revenue: dayRevenue, count: dayPaid.length });
+    }
+
+    const revenueTrend = {
+      month: validMonth,
+      totalRevenue: paidUnion.reduce((s, i) => s + (parseFloat(i.totalAmount || i.total) || 0), 0),
+      totalCount: paidUnion.length,
+      trendData,
+      paidInvoices: paidUnion.slice(0, 10).map(i => ({ id: i.id, invoiceNumber: i.invoiceNumber, total: i.totalAmount || i.total, paidDate: i.paidDate || i.issueDate }))
+    };
+    const statusDistribution = {
+      month: validMonth,
+      totalInvoices: byIssueMonth.length,
+      distribution,
+      summary: { 
+        totalAmount, 
+        statusCounts, 
+        statusAmounts,
+        pendingAmount,
+        overdueAmount,
+        paidAmount
+      },
+      totals: {
+        totalInvoicesAmount: totalAmount,
+        pendingAmount,
+        overdueAmount,
+        paidAmount
+      },
+      metrics: {
+        pendingAmount,
+        overdueAmount,
+        paidAmount
+      }
+    };
+    const report = {
+      userId: user.id,
+      month: validMonth,
+      counts: { byIssueMonth: byIssueMonth.length, paidInMonth: paidUnion.length },
+      amounts: { totalInvoicesAmount: totalAmount, totalRevenue: revenueTrend.totalRevenue },
+      distribution,
+      trend: trendData,
+      samples: {
+        all: byIssueMonth.slice(0, 10).map(i => ({ id: i.id, no: i.invoiceNumber, issueDate: i.issueDate, total: i.totalAmount || i.total, status: i.status })),
+        paid: revenueTrend.paidInvoices
+      }
+    };
+    const cards = {
+      month: validMonth,
+      totalRevenue: revenueTrend.totalRevenue,
+      totalInvoices: statusDistribution.totalInvoices,
+      pendingAmount,
+      overdueAmount
+    };
+    res.json({ success: true, data: { month: validMonth, statusDistribution, revenueTrend, cards, report, metadata: { userId: user.id, generatedAt: new Date().toISOString() } } });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'internal_error', details: String(error && error.message || error) });
+  }
+});
+
+// Public Paddle client token endpoint
+app.get('/api/paddle/client-token-public', (req, res) => {
+  try {
+    const token = process.env.PADDLE_CLIENT_TOKEN || process.env.PADDLE_CLIENT_SIDE_TOKEN || process.env.REACT_APP_PADDLE_CLIENT_TOKEN;
+    if (!token) {
+      return res.status(500).json({ error: 'Client token not configured' });
+    }
+    const environment = process.env.PADDLE_ENVIRONMENT || (process.env.NODE_ENV === 'production' ? 'production' : 'sandbox');
+    res.json({ token, environment });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get client token' });
+  }
+});
+
+// Dev utilities
+const { requireDevMode } = require('./middleware/auth');
+app.post('/api/dev/seed', requireDevMode, (req, res) => {
+  try {
+    const memoryDb = require('./config/memoryDatabase');
+    memoryDb.initializeTestDataSync?.();
+    return res.json({ success: true, message: 'Seeded test data' });
+  } catch (e) {
+    return res.status(500).json({ success: false, error: e.message });
+  }
+});
+app.post('/api/dev/clear', requireDevMode, (req, res) => {
+  try {
+    const memoryDb = require('./config/memoryDatabase');
+    memoryDb.clearTestData?.();
+    return res.json({ success: true, message: 'Cleared test data' });
+  } catch (e) {
+    return res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -226,16 +500,16 @@ const startServer = async () => {
     
     // Initialize default user
     await createDefaultUser();
-    
-    // Auto-create test invoice data in memory mode - disabled to fix data inconsistency issues
     const isMemoryMode = process.env.DB_TYPE === 'memory' || !process.env.DB_TYPE;
-    if (isMemoryMode && process.env.CREATE_TEST_DATA === 'true') {
-      const { createTestInvoices } = require('../scripts/create-test-invoices');
-      await createTestInvoices();
+    if (isMemoryMode) {
+      const memoryDb = require('./config/memoryDatabase');
+      memoryDb.clearTestData();
     }
     
     // Start reminder email scheduled task
-    scheduleReminderCron();
+    if (typeof scheduleReminderCron === 'function') {
+      scheduleReminderCron();
+    }
     
     // Start server
     app.listen(PORT, '0.0.0.0', () => {
@@ -246,6 +520,8 @@ const startServer = async () => {
   }
 };
 
-startServer();
+if (process.env.NODE_ENV !== 'test') {
+  startServer();
+}
 
 module.exports = app;
