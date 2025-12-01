@@ -22,6 +22,7 @@ const {
 const { auditLogger, securityMonitor, logAuditEvent, AUDIT_ACTIONS } = require('../middleware/auditLogger');
 const { generateSecureToken } = require('../utils/encryption');
 const router = express.Router();
+const safeRequireDevMode = (typeof requireDevMode === 'function') ? requireDevMode : (req, res, next) => res.status(404).json({ success: false, message: 'Not found' });
 
 // Apply audit logging to all auth routes
 router.use(auditLogger('auth'));
@@ -158,7 +159,7 @@ router.post('/resend-verification', authenticateToken, async (req, res) => {
  * @desc Grant 15-day Professional trial to current user
  * @access Private
  */
-router.post('/grant-trial', authenticateToken, requireDevMode, async (req, res) => {
+router.post('/grant-trial', authenticateToken, safeRequireDevMode, async (req, res) => {
   try {
     const userId = req.user.id;
     const endDate = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
