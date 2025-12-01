@@ -12,6 +12,7 @@ if (dbType !== 'memory') {
 
 // 定义模型变量
 let User, Client, Invoice, InvoiceItem, ReminderLog, Payment, PaymentRecord, TaxSetting, InvoiceTemplate, TemplateField, Integration, DataMapping, SyncLog, EmailConfig, EmailTemplate;
+const Subscription = require('./Subscription');
 
 // 如果不是内存数据库，则使用Sequelize定义模型
 if (dbType !== 'memory') {
@@ -235,10 +236,15 @@ if (dbType !== 'memory') {
     },
     
     // 订阅相关字段
+    subscription: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'free'
+    },
     subscriptionStatus: {
       type: DataTypes.STRING,
       allowNull: true,
-      defaultValue: 'free'
+      defaultValue: 'inactive'
     },
     subscriptionEndDate: {
       type: DataTypes.DATE,
@@ -254,6 +260,31 @@ if (dbType !== 'memory') {
     },
     paddleTransactionId: {
       type: DataTypes.STRING,
+      allowNull: true
+    },
+    refreshToken: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    emailVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
+    verificationToken: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    verificationExpires: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    resetPasswordToken: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    resetPasswordExpires: {
+      type: DataTypes.DATE,
       allowNull: true
     }
   }, {
@@ -355,8 +386,9 @@ if (dbType !== 'memory') {
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      // 外键显式引用小写表名 'users'，避免大小写问题
       references: {
-        model: User,
+        model: 'users',
         key: 'id'
       }
     }
@@ -617,8 +649,9 @@ if (dbType !== 'memory') {
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      // 外键显式引用小写表名 'users'，避免大小写问题
       references: {
-        model: User,
+        model: 'users',
         key: 'id'
       }
     },
@@ -632,6 +665,61 @@ if (dbType !== 'memory') {
     }
   }, {
     tableName: 'invoices',
+    timestamps: true
+  });
+
+  // 定义 Subscription 模型（示例），显式设置 tableName 与 users 外键引用
+  Subscription = sequelize.define('Subscription', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
+    paddleCustomerId: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    paddleSubscriptionId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true
+    },
+    planType: {
+      type: DataTypes.ENUM('free', 'basic', 'pro', 'enterprise'),
+      allowNull: false,
+      defaultValue: 'free'
+    },
+    status: {
+      type: DataTypes.ENUM('active', 'inactive', 'cancelled', 'past_due', 'trial', 'paused'),
+      allowNull: false,
+      defaultValue: 'inactive'
+    },
+    startDate: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    endDate: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    trialEndDate: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    metadata: {
+      type: DataTypes.JSONB,
+      allowNull: true
+    }
+  }, {
+    tableName: 'subscriptions',
     timestamps: true
   });
 
@@ -725,7 +813,7 @@ if (dbType !== 'memory') {
     },
     invoiceMode: {
       type: DataTypes.ENUM('fr', 'intl'),
-      defaultValue: 'intl',
+      defaultValue: 'fr',
       allowNull: false
     },
     taxSystem: {
@@ -784,12 +872,12 @@ if (dbType !== 'memory') {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users',
+        model: 'users',
         key: 'id'
       }
     }
   }, {
-    tableName: 'invoiceMode',
+    tableName: 'invoice_mode',
     timestamps: true
   });
 
@@ -831,7 +919,7 @@ if (dbType !== 'memory') {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: User,
+        model: 'users',
         key: 'id'
       }
     },
@@ -903,7 +991,7 @@ if (dbType !== 'memory') {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'InvoiceTemplates',
+        model: 'invoice_templates',
         key: 'id'
       }
     }
@@ -1289,6 +1377,10 @@ if (dbType !== 'memory') {
   User.hasMany(Invoice, { foreignKey: 'userId' });
   Invoice.belongsTo(User, { foreignKey: 'userId' });
 
+  // User 与 Subscription 关联（示例）
+  User.hasMany(Subscription, { foreignKey: 'userId' });
+  Subscription.belongsTo(User, { foreignKey: 'userId' });
+
   Client.hasMany(Invoice, { foreignKey: 'clientId' });
   Invoice.belongsTo(Client, { foreignKey: 'clientId' });
 
@@ -1339,6 +1431,32 @@ const syncDatabase = async () => {
   try {
     if (sequelize.sync) {
       await sequelize.sync({ force: false });
+      if (typeof sequelize.getQueryInterface === 'function') {
+        const { DataTypes } = require('sequelize');
+        const qi = sequelize.getQueryInterface();
+        const desc = await qi.describeTable('users');
+        if (!desc.subscription) {
+          await qi.addColumn('users', 'subscription', { type: DataTypes.STRING, allowNull: false, defaultValue: 'free' });
+        }
+        if (!desc.emailVerified) {
+          await qi.addColumn('users', 'emailVerified', { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false });
+        }
+        if (!desc.verificationToken) {
+          await qi.addColumn('users', 'verificationToken', { type: DataTypes.STRING, allowNull: true });
+        }
+        if (!desc.verificationExpires) {
+          await qi.addColumn('users', 'verificationExpires', { type: DataTypes.DATE, allowNull: true });
+        }
+        if (!desc.refreshToken) {
+          await qi.addColumn('users', 'refreshToken', { type: DataTypes.STRING, allowNull: true });
+        }
+        if (!desc.resetPasswordToken) {
+          await qi.addColumn('users', 'resetPasswordToken', { type: DataTypes.STRING, allowNull: true });
+        }
+        if (!desc.resetPasswordExpires) {
+          await qi.addColumn('users', 'resetPasswordExpires', { type: DataTypes.DATE, allowNull: true });
+        }
+      }
       console.log('Database synced successfully');
     } else {
       console.log('Memory database does not need explicit sync');
@@ -1911,28 +2029,129 @@ if (dbType === 'memory') {
   // 创建EmailConfig适配器（内存模式下简单实现）
   const EmailConfigAdapter = {
     create: (configData) => {
-      // 在内存模式下，简单地返回成功，不实际存储邮件配置
-      return Promise.resolve({ id: Date.now(), ...configData });
+      return Promise.resolve(memoryDb.setEmailConfig(configData.userId, configData));
     },
-    findOne: (options) => {
-      // 在内存模式下，返回null
-      return Promise.resolve(null);
+    findOne: (options = {}) => {
+      const userId = options.where && options.where.userId;
+      return Promise.resolve(userId ? memoryDb.getEmailConfig(userId) : null);
     },
-    findByPk: () => Promise.resolve(null),
-    findAll: () => Promise.resolve([]),
-    update: () => Promise.resolve([0]),
-    destroy: () => Promise.resolve(0),
+    findByPk: (id) => {
+      const rec = (memoryDb.emailConfigs || []).find(c => Number(c.id) === Number(id));
+      return Promise.resolve(rec || null);
+    },
+    findAll: () => Promise.resolve(memoryDb.emailConfigs || []),
+    update: (updates, options = {}) => {
+      const userId = options.where && options.where.userId;
+      if (!userId) return Promise.resolve([0]);
+      const res = memoryDb.setEmailConfig(userId, updates);
+      return Promise.resolve([res ? 1 : 0]);
+    },
+    destroy: (options = {}) => {
+      const userId = options.where && options.where.userId;
+      if (!userId) return Promise.resolve(0);
+      const ok = memoryDb.deleteEmailConfigByUserId(userId);
+      return Promise.resolve(ok ? 1 : 0);
+    },
     upsert: (configData) => {
-      return Promise.resolve({ id: Date.now(), ...configData });
+      return Promise.resolve(memoryDb.setEmailConfig(configData.userId, configData));
     }
   };
   
+  // 为内存数据库增加 Integration/SyncLog 适配器
+  if (!memoryDb.integrations) memoryDb.integrations = [];
+  if (!memoryDb.syncLogs) memoryDb.syncLogs = [];
+  if (!memoryDb.nextIds) memoryDb.nextIds = {};
+  if (!memoryDb.nextIds.integrations) memoryDb.nextIds.integrations = 1;
+  if (!memoryDb.nextIds.syncLogs) memoryDb.nextIds.syncLogs = 1;
+
+  const IntegrationAdapter = {
+    create: (data) => {
+      const id = memoryDb.nextIds.integrations++;
+      const record = {
+        id,
+        user_id: data.user_id,
+        platform: data.platform,
+        platform_type: data.platform_type,
+        config: data.config,
+        is_active: data.is_active ?? true,
+        sync_status: data.sync_status ?? 'idle',
+        settings: data.settings || {},
+        last_sync_at: null,
+        error_message: null
+      };
+      memoryDb.integrations.push(record);
+      return Promise.resolve(record);
+    },
+    findOne: ({ where }) => {
+      const rec = memoryDb.integrations.find(i => {
+        return Object.keys(where || {}).every(k => i[k] === where[k]);
+      });
+      return Promise.resolve(rec || null);
+    },
+    findByPk: (id) => {
+      const rec = memoryDb.integrations.find(i => Number(i.id) === Number(id));
+      return Promise.resolve(rec || null);
+    },
+    update: (updates, { where }) => {
+      let updated = 0;
+      memoryDb.integrations = memoryDb.integrations.map(i => {
+        const match = where && Object.keys(where).every(k => i[k] === where[k]);
+        if (match) {
+          updated++;
+          return { ...i, ...updates };
+        }
+        return i;
+      });
+      return Promise.resolve([updated]);
+    },
+    destroy: ({ where }) => {
+      const before = memoryDb.integrations.length;
+      memoryDb.integrations = memoryDb.integrations.filter(i => {
+        return !Object.keys(where || {}).every(k => i[k] === where[k]);
+      });
+      const removed = before - memoryDb.integrations.length;
+      return Promise.resolve(removed);
+    },
+    findByUserAndPlatform: (userId, platform) => {
+      const rec = memoryDb.integrations.find(i => i.user_id === userId && i.platform === platform);
+      return Promise.resolve(rec || null);
+    }
+  };
+
+  const SyncLogAdapter = {
+    create: (data) => {
+      const id = memoryDb.nextIds.syncLogs++;
+      const record = {
+        id,
+        integrationId: data.integrationId || data.integration_id,
+        syncType: data.syncType,
+        status: data.status,
+        error: data.error || null,
+        startedAt: data.startedAt || new Date(),
+        completedAt: data.completedAt || null
+      };
+      memoryDb.syncLogs.push(record);
+      return Promise.resolve(record);
+    },
+    destroy: ({ where }) => {
+      const before = memoryDb.syncLogs.length;
+      memoryDb.syncLogs = memoryDb.syncLogs.filter(l => {
+        if (where.integrationId) {
+          return Number(l.integrationId) !== Number(where.integrationId);
+        }
+        return true;
+      });
+      const removed = before - memoryDb.syncLogs.length;
+      return Promise.resolve(removed);
+    }
+  };
+
   // 导入Payment和PaymentRecord适配器
   const Payment = require('./Payment');
   const PaymentRecord = require('./PaymentRecord');
 const Subscription = require('./Subscription'); // Subscription model
 
-module.exports = {
+  module.exports = {
     sequelize: null,
     memoryDb, // 添加memoryDb导出
     User: UserAdapter,
@@ -1948,6 +2167,8 @@ module.exports = {
     TemplateField: TemplateFieldAdapter,
     AuditLog: AuditLogAdapter,
     EmailConfig: EmailConfigAdapter,
+    Integration: IntegrationAdapter,
+    SyncLog: SyncLogAdapter,
     syncDatabase
   };
 } else {
