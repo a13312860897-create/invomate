@@ -2148,7 +2148,13 @@ if (dbType === 'memory') {
   // 导入Payment和PaymentRecord适配器
   const Payment = require('./Payment');
   const PaymentRecord = require('./PaymentRecord');
-const Subscription = require('./Subscription'); // Subscription model
+let Subscription = null;
+try {
+  Subscription = require('./Subscription');
+} catch (e) {
+  console.warn(`Subscription module disabled: ${e.message}`);
+  Subscription = null;
+}
 
   module.exports = {
     sequelize: null,
@@ -2160,7 +2166,7 @@ const Subscription = require('./Subscription'); // Subscription model
     ReminderLog: ReminderLogAdapter,
     Payment,
     PaymentRecord,
-    Subscription, // Add Subscription model
+    Subscription,
     TaxSetting: TaxSettingAdapter,
     InvoiceTemplate: InvoiceTemplateAdapter,
     TemplateField: TemplateFieldAdapter,
@@ -2181,7 +2187,7 @@ const Subscription = require('./Subscription'); // Subscription model
     ReminderLog,
     Payment,
     PaymentRecord,
-    Subscription, // Add Subscription model
+    Subscription,
     TaxSetting,
     InvoiceTemplate,
     TemplateField,
