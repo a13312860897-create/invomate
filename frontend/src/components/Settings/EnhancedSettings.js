@@ -12,6 +12,7 @@ import settingsService from '../../services/settingsService';
 import notificationService from '../../services/notificationService';
 import api from '../../services/api';
 import LanguageSelector from './LanguageSelector';
+import { getVATFormatDescription } from '../../utils/vatValidator';
 
 const EnhancedSettings = () => {
   const { user, updateProfile } = useAuth();
@@ -32,6 +33,9 @@ const EnhancedSettings = () => {
     companyName: '',
     phone: '',
     address: '',
+    city: '',
+    postalCode: '',
+    country: '',
     currency: 'EUR',
     timezone: 'Europe/Paris', // default timezone
     vatNumber: '',
@@ -45,7 +49,8 @@ const EnhancedSettings = () => {
     bankIBAN: '',
     bankBIC: '',
     bankName: '',
-    accountHolder: ''
+    accountHolder: '',
+    peppolId: ''
   });
   
   // Password form
@@ -73,11 +78,6 @@ const EnhancedSettings = () => {
     const errors = {};
     
     switch (fieldName) {
-      case 'vatNumber':
-        if (value && !/^FR[0-9]{11}$/.test(value)) {
-          errors.vatNumber = 'VAT number format: FR + 11 digits (e.g., FR12345678901)';
-        }
-        break;
       case 'sirenNumber':
         if (value && !/^[0-9]{9}$/.test(value)) {
           errors.sirenNumber = 'SIREN must be 9 digits';
@@ -129,29 +129,36 @@ const EnhancedSettings = () => {
   };
 
   useEffect(() => {
-    // 如果统一数据管理中已有用户资料，直接使用
     if (userProfile) {
+      let merged = userProfile;
+      try {
+        const rp = localStorage.getItem('registrationProfile');
+        if (rp) merged = { ...merged, ...JSON.parse(rp) };
+      } catch (_) {}
       setProfileForm({
-        firstName: userProfile.firstName || '',
-        lastName: userProfile.lastName || '',
-        email: userProfile.email || '',
-        companyName: userProfile.companyName || '',
-        phone: userProfile.phone || '',
-        address: userProfile.address || '',
-        currency: userProfile.currency || 'EUR',
-        timezone: userProfile.timezone || 'Europe/Paris', // 时区设置
-        vatNumber: userProfile.vatNumber || '',
-        sirenNumber: userProfile.siren || userProfile.sirenNumber || '',
-        siretNumber: userProfile.siretNumber || '',
-        legalForm: userProfile.legalForm || '',
-        registeredCapital: userProfile.registeredCapital || '',
-        rcsNumber: userProfile.rcsNumber || '',
-        nafCode: userProfile.nafCode || '',
-        // 银行信息字段
-        bankIBAN: userProfile.bankIBAN || '',
-        bankBIC: userProfile.bankBIC || '',
-        bankName: userProfile.bankName || '',
-        accountHolder: userProfile.accountHolder || ''
+        firstName: merged.firstName || '',
+        lastName: merged.lastName || '',
+        email: merged.email || '',
+        companyName: merged.companyName || '',
+        phone: merged.phone || '',
+        address: merged.address || '',
+        city: merged.city || '',
+        postalCode: merged.postalCode || '',
+        country: merged.country || '',
+        currency: merged.currency || 'EUR',
+        timezone: merged.timezone || 'Europe/Paris',
+        vatNumber: merged.vatNumber || '',
+        sirenNumber: merged.siren || merged.sirenNumber || '',
+        siretNumber: merged.siretNumber || '',
+        legalForm: merged.legalForm || '',
+        registeredCapital: merged.registeredCapital || '',
+        rcsNumber: merged.rcsNumber || '',
+        nafCode: merged.nafCode || '',
+        bankIBAN: merged.bankIBAN || '',
+        bankBIC: merged.bankBIC || '',
+        bankName: merged.bankName || '',
+        accountHolder: merged.accountHolder || '',
+        peppolId: merged.peppolId || ''
       });
     } else {
       loadSettings();
@@ -173,27 +180,35 @@ const EnhancedSettings = () => {
       
       // 加载个人资料
       const profile = await settingsService.getProfile();
+      let merged = profile;
+      try {
+        const rp = localStorage.getItem('registrationProfile');
+        if (rp) merged = { ...merged, ...JSON.parse(rp) };
+      } catch (_) {}
       setProfileForm({
-        firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
-        email: profile.email || '',
-        companyName: profile.companyName || '',
-        phone: profile.phone || '',
-        address: profile.address || '',
-        currency: profile.currency || 'EUR',
-        timezone: profile.timezone || 'Europe/Paris', // 时区设置
-        vatNumber: profile.vatNumber || '',
-        sirenNumber: profile.siren || '',
-        siretNumber: profile.siretNumber || '',
-        legalForm: profile.legalForm || '',
-        registeredCapital: profile.registeredCapital || '',
-        rcsNumber: profile.rcsNumber || '',
-        nafCode: profile.nafCode || '',
-        // 银行信息字段
-        bankIBAN: profile.bankIBAN || '',
-        bankBIC: profile.bankBIC || '',
-        bankName: profile.bankName || '',
-        accountHolder: profile.accountHolder || ''
+        firstName: merged.firstName || '',
+        lastName: merged.lastName || '',
+        email: merged.email || '',
+        companyName: merged.companyName || '',
+        phone: merged.phone || '',
+        address: merged.address || '',
+        city: merged.city || '',
+        postalCode: merged.postalCode || '',
+        country: merged.country || '',
+        currency: merged.currency || 'EUR',
+        timezone: merged.timezone || 'Europe/Paris',
+        vatNumber: merged.vatNumber || '',
+        sirenNumber: merged.siren || '',
+        siretNumber: merged.siretNumber || '',
+        legalForm: merged.legalForm || '',
+        registeredCapital: merged.registeredCapital || '',
+        rcsNumber: merged.rcsNumber || '',
+        nafCode: merged.nafCode || '',
+        bankIBAN: merged.bankIBAN || '',
+        bankBIC: merged.bankBIC || '',
+        bankName: merged.bankName || '',
+        accountHolder: merged.accountHolder || '',
+        peppolId: merged.peppolId || ''
       });
       
       // 税务设置功能已移除
@@ -266,6 +281,16 @@ const EnhancedSettings = () => {
     'qq': { smtpHost: 'smtp.qq.com', smtpPort: 465, smtpSecure: true },
     'gmail': { smtpHost: 'smtp.gmail.com', smtpPort: 465, smtpSecure: true },
     'outlook': { smtpHost: 'smtp.office365.com', smtpPort: 587, smtpSecure: false },
+    'orange': { smtpHost: 'smtp.orange.fr', smtpPort: 465, smtpSecure: true },
+    'free': { smtpHost: 'smtp.free.fr', smtpPort: 587, smtpSecure: false },
+    'sfr': { smtpHost: 'smtp.sfr.fr', smtpPort: 465, smtpSecure: true },
+    'laposte': { smtpHost: 'smtp.laposte.net', smtpPort: 465, smtpSecure: true },
+    'ovh': { smtpHost: 'smtp.ovh.net', smtpPort: 587, smtpSecure: false },
+    'gandi': { smtpHost: 'mail.gandi.net', smtpPort: 587, smtpSecure: false },
+    'brevo': { smtpHost: 'smtp-relay.brevo.com', smtpPort: 587, smtpSecure: false },
+    'mailjet': { smtpHost: 'smtp.mailjet.com', smtpPort: 587, smtpSecure: false },
+    'proton-bridge': { smtpHost: '127.0.0.1', smtpPort: 1025, smtpSecure: false },
+    'yahoo': { smtpHost: 'smtp.mail.yahoo.com', smtpPort: 465, smtpSecure: true },
     'custom': { smtpHost: '', smtpPort: 465, smtpSecure: true }
   };
 
@@ -306,9 +331,9 @@ const EnhancedSettings = () => {
     try {
       const res = await notificationService.testEmailConfiguration(testEmail);
       const ok = res?.success || res?.status === 'ok';
-      setEmailMsg({ type: ok ? 'success' : 'error', text: ok ? 'Test email sent. Please check your inbox.' : (res?.message || 'Test send failed.') });
+      setEmailMsg({ type: ok ? 'success' : 'error', text: ok ? 'Test email sent. Please check your inbox.' : 'Sending failed. Please check related data.' });
     } catch (err) {
-      setEmailMsg({ type: 'error', text: err?.response?.data?.message || err.message || 'Test send failed.' });
+      setEmailMsg({ type: 'error', text: 'Sending failed. Please check related data.' });
     }
   };
 
@@ -364,9 +389,9 @@ const EnhancedSettings = () => {
     switch (activeTab) {
       case 'profile':
         return (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-6">Profile Settings</h3>
-            <form onSubmit={handleProfileSubmit} className="space-y-8">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-6">Profile Settings</h3>
+          <form onSubmit={handleProfileSubmit} className="space-y-8">
               
               <div className="border-b border-gray-200 pb-6">
                 <h4 className="text-md font-medium text-gray-800 mb-4 flex items-center">
@@ -416,14 +441,18 @@ const EnhancedSettings = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
+                      Currency
                     </label>
-                    <input
-                      type="tel"
-                      value={profileForm.phone}
-                      onChange={(e) => handleFieldChange('phone', e.target.value)}
+                    <select
+                      value={profileForm.currency}
+                      onChange={(e) => handleFieldChange('currency', e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    >
+                      <option value="EUR">Euro (EUR)</option>
+                      <option value="USD">US Dollar (USD)</option>
+                      <option value="GBP">British Pound (GBP)</option>
+                      <option value="CNY">Chinese Yuan (CNY)</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -442,270 +471,242 @@ const EnhancedSettings = () => {
                     </select>
                   </div>
                 </div>
-                
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Address
-                  </label>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-md font-medium text-gray-900">Category 1 (Required)</h3>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
+                  <input
+                    type="text"
+                    value={profileForm.companyName}
+                    onChange={(e) => handleFieldChange('companyName', e.target.value)}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
                   <textarea
                     value={profileForm.address}
                     onChange={(e) => handleFieldChange('address', e.target.value)}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-              </div>
-
-              <div className="border-b border-gray-200 pb-6">
-                <h4 className="text-md font-medium text-gray-800 mb-4 flex items-center">
-                  <FiSettings className="w-4 h-4 mr-2" />
-                  Company Information
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Company Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
                     <input
                       type="text"
-                      value={profileForm.companyName}
-                      onChange={(e) => handleFieldChange('companyName', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Full company name"
+                      value={profileForm.city}
+                      onChange={(e) => handleFieldChange('city', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Currency
-                    </label>
-                    <select
-                      value={profileForm.currency}
-                      onChange={(e) => handleFieldChange('currency', e.target.value)}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code *</label>
+                    <input
+                      type="text"
+                      value={profileForm.postalCode}
+                      onChange={(e) => handleFieldChange('postalCode', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Country *</label>
+                    <input
+                      type="text"
+                      value={profileForm.country}
+                      onChange={(e) => handleFieldChange('country', e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="EUR">Euro (EUR)</option>
-                      <option value="USD">US Dollar (USD)</option>
-                      <option value="GBP">British Pound (GBP)</option>
-                      <option value="CNY">Chinese Yuan (CNY)</option>
-                    </select>
+                    />
                   </div>
                 </div>
-              </div>
 
-              {/* French tax information */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h4 className="text-md font-medium text-blue-900 mb-4 flex items-center">
-                  <FiShield className="w-4 h-4 mr-2" />
-                  French Tax Information
-                </h4>
-                <p className="text-sm text-blue-700 mb-4">
-                  The following information will appear on French invoices. Please ensure accuracy. The system will generate compliant French invoices based on what you provide.
-                </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-md p-4 space-y-4">
+                  <h3 className="text-lg font-medium text-blue-900">Category 2 (Selectively Required)</h3>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      VAT Number
-                    </label>
-                    <input
-                      type="text"
-                      value={profileForm.vatNumber}
-                      onChange={(e) => handleFieldChange('vatNumber', e.target.value)}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        fieldErrors.vatNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                      }`}
-                      placeholder="FR12345678901"
-                    />
-                    <p className="mt-1 text-xs text-gray-500">Format: FR + 11 digits</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">TVA Number</label>
+                    <div>
+                      <input
+                        type="text"
+                        value={profileForm.vatNumber}
+                        onChange={(e) => handleFieldChange('vatNumber', e.target.value)}
+                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.vatNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                      />
+                      <p className="mt-1 text-xs text-gray-500">{getVATFormatDescription(profileForm.country || 'FR')}</p>
+                      <p className="mt-1 text-xs text-gray-500">Optional. Only for businesses registered for VAT. If you are VAT-exempt, leave empty and use “TVA non applicable, art. 293 B du CGI”.</p>
+                    </div>
                     {fieldErrors.vatNumber && (
-                      <p className="mt-1 text-xs text-red-600">{fieldErrors.vatNumber}</p>
+                      <p className="mt-1 text-sm text-red-600">{fieldErrors.vatNumber}</p>
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      SIREN Number
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">SIREN</label>
                     <input
                       type="text"
                       value={profileForm.sirenNumber}
                       onChange={(e) => handleFieldChange('sirenNumber', e.target.value)}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        fieldErrors.sirenNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                      }`}
-                      placeholder="123456789"
-                      maxLength="9"
+                      maxLength={9}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.sirenNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     />
-                    <p className="mt-1 text-xs text-gray-500">9-digit company identifier</p>
                     {fieldErrors.sirenNumber && (
-                      <p className="mt-1 text-xs text-red-600">{fieldErrors.sirenNumber}</p>
+                      <p className="mt-1 text-sm text-red-600">{fieldErrors.sirenNumber}</p>
                     )}
+                    <p className="mt-1 text-xs text-gray-500">9-digit company identifier</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">SIRET</label>
+                      <input
+                        type="text"
+                        value={profileForm.siretNumber}
+                        onChange={(e) => handleFieldChange('siretNumber', e.target.value)}
+                        maxLength={14}
+                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.siretNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                      />
+                      {fieldErrors.siretNumber && (
+                        <p className="mt-1 text-sm text-red-600">{fieldErrors.siretNumber}</p>
+                      )}
+                      <p className="mt-1 text-xs text-gray-500">Optional for registration. Required only for officially registered French businesses. If you do not have it yet, you can leave this empty.</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Legal Form</label>
+                      <select
+                        value={profileForm.legalForm || ''}
+                        onChange={(e) => handleFieldChange('legalForm', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Please select</option>
+                        <option value="SAS">SAS (Simplified joint-stock company)</option>
+                        <option value="SARL">SARL (Limited liability company)</option>
+                        <option value="SA">SA (Public limited company)</option>
+                        <option value="EURL">EURL (Single-member limited liability company)</option>
+                        <option value="SNC">SNC (General partnership)</option>
+                        <option value="Auto-entrepreneur">Auto-entrepreneur (Sole proprietor)</option>
+                      </select>
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      SIRET Number
-                    </label>
-                    <input
-                      type="text"
-                      value={profileForm.siretNumber}
-                      onChange={(e) => handleFieldChange('siretNumber', e.target.value)}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        fieldErrors.siretNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                      }`}
-                      placeholder="12345678901234"
-                      maxLength="14"
-                    />
-                    <p className="mt-1 text-xs text-gray-500">14-digit establishment identifier</p>
-                    {fieldErrors.siretNumber && (
-                      <p className="mt-1 text-xs text-red-600">{fieldErrors.siretNumber}</p>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Legal Form
-                    </label>
-                    <select
-                      value={profileForm.legalForm || ''}
-                      onChange={(e) => handleFieldChange('legalForm', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Please select</option>
-                      <option value="SAS">SAS (Simplified joint-stock company)</option>
-                      <option value="SARL">SARL (Limited liability company)</option>
-                      <option value="SA">SA (Public limited company)</option>
-                      <option value="EURL">EURL (Single-member limited liability company)</option>
-                      <option value="SNC">SNC (General partnership)</option>
-                      <option value="Auto-entrepreneur">Auto-entrepreneur (Sole proprietor)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Registered Capital (EUR)
-                    </label>
-                    <input
-                      type="number"
-                      value={profileForm.registeredCapital || ''}
-                      onChange={(e) => handleFieldChange('registeredCapital', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="e.g., 10000"
-                      min="0"
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      RCS Number
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">RCS Number</label>
                     <input
                       type="text"
                       value={profileForm.rcsNumber || ''}
                       onChange={(e) => handleFieldChange('rcsNumber', e.target.value)}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        fieldErrors.rcsNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                      }`}
-                      placeholder="RCS PARIS 123 456 789"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.rcsNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     />
-                    <p className="mt-1 text-xs text-gray-500">Trade and Companies Register number</p>
                     {fieldErrors.rcsNumber && (
-                      <p className="mt-1 text-xs text-red-600">{fieldErrors.rcsNumber}</p>
+                      <p className="mt-1 text-sm text-red-600">{fieldErrors.rcsNumber}</p>
                     )}
+                    <p className="mt-1 text-xs text-gray-500">Optional. For companies registered in the French Trade and Companies Register (RCS). Freelancers and micro-entrepreneurs usually do not have this.</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      NAF Code
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">NAF Code</label>
                     <input
                       type="text"
                       value={profileForm.nafCode || ''}
                       onChange={(e) => handleFieldChange('nafCode', e.target.value)}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        fieldErrors.nafCode ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                      }`}
-                      placeholder="e.g., 6201Z"
-                      maxLength="5"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.nafCode ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                      maxLength={5}
                     />
-                    <p className="mt-1 text-xs text-gray-500">5-character activity code</p>
                     {fieldErrors.nafCode && (
-                      <p className="mt-1 text-xs text-red-600">{fieldErrors.nafCode}</p>
+                      <p className="mt-1 text-sm text-red-600">{fieldErrors.nafCode}</p>
                     )}
+                    <p className="mt-1 text-xs text-gray-500">Optional. Your official business activity code assigned by INSEE. Not required on invoices but some businesses include it.</p>
                   </div>
                 </div>
 
-                <div className="mb-6">
-                  <h4 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                    <FiCreditCard className="w-5 h-5" />
-                    Bank Information
-                  </h4>
+                <div className="mt-6 bg-white border border-gray-200 rounded-md p-4 space-y-4">
+                  <h3 className="text-md font-medium text-gray-900">Category 3 (Strongly Recommended)</h3>
+                  <div className="border border-gray-200 rounded-md p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">IBAN</label>
+                        <input
+                          type="text"
+                          value={profileForm.bankIBAN || ''}
+                          onChange={(e) => handleFieldChange('bankIBAN', e.target.value)}
+                          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.bankIBAN ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                        />
+                        {fieldErrors.bankIBAN && (
+                          <p className="mt-1 text-sm text-red-600">{fieldErrors.bankIBAN}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">BIC/SWIFT</label>
+                        <input
+                          type="text"
+                          value={profileForm.bankBIC || ''}
+                          onChange={(e) => handleFieldChange('bankBIC', e.target.value.toUpperCase())}
+                          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.bankBIC ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                        />
+                        {fieldErrors.bankBIC && (
+                          <p className="mt-1 text-sm text-red-600">{fieldErrors.bankBIC}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
+                        <input
+                          type="text"
+                          value={profileForm.bankName || ''}
+                          onChange={(e) => handleFieldChange('bankName', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder</label>
+                        <input
+                          type="text"
+                          value={profileForm.accountHolder || ''}
+                          onChange={(e) => handleFieldChange('accountHolder', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">Recommended. Used to let your clients pay by bank transfer. Not required for registration, but important if you use bank transfers as a payment method.</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input
+                      type="tel"
+                      value={profileForm.phone}
+                      onChange={(e) => handleFieldChange('phone', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <p className="mt-1 text-xs text-gray-500">Optional. A contact number your clients can use if needed. Not required for invoice compliance.</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 bg-gray-50 border border-gray-200 rounded-md p-4 space-y-4">
+                  <h3 className="text-md font-medium text-gray-900">Category 4 (Fully Optional)</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        IBAN
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">PEPPOL ID</label>
                       <input
                         type="text"
-                        value={profileForm.bankIBAN || ''}
-                        onChange={(e) => handleFieldChange('bankIBAN', e.target.value)}
-                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono ${
-                          fieldErrors.bankIBAN ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                        }`}
-                        placeholder="FR76 1234 5678 9012 3456 7890 123"
-                      />
-                      <p className="mt-1 text-xs text-gray-500">International Bank Account Number</p>
-                      {fieldErrors.bankIBAN && (
-                        <p className="mt-1 text-xs text-red-600">{fieldErrors.bankIBAN}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        BIC/SWIFT
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.bankBIC || ''}
-                        onChange={(e) => handleFieldChange('bankBIC', e.target.value.toUpperCase())}
-                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono ${
-                          fieldErrors.bankBIC ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                        }`}
-                        placeholder="BNPAFRPPXXX"
-                        maxLength="11"
-                      />
-                      <p className="mt-1 text-xs text-gray-500">Bank Identifier Code</p>
-                      {fieldErrors.bankBIC && (
-                        <p className="mt-1 text-xs text-red-600">{fieldErrors.bankBIC}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Bank Name
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.bankName || ''}
-                        onChange={(e) => handleFieldChange('bankName', e.target.value)}
+                        value={profileForm.peppolId || ''}
+                        onChange={(e) => handleFieldChange('peppolId', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="BNP Paribas"
                       />
+                      <p className="mt-1 text-xs text-gray-500">Optional. Needed only if your business uses the PEPPOL network for electronic invoicing. Leave empty if you do not use PEPPOL.</p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Account Holder
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Registered Capital</label>
                       <input
                         type="text"
-                        value={profileForm.accountHolder || ''}
-                        onChange={(e) => handleFieldChange('accountHolder', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Company or personal name"
+                        value={profileForm.registeredCapital || ''}
+                        onChange={(e) => handleFieldChange('registeredCapital', e.target.value)}
+                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${fieldErrors.registeredCapital ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                       />
+                      {fieldErrors.registeredCapital && (
+                        <p className="mt-1 text-sm text-red-600">{fieldErrors.registeredCapital}</p>
+                      )}
+                      <p className="mt-1 text-xs text-gray-500">Optional. The company’s registered share capital. Required only for certain legal forms (e.g., SARL, SAS). Not mandatory for issuing invoices.</p>
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex justify-end">
                 <button
                   type="submit"
@@ -823,10 +824,20 @@ const EnhancedSettings = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Provider</label>
                     <select value={emailConfig.provider} onChange={e => applyProviderPreset(e.target.value)} className="mt-1 block w-full border rounded-md p-2">
-                      <option value="163">163</option>
-                      <option value="qq">QQ</option>
+                      <option value="orange">Orange</option>
+                      <option value="free">Free</option>
+                      <option value="sfr">SFR</option>
+                      <option value="laposte">LaPoste</option>
+                      <option value="ovh">OVHcloud</option>
+                      <option value="gandi">Gandi</option>
+                      <option value="brevo">Brevo</option>
+                      <option value="mailjet">Mailjet</option>
                       <option value="gmail">Gmail</option>
                       <option value="outlook">Outlook</option>
+                      <option value="yahoo">Yahoo</option>
+                      <option value="proton-bridge">ProtonMail Bridge</option>
+                      <option value="163">163</option>
+                      <option value="qq">QQ</option>
                       <option value="custom">Custom</option>
                     </select>
                   </div>

@@ -1,3 +1,4 @@
+import api from '../services/api';
 // VAT号码验证工具
 
 // 欧盟国家VAT号码格式
@@ -66,36 +67,7 @@ const validateFrenchVAT = (vatNumber) => {
 
 // 基本格式验证
 export const validateVATFormat = (vatNumber, countryCode) => {
-  if (!vatNumber || !countryCode) {
-    return { valid: false, error: 'VAT number and country code are required' };
-  }
-  
-  // 标准化VAT号码格式
-  const normalizedVAT = vatNumber.toUpperCase().replace(/[\s.-]/g, '');
-  
-  // 检查是否以国家代码开头
-  if (!normalizedVAT.startsWith(countryCode)) {
-    return { valid: false, error: `VAT number must start with ${countryCode}` };
-  }
-  
-  // 检查格式
-  const pattern = VAT_PATTERNS[countryCode];
-  if (!pattern) {
-    return { valid: false, error: `Unsupported country code: ${countryCode}` };
-  }
-  
-  if (!pattern.test(normalizedVAT)) {
-    return { valid: false, error: 'Invalid VAT number format' };
-  }
-  
-  // 法国VAT号码额外验证
-  if (countryCode === 'FR') {
-    const isValidFrench = validateFrenchVAT(normalizedVAT);
-    if (!isValidFrench) {
-      return { valid: false, error: 'Invalid French VAT number checksum' };
-    }
-  }
-  
+  const normalizedVAT = (vatNumber || '').toUpperCase().replace(/[\s.-]/g, '');
   return { valid: true, normalized: normalizedVAT };
 };
 
@@ -108,24 +80,11 @@ export const validateVATOnline = async (vatNumber, countryCode) => {
       return formatValidation;
     }
     
-    // 调用后端API进行在线验证
-    const response = await fetch('/api/vat/validate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify({
-        vatNumber: formatValidation.normalized,
-        countryCode
-      })
+    // 调用后端API进行在线验证（使用统一 axios 实例，享受离线兜底）
+    const { data: result } = await api.post('/vat/validate', {
+      vatNumber: formatValidation.normalized,
+      countryCode
     });
-    
-    if (!response.ok) {
-      throw new Error('VAT validation service unavailable');
-    }
-    
-    const result = await response.json();
     
     return {
       valid: result.valid,
@@ -170,38 +129,8 @@ export const validateVATNumber = async (vatNumber, countryCode = 'FR') => {
 };
 
 // 获取国家的VAT号码格式说明
-export const getVATFormatDescription = (countryCode) => {
-  const descriptions = {
-    'FR': 'Format: FR + 2 caractères + 9 chiffres (ex: FR12345678901)',
-    'DE': 'Format: DE + 9 chiffres (ex: DE123456789)',
-    'ES': 'Format: ES + 1 caractère + 7 chiffres + 1 caractère (ex: ESA12345674)',
-    'IT': 'Format: IT + 11 chiffres (ex: IT12345678901)',
-    'BE': 'Format: BE + 0 + 9 chiffres (ex: BE0123456789)',
-    'NL': 'Format: NL + 9 chiffres + B + 2 chiffres (ex: NL123456789B01)',
-    'GB': 'Format: GB + 9 ou 12 chiffres (ex: GB123456789)',
-    'AT': 'Format: ATU + 8 chiffres (ex: ATU12345678)',
-    'PT': 'Format: PT + 9 chiffres (ex: PT123456789)',
-    'FI': 'Format: FI + 8 chiffres (ex: FI12345678)',
-    'SE': 'Format: SE + 12 chiffres (ex: SE123456789012)',
-    'DK': 'Format: DK + 8 chiffres (ex: DK12345678)',
-    'PL': 'Format: PL + 10 chiffres (ex: PL1234567890)',
-    'CZ': 'Format: CZ + 8-10 chiffres (ex: CZ12345678)',
-    'HU': 'Format: HU + 8 chiffres (ex: HU12345678)',
-    'SK': 'Format: SK + 10 chiffres (ex: SK1234567890)',
-    'SI': 'Format: SI + 8 chiffres (ex: SI12345678)',
-    'HR': 'Format: HR + 11 chiffres (ex: HR12345678901)',
-    'BG': 'Format: BG + 9-10 chiffres (ex: BG123456789)',
-    'RO': 'Format: RO + 2-10 chiffres (ex: RO12345678)',
-    'EE': 'Format: EE + 9 chiffres (ex: EE123456789)',
-    'LV': 'Format: LV + 11 chiffres (ex: LV12345678901)',
-    'LT': 'Format: LT + 9 ou 12 chiffres (ex: LT123456789)',
-    'LU': 'Format: LU + 8 chiffres (ex: LU12345678)',
-    'MT': 'Format: MT + 8 chiffres (ex: MT12345678)',
-    'CY': 'Format: CY + 8 chiffres + 1 lettre (ex: CY12345678A)',
-    'IE': 'Format: IE + 1 chiffre + 1 caractère + 5 chiffres + 1 lettre (ex: IE1A23456B)'
-  };
-  
-  return descriptions[countryCode] || 'Format non disponible pour ce pays';
+export const getVATFormatDescription = () => {
+  return 'Optional VAT number. Format not restricted.';
 };
 
 // 提取SIREN号码（仅适用于法国）

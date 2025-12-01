@@ -6,7 +6,8 @@ const {
   authenticateToken,
   requireEmailVerification,
   optionalAuth,
-  requireAdmin
+  requireAdmin,
+  requireDevMode
 } = require('../middleware/auth');
 const {
   register,
@@ -19,7 +20,6 @@ const {
   getProfile
 } = require('../controllers/authController');
 const { auditLogger, securityMonitor, logAuditEvent, AUDIT_ACTIONS } = require('../middleware/auditLogger');
-const { sendVerificationEmail } = require('../services/emailService');
 const { generateSecureToken } = require('../utils/encryption');
 const router = express.Router();
 
@@ -118,7 +118,8 @@ router.post('/resend-verification', authenticateToken, async (req, res) => {
       verificationExpires
     });
 
-    // Send verification email
+    // Send verification email（延迟加载以避免不必要的依赖初始化）
+    const { sendVerificationEmail } = require('../services/emailService');
     const emailResult = await sendVerificationEmail(user.id, verificationToken);
 
     if (!emailResult.success) {
@@ -149,6 +150,42 @@ router.post('/resend-verification', authenticateToken, async (req, res) => {
       success: false,
       message: 'Erreur lors du renvoi de l\'email de vérification'
     });
+  }
+});
+
+/**
+ * @route POST /api/auth/grant-trial
+ * @desc Grant 15-day Professional trial to current user
+ * @access Private
+ */
+router.post('/grant-trial', authenticateToken, requireDevMode, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const endDate = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
+
+    if (process.env.DB_TYPE === 'memory') {
+      const memoryDb = require('../config/memoryDatabase');
+      const updated = memoryDb.updateUser(userId, {
+        subscription: 'professional',
+        subscriptionStatus: 'active',
+        subscriptionEndDate: endDate,
+      });
+      if (!updated) {
+        return res.status(404).json({ success: false, message: 'Utilisateur non trouvé' });
+      }
+    } else {
+      const { User } = require('../models');
+      const user = await User.findByPk(userId);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Utilisateur non trouvé' });
+      }
+      await user.update({ subscription: 'professional', subscriptionStatus: 'active', subscriptionEndDate: endDate });
+    }
+
+    return res.json({ success: true, message: 'Trial granted', data: { subscription: 'professional', subscriptionStatus: 'active', subscriptionEndDate: endDate } });
+  } catch (error) {
+    console.error('Grant trial error:', error);
+    return res.status(500).json({ success: false, message: 'Erreur lors de l\'attribution de l\'essai' });
   }
 });
 
@@ -243,16 +280,7 @@ router.put('/profile', authenticateToken, requireEmailVerification, async (req, 
       });
     }
 
-    // Validate VAT number format if provided
-    if (vatNumber && vatNumber !== user.vatNumber) {
-      const vatRegex = /^FR[0-9A-Z]{2}[0-9]{9}$/;
-      if (!vatRegex.test(vatNumber)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Format de numéro de TVA invalide (format attendu: FR + 2 caractères + 9 chiffres)'
-        });
-      }
-    }
+    
 
     // Track changes for audit
     const changes = {};
@@ -469,3 +497,49 @@ router.delete('/account', authenticateToken, requireEmailVerification, async (re
 });
 
 module.exports = router;
+/**
+ * @route POST /api/auth/grant-trial
+ * @desc Grant 15-day professional trial for current user
+ * @access Private
+ */
+router.post('/grant-trial', authenticateToken, requireDevMode, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Utilisateur non trouvé' });
+    }
+
+    const now = new Date();
+    const currentEnd = user.subscriptionEndDate ? new Date(user.subscriptionEndDate) : now;
+    const base = currentEnd > now ? currentEnd : now;
+    const newEndDate = new Date(base.getTime() + 15 * 24 * 60 * 60 * 1000);
+
+    if (process.env.DB_TYPE === 'memory') {
+      const memoryDb = require('../config/memoryDatabase');
+      memoryDb.updateUser(user.id, {
+        subscription: 'professional',
+        subscriptionStatus: 'active',
+        subscriptionEndDate: newEndDate
+      });
+    } else {
+      await user.update({
+        subscription: 'professional',
+        subscriptionStatus: 'active',
+        subscriptionEndDate: newEndDate
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Trial granted',
+      data: {
+        subscription: 'professional',
+        subscriptionStatus: 'active',
+        subscriptionEndDate: newEndDate
+      }
+    });
+  } catch (error) {
+    console.error('Grant trial error:', error);
+    return res.status(500).json({ success: false, message: 'Erreur lors de l\'attribution du trial' });
+  }
+});

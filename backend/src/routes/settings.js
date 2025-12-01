@@ -29,7 +29,7 @@ router.get('/profile', requireEmailVerification, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'User not found'
       });
     }
 
@@ -41,7 +41,7 @@ router.get('/profile', requireEmailVerification, async (req, res) => {
     console.error('Get profile error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur lors de la récupération du profil'
+      message: 'Error retrieving profile'
     });
   }
 });
@@ -81,9 +81,11 @@ router.put('/profile', requireEmailVerification, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'User not found'
       });
     }
+
+    
 
     // Store old values for audit log
     const oldValues = {
@@ -93,29 +95,31 @@ router.put('/profile', requireEmailVerification, async (req, res) => {
       vatNumber: user.vatNumber
     };
 
+    const normalize = (v) => (v === undefined || v === null || (typeof v === 'string' && v.trim() === '')) ? null : v;
+
     // Update user profile
     await User.update({
-      firstName,
-      lastName,
-      companyName,
-      phone,
-      address,
-      city,
-      postalCode,
-      country,
-      vatNumber,
-      siren: sirenNumber,
-      siretNumber,
-      legalForm,
-      registeredCapital,
-      rcsNumber,
-      nafCode,
-      language,
-      timezone,
-      bankIBAN,
-      bankBIC,
-      bankName,
-      accountHolder
+      firstName: normalize(firstName),
+      lastName: normalize(lastName),
+      companyName: normalize(companyName),
+      phone: normalize(phone),
+      address: normalize(address),
+      city: normalize(city),
+      postalCode: normalize(postalCode),
+      country: normalize(country),
+      vatNumber: normalize(vatNumber),
+      siren: normalize(sirenNumber),
+      siretNumber: normalize(siretNumber),
+      legalForm: normalize(legalForm),
+      registeredCapital: normalize(registeredCapital),
+      rcsNumber: normalize(rcsNumber),
+      nafCode: normalize(nafCode),
+      language: normalize(language),
+      timezone: normalize(timezone),
+      bankIBAN: normalize(bankIBAN),
+      bankBIC: normalize(bankBIC),
+      bankName: normalize(bankName),
+      accountHolder: normalize(accountHolder)
     }, {
       where: { id: req.user.id }
     });
@@ -144,14 +148,14 @@ router.put('/profile', requireEmailVerification, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Profil mis à jour avec succès',
+      message: 'Profile updated successfully',
       data: updatedUser
     });
   } catch (error) {
     console.error('Update profile error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur lors de la mise à jour du profil'
+      message: 'Error updating profile'
     });
   }
 });
@@ -173,21 +177,21 @@ router.post('/change-password', requireEmailVerification, async (req, res) => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: 'Tous les champs sont requis'
+        message: 'All fields are required'
       });
     }
 
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: 'Les nouveaux mots de passe ne correspondent pas'
+        message: 'New passwords do not match'
       });
     }
 
     if (newPassword.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'Le nouveau mot de passe doit contenir au moins 6 caractères'
+        message: 'New password must be at least 6 characters'
       });
     }
 
@@ -196,7 +200,7 @@ router.post('/change-password', requireEmailVerification, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'User not found'
       });
     }
 
@@ -205,7 +209,7 @@ router.post('/change-password', requireEmailVerification, async (req, res) => {
     if (!isCurrentPasswordValid) {
       return res.status(400).json({
         success: false,
-        message: 'Mot de passe actuel incorrect'
+        message: 'Current password is incorrect'
       });
     }
 
@@ -231,13 +235,13 @@ router.post('/change-password', requireEmailVerification, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Mot de passe modifié avec succès'
+      message: 'Password changed successfully'
     });
   } catch (error) {
     console.error('Change password error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur lors du changement de mot de passe'
+      message: 'Error changing password'
     });
   }
 });
@@ -252,13 +256,14 @@ router.get('/subscription', async (req, res) => {
     const user = req.user;
     
     // 获取用户的订阅状态
-    const subscriptionStatus = user.subscriptionStatus || 'free';
+    const subscriptionType = user.subscription || 'free';
+    const subscriptionStatus = user.subscriptionStatus || 'inactive';
     const subscriptionEndDate = user.subscriptionEndDate;
     const now = new Date();
     
     // 确定计划类型和状态
-    let plan = 'free';
-    let status = 'active';
+    let plan = subscriptionType || 'free';
+    let status = 'inactive';
     let features = {
       maxInvoices: -1, // 无限制，改为14天试用期限制
       maxClients: -1, // 无限制，改为14天试用期限制
@@ -268,8 +273,8 @@ router.get('/subscription', async (req, res) => {
     };
     
     // 如果用户有付费订阅且未过期
-    if (subscriptionStatus !== 'free' && subscriptionEndDate && new Date(subscriptionEndDate) > now) {
-      plan = subscriptionStatus; // 'professional' 或其他付费计划
+    if (plan !== 'free' && subscriptionEndDate && new Date(subscriptionEndDate) > now) {
+      status = 'active';
       features = {
         maxInvoices: -1, // 无限制
         maxClients: -1,  // 无限制
@@ -278,7 +283,6 @@ router.get('/subscription', async (req, res) => {
         advancedReports: true
       };
     } else if (subscriptionEndDate && new Date(subscriptionEndDate) <= now) {
-      // 订阅已过期
       status = 'expired';
     }
 
@@ -296,7 +300,7 @@ router.get('/subscription', async (req, res) => {
     console.error('Get subscription error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur lors de la récupération de l\'abonnement'
+      message: 'Error retrieving subscription'
     });
   }
 });
@@ -338,7 +342,7 @@ router.post('/export-data', checkFeatureAccess('data_export'), async (req, res) 
 
     res.json({
       success: true,
-      message: 'Données exportées avec succès',
+      message: 'Data exported successfully',
       data: userData,
       exportDate: new Date().toISOString()
     });
@@ -346,7 +350,7 @@ router.post('/export-data', checkFeatureAccess('data_export'), async (req, res) 
     console.error('Export data error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur lors de l\'exportation des données'
+      message: 'Error exporting data'
     });
   }
 });
@@ -363,7 +367,7 @@ router.delete('/account', requireEmailVerification, async (req, res) => {
     if (!password || confirmDeletion !== 'DELETE') {
       return res.status(400).json({
         success: false,
-        message: 'Confirmation requise pour supprimer le compte'
+        message: 'Confirmation required to delete account'
       });
     }
 
@@ -372,7 +376,7 @@ router.delete('/account', requireEmailVerification, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'User not found'
       });
     }
 
@@ -381,7 +385,7 @@ router.delete('/account', requireEmailVerification, async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).json({
         success: false,
-        message: 'Mot de passe incorrect'
+        message: 'Incorrect password'
       });
     }
 
@@ -401,13 +405,13 @@ router.delete('/account', requireEmailVerification, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Compte supprimé avec succès'
+      message: 'Account deleted successfully'
     });
   } catch (error) {
     console.error('Delete account error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur lors de la suppression du compte'
+      message: 'Error deleting account'
     });
   }
 });
