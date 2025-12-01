@@ -463,6 +463,9 @@ if (enableDevTools) {
   } catch (e) {
     requireDevMode = (req, res) => res.status(404).json({ success: false, message: 'Not found' });
   }
+  if (typeof requireDevMode !== 'function') {
+    requireDevMode = (req, res) => res.status(404).json({ success: false, message: 'Not found' });
+  }
   app.post('/api/dev/seed', requireDevMode, (req, res) => {
     try {
       const memoryDb = require('./config/memoryDatabase');
