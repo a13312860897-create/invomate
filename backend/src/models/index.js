@@ -12,7 +12,6 @@ if (dbType !== 'memory') {
 
 // 定义模型变量
 let User, Client, Invoice, InvoiceItem, ReminderLog, Payment, PaymentRecord, TaxSetting, InvoiceTemplate, TemplateField, Integration, DataMapping, SyncLog, EmailConfig, EmailTemplate;
-const Subscription = require('./Subscription');
 
 // 如果不是内存数据库，则使用Sequelize定义模型
 if (dbType !== 'memory') {
