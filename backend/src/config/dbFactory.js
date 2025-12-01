@@ -41,7 +41,11 @@ const getDatabase = () => {
         return { sequelize };
       },
       sync: async () => {
-        // 同步所有模型到数据库
+        const connected = await require('./database').testConnection();
+        if (!connected) {
+          console.warn('PostgreSQL unavailable during sync, using in-memory database');
+          return memoryDb.sync();
+        }
         const { syncDatabase } = require('../models');
         return syncDatabase();
       }
