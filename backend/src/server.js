@@ -454,30 +454,34 @@ app.get('/api/paddle/client-token-public', (req, res) => {
 });
 
 // Dev utilities
-let requireDevMode;
-try {
-  ({ requireDevMode } = require('./middleware/auth'));
-} catch (e) {
-  requireDevMode = (req, res) => res.status(404).json({ success: false, message: 'Not found' });
+const env = String(process.env.NODE_ENV || '').toLowerCase();
+const enableDevTools = env === 'development' || process.env.ENABLE_DEV_TOOLS === 'true';
+if (enableDevTools) {
+  let requireDevMode;
+  try {
+    ({ requireDevMode } = require('./middleware/auth'));
+  } catch (e) {
+    requireDevMode = (req, res) => res.status(404).json({ success: false, message: 'Not found' });
+  }
+  app.post('/api/dev/seed', requireDevMode, (req, res) => {
+    try {
+      const memoryDb = require('./config/memoryDatabase');
+      memoryDb.initializeTestDataSync?.();
+      return res.json({ success: true, message: 'Seeded test data' });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  });
+  app.post('/api/dev/clear', requireDevMode, (req, res) => {
+    try {
+      const memoryDb = require('./config/memoryDatabase');
+      memoryDb.clearTestData?.();
+      return res.json({ success: true, message: 'Cleared test data' });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  });
 }
-app.post('/api/dev/seed', requireDevMode, (req, res) => {
-  try {
-    const memoryDb = require('./config/memoryDatabase');
-    memoryDb.initializeTestDataSync?.();
-    return res.json({ success: true, message: 'Seeded test data' });
-  } catch (e) {
-    return res.status(500).json({ success: false, error: e.message });
-  }
-});
-app.post('/api/dev/clear', requireDevMode, (req, res) => {
-  try {
-    const memoryDb = require('./config/memoryDatabase');
-    memoryDb.clearTestData?.();
-    return res.json({ success: true, message: 'Cleared test data' });
-  } catch (e) {
-    return res.status(500).json({ success: false, error: e.message });
-  }
-});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
